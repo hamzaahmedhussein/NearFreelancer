@@ -1,0 +1,6 @@
+@Connect_HostAddress = http://localhost:5104
+
+GET {{Connect_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
