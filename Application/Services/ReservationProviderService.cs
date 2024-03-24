@@ -3,6 +3,7 @@ using Connect.Application.DTOs;
 using Connect.Application.Helpers;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
+using Connect.Core.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace Connect.Application.Services
@@ -23,7 +24,7 @@ namespace Connect.Application.Services
             _userHelpers = userHelpers;
         }
 
-        public async Task<bool> AddResevationBusiness(AddReservationBusinessDto reservationDto)
+        public async Task<bool> AddReservationBusiness(AddReservationBusinessDto reservationDto)
         {
 
             if (reservationDto == null)
@@ -32,11 +33,10 @@ namespace Connect.Application.Services
             }
             var user = await _userHelpers.GetCurrentUserAsync();
 
-
-            if (user == null || user.ProfileType == ProfileType.ReservationProvider)
-            {
-                return false;
-            }
+            if (user == null)
+                 throw new Exception("User not found.");
+            if (user.ProfileType == ProfileType.ReservationProvider)
+                throw new Exception("User already has a Reservation Provider profile.");
 
             _userHelpers.ChangeUserTypeAsync(4, user);
 
@@ -47,6 +47,8 @@ namespace Connect.Application.Services
             _unitOfWork.Save();
 
             return true;
+
+
         }
 
         public async Task<ReservationBusinessResult> GetReservationProfile()

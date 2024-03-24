@@ -1,5 +1,6 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,16 +16,22 @@ namespace Connect.API.Controllers
         {
             _reservationProviderService = reservationProviderService;
         }
+        [Authorize]
         [HttpPost("add-reservation-business")]
         public async Task<IActionResult> AddReservationBusiness([FromBody] AddReservationBusinessDto reservationDto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var isCreated = await _reservationProviderService.AddResevationBusiness(reservationDto);
-            return isCreated ? Ok("Reservation provider created successfully.") : BadRequest("Failed to create reservation provider.");
+            try
+            {
+                var isCreated = await _reservationProviderService.AddReservationBusiness(reservationDto);
+                return isCreated ? Ok("Reservation provider created successfully.") : BadRequest("Failed to create reservation provider.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Already has Reservation Provider");
+            }
         }
 
         [HttpGet("reservation-profile")]

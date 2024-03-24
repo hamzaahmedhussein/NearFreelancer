@@ -29,22 +29,20 @@ namespace Connect.Application.Services
         public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto)
         {
             if (freelancerDto == null)
-            {
                 return false;
-            }
 
             var user = await _userHelpers.GetCurrentUserAsync();
 
-            if (user == null || user.ProfileType == ProfileType.Freelancer)
-            {
-                return false;
-            }
+            if (user == null)
+                throw new Exception("User not found.");
+
+            if (user.ProfileType == ProfileType.Freelancer)
+                throw new Exception("User already has a freelancer profile.");
 
             _userHelpers.ChangeUserTypeAsync(2, user);
 
             var freelancer = _mapper.Map<Freelancer>(freelancerDto);
             freelancer.Owner = user;
-
 
             user.Freelancer = freelancer;
 
@@ -52,7 +50,6 @@ namespace Connect.Application.Services
 
             return true;
         }
-
 
 
 

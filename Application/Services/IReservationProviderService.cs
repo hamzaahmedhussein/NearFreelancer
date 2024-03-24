@@ -9,7 +9,7 @@ namespace Connect.Application.Services
 {
     public interface IReservationProviderService
     {
-        Task<bool> AddResevationBusiness(AddReservationBusinessDto reservationDto);
+        Task<bool> AddReservationBusiness(AddReservationBusinessDto reservationDto);
         Task<ReservationBusinessResult> GetReservationProfile();
         Task<ReservationBusinessResult> GetReservationProviderById(int id);
 
