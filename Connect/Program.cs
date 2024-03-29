@@ -10,7 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using Connect.Infrastructure.Repsitory_UOW; 
+using Connect.Infrastructure.Repsitory_UOW;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<Customer, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>options.TokenLifespan=TimeSpan.FromHours(10));
 
 
 builder.Services.AddAuthentication(options =>
@@ -48,7 +50,6 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -98,8 +99,10 @@ builder.Services.AddScoped<IReservationProviderService,ReservationProviderServic
 builder.Services.AddScoped<IUserHelpers, UserHelpers>();
 builder.Services.AddScoped<IMailingService, MailingService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mailing"));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>

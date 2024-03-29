@@ -1,7 +1,6 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Connect.API.Controllers

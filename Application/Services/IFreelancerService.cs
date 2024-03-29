@@ -12,5 +12,6 @@ namespace Connect.Application.Services
         Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto);
         Task<FreelancerBusinessResult> GetFreelancerProfile();
         Task<FreelancerBusinessResult> GetFreelancerById(int id);
+        Task<bool> AddOfferedService(AddOfferedServiceDto serviceDto);
     }
 }

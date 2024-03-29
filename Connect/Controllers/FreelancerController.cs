@@ -39,5 +39,16 @@ namespace Connect.API.Controllers
             var result = await _freelancerService.GetFreelancerProfile();
             return result != null ? Ok(result) : NotFound("Freelancer profile not found.");
         }
+
+        [HttpPost("add-offered-service")]
+        public async Task<IActionResult> AddOfferedService([FromBody] AddOfferedServiceDto serviceDto)
+        {
+            var result = await _freelancerService.AddOfferedService(serviceDto);
+            if (result)
+            {
+                return Ok("Offered service added successfully.");
+            }
+            return BadRequest("Failed to add offered service.");
+        }
     }
 }

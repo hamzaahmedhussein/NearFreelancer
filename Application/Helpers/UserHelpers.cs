@@ -53,12 +53,12 @@ namespace Connect.Application.Helpers
         }
         public async Task ChangeUserTypeAsync(int type, Customer user)
         {
-
-            if (type == 4)
-                user.ProfileType |= ProfileType.ReservationProvider;
-            else if (type == 2)
-                user.ProfileType |= ProfileType.Freelancer;
-
+            if (type == 0)
+                await _userManager.AddToRoleAsync(user, "Customer");
+            else if (type == 1)
+                await _userManager.AddToRoleAsync(user, "Freelancer");
+            else  if (type == 2)
+                await _userManager.AddToRoleAsync(user, "ReservationProvider");
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Connect.Core.Entities
         public string? BackgroundImage { get; set; }
         public string? Location { get; set; }
         public Gender? Gender { get; set; }
-        public ProfileType? ProfileType { get; set; }
         public DateTime? DOJ { get; set; }
         public DateTime? DOB { get; set; }
         public List<ServiceRequest> Requests { get; set; }
@@ -29,11 +28,5 @@ namespace Connect.Core.Entities
         Female,
     }
 
-    [Flags]
-    public enum ProfileType
-    {
-        Customer = 1,
-        Freelancer = 2,
-        ReservationProvider = 4
-    }
+  
 }

@@ -13,6 +13,8 @@ namespace Connect.Core.Interfaces
         public IGenericRepository<Customer> Customer { get; }
         public IGenericRepository<ReservationProvider> ReservationBusiness { get; }
         public IGenericRepository<Freelancer> FreelancerBusiness { get;  }
+        public IGenericRepository<OfferedService> OfferedService { get; set; }
+
 
         int Save();
 

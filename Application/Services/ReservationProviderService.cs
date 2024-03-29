@@ -4,6 +4,7 @@ using Connect.Application.Helpers;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
 namespace Connect.Application.Services
@@ -13,15 +14,17 @@ namespace Connect.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUserHelpers _userHelpers;
+        private readonly UserManager<Customer> _userManager;
 
         public ReservationProviderService(IUnitOfWork unitOfWork,
             IConfiguration config, IMapper mapper,
-            IUserHelpers userHelpers
-           )
+            IUserHelpers userHelpers,
+            UserManager<Customer> userManager )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userHelpers = userHelpers;
+            _userManager = userManager;
         }
 
         public async Task<bool> AddReservationBusiness(AddReservationBusinessDto reservationDto)
@@ -35,8 +38,8 @@ namespace Connect.Application.Services
 
             if (user == null)
                  throw new Exception("User not found.");
-            if (user.ProfileType == ProfileType.ReservationProvider)
-                throw new Exception("User already has a Reservation Provider profile.");
+            if (await _userManager.IsInRoleAsync(user, "ReservationProvider"))
+                throw new Exception("User already has a ReservationProvider profile.");
 
             _userHelpers.ChangeUserTypeAsync(4, user);
 

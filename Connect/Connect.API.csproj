@@ -36,4 +36,8 @@
 		<ProjectReference Include="..\Infrastructure\Connect.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwRoot\" />
+	</ItemGroup>
+
 </Project>
