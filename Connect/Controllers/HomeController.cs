@@ -14,11 +14,6 @@ namespace Connect.API.Controllers
         {
             _customerService = customerService;
         }
-        [HttpPost("Home")]
-        public ActionResult Home(HomePageFilterDto filterDto)
-        {
-            var result =  _customerService.GetFilteredProviders(filterDto);
-            return Ok(result);
-        }
+      
     }
 }

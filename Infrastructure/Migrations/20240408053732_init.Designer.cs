@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240328005029_seedingRoles")]
-    partial class seedingRoles
+    [Migration("20240408053732_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,10 +118,6 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BackgroundImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DOJ")
                         .HasColumnType("datetime2");
@@ -266,6 +262,10 @@ namespace Connect.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("profession")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId")
@@ -372,12 +372,18 @@ namespace Connect.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("FreelanceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FreelancerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProviderId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -386,7 +392,7 @@ namespace Connect.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ProviderId");
+                    b.HasIndex("FreelancerId");
 
                     b.ToTable("ServiceRequests");
                 });
@@ -420,21 +426,21 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e2e073c1-e39e-4aa7-957d-ece85b665664",
+                            Id = "d70b88a3-ebf0-49e5-86e4-36646cdb5907",
                             ConcurrencyStamp = "0",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
-                            Id = "6345193c-6b2f-4dd8-84aa-b216eafd7a67",
+                            Id = "6025d525-5abc-4d7f-962a-57e7ecfc63bb",
                             ConcurrencyStamp = "1",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         },
                         new
                         {
-                            Id = "3578afaf-de98-411f-add2-b306a57f482c",
+                            Id = "b821298a-3dee-4e80-8d7a-1caebda595b1",
                             ConcurrencyStamp = "2",
                             Name = "ReservationProvider",
                             NormalizedName = "ReservationProvider"
@@ -618,15 +624,15 @@ namespace Connect.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Connect.Core.Models.Freelancer", "Provider")
-                        .WithMany()
-                        .HasForeignKey("ProviderId")
+                    b.HasOne("Connect.Core.Models.Freelancer", "Freelancer")
+                        .WithMany("Requests")
+                        .HasForeignKey("FreelancerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Provider");
+                    b.Navigation("Freelancer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -703,6 +709,8 @@ namespace Connect.Infrastructure.Migrations
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
                 {
                     b.Navigation("OfferedServicesList");
+
+                    b.Navigation("Requests");
                 });
 #pragma warning restore 612, 618
         }

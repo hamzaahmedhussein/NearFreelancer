@@ -4,6 +4,7 @@ using Connect.Application.Helpers;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,34 +27,36 @@ namespace Connect.Application.Services
             _userHelpers = userHelpers;
             _userManager = userManager;
         }
-        public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto )
-        {
-            if (freelancerDto == null)
-                return false;
 
-            var user = await _userHelpers.GetCurrentUserAsync();
+public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto)
+    {
+        if (freelancerDto == null)
+            return false;
 
-            if (user == null)
-                throw new Exception("User not found.");
+        var user = await _userHelpers.GetCurrentUserAsync();
 
-            if (await _userManager.IsInRoleAsync(user, "Freelancer"))
-                throw new Exception("User already has a freelancer profile.");
+        if (user == null)
+            throw new Exception("User not found.");
 
-            _userHelpers.ChangeUserTypeAsync(2, user);
+        if (await _userManager.IsInRoleAsync(user, "Freelancer"))
+            throw new Exception("User already has a freelancer profile.");
 
-            var freelancer = _mapper.Map<Freelancer>(freelancerDto);
-            freelancer.Owner = user;
+        var result = await _userManager.AddToRoleAsync(user, "Freelancer");
+        if (!result.Succeeded)
+            throw new Exception("Failed to assign Freelancer role to the user.");
 
-            user.Freelancer = freelancer;
+        var freelancer = _mapper.Map<Freelancer>(freelancerDto);
+        freelancer.Owner = user;
 
-            _unitOfWork.Save();
+        user.Freelancer = freelancer;
 
-            return true;
-        }
+        _unitOfWork.Save();
+
+        return true;
+    }
 
 
-
-        public async Task<FreelancerBusinessResult> GetFreelancerProfile()
+    public async Task<FreelancerBusinessResult> GetFreelancerProfile()
         {
 
             var user = await _userHelpers.GetCurrentUserAsync();
@@ -82,26 +85,54 @@ namespace Connect.Application.Services
             if (currentUser == null)
                 return false;
 
-            var offeredService = new OfferedService
-            {
-                Name = serviceDto.Name,
-                Description = serviceDto.Description,
-                Price = serviceDto.Price,
-                Image = serviceDto.Image,
-                BackgroundImage = serviceDto.BackgroundImage,
-                IsAvailable = serviceDto.IsAvailable,
-                DOJ = DateTime.Now
-            };
-
+            var offeredService = _mapper.Map<OfferedService>(serviceDto);           
 
             if (currentUser.Freelancer != null)
             {
                 currentUser.Freelancer.OfferedServicesList.Add(offeredService);
-                _unitOfWork.Save();
+                _unitOfWork.Save(); 
                 return true;
             }
-            return false;
 
+            return false;
+        }
+
+        public async Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto)
+        {
+            var query = await _unitOfWork.FreelancerBusiness.GetAllAsync(); 
+
+            if (!string.IsNullOrWhiteSpace(filterDto.Name))
+            {
+                query = query.Where(e => e.Name.Contains(filterDto.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filterDto.Profession))
+            {
+                query = query.Where(e => e.Profession.Contains(filterDto.Profession));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filterDto.City))
+            {
+                query = query.Where(e => e.City == filterDto.City);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filterDto.Street))
+            {
+                query = query.Where(e => e.Street == filterDto.Street);
+            }
+
+            if (filterDto.Skills != null && filterDto.Skills.Any())
+            {
+                foreach (var skill in filterDto.Skills)
+                {
+                    query = query.Where(e => e.Skills.Contains(skill));
+                }
+            }
+
+            query = query.Where(e => e.Availability == filterDto.Availability);
+
+            return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(query);
         }
     }
 }
+

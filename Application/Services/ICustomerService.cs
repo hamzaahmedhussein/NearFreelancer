@@ -1,4 +1,5 @@
 ﻿using Connect.Application.DTOs;
+using Connect.Core.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Connect.Application.Services
@@ -12,7 +13,9 @@ namespace Connect.Application.Services
         Task<IdentityResult> ChangePassword(ChangePasswordDto changePasswordDto);
         Task<IdentityResult> ResetPassword(ResetPasswordDto resetPasswordDto);
         Task<CurrentProfileResult> GetCurrentProfileAsync();
-        IEnumerable<HomePageFilterDto> GetFilteredProviders(HomePageFilterDto filterDto);
+        Task<IEnumerable<GetCustomerRequestsDto>> GetMyRequests();
+        Task<bool> SendServiceRequist(int Id, SendServiceRequestDto request);
+        // IEnumerable<HomePageFilterDto> GetFilteredProviders(HomePageFilterDto filterDto);
 
 
 

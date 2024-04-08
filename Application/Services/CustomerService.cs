@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using AutoMapper;
-using Connect.Application.Helpers;
 using Connect.Application.Settings;
 using Connect.Application.MailSettings;
+using Connect.Core.Models;
 namespace Connect.Application.Services
 {
     public class CustomerService:ICustomerService
@@ -178,71 +178,106 @@ namespace Connect.Application.Services
 
         }
 
-        public IEnumerable<HomePageFilterDto> GetFilteredProviders(HomePageFilterDto filterDto)
+        //public async Task<IEnumerable<HomePageFilterDto>> GetFilteredProviders(HomePageFilterDto filterDto)
+        //{
+        //    if (filterDto == null)
+        //    {
+        //        return Enumerable.Empty<HomePageFilterDto>();
+        //    }
+        //    else if (filterDto.ProviderType == ProviderType.ReservationProvider)
+        //    {
+        //        var providersQuery = await _unitOfWork.ReservationBusiness.GetAllAsync();
+
+
+        //        if (!string.IsNullOrWhiteSpace(filterDto.Name))
+        //        {
+        //            providersQuery = providersQuery.Where(p => p.Name.Contains(filterDto.Name, StringComparison.OrdinalIgnoreCase));
+        //        }
+
+        //        if (!string.IsNullOrWhiteSpace(filterDto.Location))
+        //        {
+        //            providersQuery = providersQuery.Where(p => p.Location.Contains(filterDto.Location, StringComparison.OrdinalIgnoreCase));
+        //        }
+
+        //        if (filterDto.Capability != null && filterDto.Capability.Any())
+        //        {
+        //            providersQuery = providersQuery.Where(p => p.FeatureList.Any(capability => filterDto.Capability.Contains(capability)));
+        //        }
+
+        //        providersQuery = providersQuery.Where(p => p.AvailableFrom <= filterDto.AvailableTo && p.AvailableTo >= filterDto.AvailableFrom);
+
+        //        var providerDtos = providersQuery.Select(p => new HomePageFilterDto
+        //        {
+        //        }).ToList();
+
+        //        return providerDtos;
+        //    }
+        //    else
+        //    {
+        //        var providersQuery = await _unitOfWork.FreelancerBusiness.GetAllAsync();
+
+
+        //        if (!string.IsNullOrWhiteSpace(filterDto.Name))
+        //        {
+        //            providersQuery = providersQuery.Where(p => p.Name.Contains(filterDto.Name, StringComparison.OrdinalIgnoreCase));
+        //        }
+
+        //        if (!string.IsNullOrWhiteSpace(filterDto.Location))
+        //        {
+        //            providersQuery = providersQuery.Where(p => p.Location.Contains(filterDto.Location, StringComparison.OrdinalIgnoreCase));
+        //        }
+
+        //        if (filterDto.Capability != null && filterDto.Capability.Any())
+        //        {
+        //            providersQuery = providersQuery.Where(p => p.Skills.Any(capability => filterDto.Capability.Contains(capability)));
+        //        }
+
+        //        providersQuery = providersQuery.Where(p => p.AvailableFrom <= filterDto.AvailableTo && p.AvailableTo >= filterDto.AvailableFrom);
+
+        //        var providerDtos = providersQuery.Select(p => new HomePageFilterDto
+        //        {
+        //        }).ToList();
+
+        //        return providerDtos;
+        //    }
+        //}
+
+        public async Task<bool> SendServiceRequist(int Id, SendServiceRequestDto request)
         {
-            if (filterDto == null)
-            {
-                return Enumerable.Empty<HomePageFilterDto>();
-            }
-            else if (filterDto.ProviderType == ProviderType.ReservationProvider)
-            {
-                var providersQuery = _unitOfWork.ReservationBusiness.GetAll();
+           var customer= await _userHelpers.GetCurrentUserAsync();
+            if (customer == null) 
+                return false;
+
+            var freelancer=_unitOfWork.FreelancerBusiness.GetById(Id);
+            if (freelancer == null)
+                return false;
 
 
-                if (!string.IsNullOrWhiteSpace(filterDto.Name))
-                {
-                    providersQuery = providersQuery.Where(p => p.Name.Contains(filterDto.Name, StringComparison.OrdinalIgnoreCase));
-                }
+            var serviceRequist = _mapper.Map<ServiceRequest>(request);
+            serviceRequist.Freelancer = freelancer;
+            serviceRequist.Customer=customer;
 
-                if (!string.IsNullOrWhiteSpace(filterDto.Location))
-                {
-                    providersQuery = providersQuery.Where(p => p.Location.Contains(filterDto.Location, StringComparison.OrdinalIgnoreCase));
-                }
+            return true;
 
-                if (filterDto.Capability != null && filterDto.Capability.Any())
-                {
-                    providersQuery = providersQuery.Where(p => p.FeatureList.Any(capability => filterDto.Capability.Contains(capability)));
-                }
-
-                providersQuery = providersQuery.Where(p => p.AvailableFrom <= filterDto.AvailableTo && p.AvailableTo >= filterDto.AvailableFrom);
-
-                var providerDtos = providersQuery.Select(p => new HomePageFilterDto
-                {
-                }).ToList();
-
-                return providerDtos;
-            }
-            else
-            {
-                var providersQuery = _unitOfWork.FreelancerBusiness.GetAll();
-
-
-                if (!string.IsNullOrWhiteSpace(filterDto.Name))
-                {
-                    providersQuery = providersQuery.Where(p => p.Name.Contains(filterDto.Name, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrWhiteSpace(filterDto.Location))
-                {
-                    providersQuery = providersQuery.Where(p => p.Location.Contains(filterDto.Location, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (filterDto.Capability != null && filterDto.Capability.Any())
-                {
-                    providersQuery = providersQuery.Where(p => p.Skills.Any(capability => filterDto.Capability.Contains(capability)));
-                }
-
-                providersQuery = providersQuery.Where(p => p.AvailableFrom <= filterDto.AvailableTo && p.AvailableTo >= filterDto.AvailableFrom);
-
-                var providerDtos = providersQuery.Select(p => new HomePageFilterDto
-                {
-                }).ToList();
-
-                return providerDtos;
-            }
         }
 
-       
+        public async Task<IEnumerable<GetCustomerRequestsDto>> GetMyRequests()
+        {
+            var customer = await _userHelpers.GetCurrentUserAsync();
+            if (customer == null)
+                throw new Exception("User not found");
+
+            var requests = await _unitOfWork.ServiceRequest.GetAllAsync();
+
+            if (requests == null)
+                throw new Exception("No requests");
+
+
+            return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
+        }
+
+
+
     }
 }
     

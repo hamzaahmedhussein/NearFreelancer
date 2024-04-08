@@ -1,9 +1,7 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 namespace Connect.API.Controllers
 {
     [Route("api/[controller]")]
@@ -40,6 +38,7 @@ namespace Connect.API.Controllers
             return result != null ? Ok(result) : NotFound("Freelancer profile not found.");
         }
 
+        [Authorize]       
         [HttpPost("add-offered-service")]
         public async Task<IActionResult> AddOfferedService([FromBody] AddOfferedServiceDto serviceDto)
         {
@@ -49,6 +48,21 @@ namespace Connect.API.Controllers
                 return Ok("Offered service added successfully.");
             }
             return BadRequest("Failed to add offered service.");
+        }
+
+
+        [HttpPost("filter-freelancers")]
+        public async Task<IActionResult> FilterFreelancers([FromBody] FilterFreelancersDto filterDto)
+        {
+            try
+            {
+                var result = await _freelancerService.FilterFreelancers(filterDto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

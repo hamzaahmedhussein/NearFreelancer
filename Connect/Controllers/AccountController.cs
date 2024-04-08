@@ -187,8 +187,35 @@ namespace Connect.API.Controllers
         }
 
 
+        [HttpPost("send-service-request")]
+        public async Task<IActionResult> SendServiceRequest(int freelancerId, [FromBody] SendServiceRequestDto requestDto)
+        {
+            var result = await _customerService.SendServiceRequist(freelancerId, requestDto);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest("Failed to send service request.");
+        }
+
+        [HttpGet("get-requests")]
+        public async Task<IActionResult> GetMyRequests()
+        {
+            try
+            {
+                var requests = await _customerService.GetMyRequests();
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 
-
 }
+
+
+
 

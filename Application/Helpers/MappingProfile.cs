@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿    using AutoMapper;
 using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Models;
@@ -23,6 +23,8 @@ namespace Connect.Application.Helpers
             .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
             CreateMap<Freelancer, FreelancerBusinessResult>();
+
+            CreateMap<Freelancer, FreelancerFilterResultDto>();
             
              CreateMap<AddReservationBusinessDto, ReservationProvider>()
             .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
@@ -32,7 +34,21 @@ namespace Connect.Application.Helpers
             CreateMap<Customer, CurrentProfileResult>();
 
             CreateMap<AddOfferedServiceDto, OfferedService>()
-          .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
+          .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()))
+           .ForMember(dest => dest.Image, opt => opt.Ignore());
+
+            CreateMap<SendServiceRequestDto, ServiceRequest>()
+              .ForMember(dest => dest.DateTime, opt => opt.MapFrom(_ => DateTime.Now))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => RequisStatus.Pending));
+
+            CreateMap<ServiceRequest, GetCustomerRequestsDto>()
+           .ForMember(dest => dest.RequestName, opt => opt.MapFrom(src => src.Name))
+           .ForMember(dest => dest.FreelancerName, opt => opt.MapFrom(src => src.Freelancer.Name)) 
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString())); 
+
+
+
+
 
 
 

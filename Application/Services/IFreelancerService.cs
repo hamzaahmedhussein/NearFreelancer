@@ -13,5 +13,6 @@ namespace Connect.Application.Services
         Task<FreelancerBusinessResult> GetFreelancerProfile();
         Task<FreelancerBusinessResult> GetFreelancerById(int id);
         Task<bool> AddOfferedService(AddOfferedServiceDto serviceDto);
+        Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto);
     }
 }

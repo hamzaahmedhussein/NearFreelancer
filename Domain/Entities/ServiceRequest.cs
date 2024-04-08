@@ -9,8 +9,9 @@ namespace Connect.Core.Models
         public string Description { get; set; }
         public DateTime DateTime { get; set; }
         public RequisStatus Status { get; set; }
-        public int ProviderId { get; set; }
-        public Freelancer Provider { get; set; }
+        public decimal Price { get; set; }
+        public int FreelanceId { get; set; }
+        public Freelancer Freelancer { get; set; }
         public string CustomerId { get; set; }
         public Customer Customer { get; set; }
        
@@ -19,9 +20,11 @@ namespace Connect.Core.Models
 
     public enum RequisStatus
     {
+        Pending,
         Accepted,
         Refused,
         Completed
+        
 
     }
 }

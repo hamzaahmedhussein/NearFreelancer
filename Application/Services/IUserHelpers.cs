@@ -7,13 +7,12 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Connect.Application.Helpers
+namespace Connect.Application.Services
 {
-    public interface IUserHelpers 
+    public interface IUserHelpers
     {
         Task<LoginResult> GenerateJwtTokenAsync(IEnumerable<Claim> claims);
         Task<Customer> GetCurrentUserAsync();
-        public  Task ChangeUserTypeAsync(int type, Customer user);
 
     }
 }

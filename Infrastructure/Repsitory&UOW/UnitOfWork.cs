@@ -17,6 +17,7 @@ namespace Connect.Infrastructure.Repsitory_UOW
         public IGenericRepository<ReservationProvider> ReservationBusiness { get; set; }
         public IGenericRepository<Freelancer> FreelancerBusiness { get; set; }
         public IGenericRepository<OfferedService> OfferedService { get; set; }
+        public IGenericRepository<ServiceRequest> ServiceRequest { get; set; }
 
 
         public UnitOfWork(ApplicationDbContext context)

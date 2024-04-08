@@ -5,7 +5,6 @@ using Connect.Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Connect.Application.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -54,42 +53,44 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    // Swagger documentation for v1
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo", Version = "v1" });
-});
-builder.Services.AddSwaggerGen(swagger =>
-{
-    //This?is?to?generate?the?Default?UI?of?Swagger?Documentation????
-    swagger.SwaggerDoc("v2", new OpenApiInfo
+
+    // Swagger documentation for v2 with file upload support
+    c.SwaggerDoc("v2", new OpenApiInfo
     {
-        Version = "v1",
-        Title = "ASP.NET?5?Web?API",
-        Description = " ITI Projrcy"
+        Version = "v2",
+        Title = "ASP.NET Core Web API",
+        Description = "ITI Project"
     });
 
-    //?To?Enable?authorization?using?Swagger?(JWT)????
-    swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    // Configure support for file upload using IFormFile
+    c.MapType<IFormFile>(() => new OpenApiSchema { Type = "file", Format = "binary" });
+
+    // Configure JWT authentication in Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter?'Bearer'?[space]?and?then?your?valid?token?in?the?text?input?below.\r\n\r\nExample:?\"Bearer?eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+        Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
     });
-    swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
                 {
-                    {
-                    new OpenApiSecurityScheme
-                    {
-                    Reference = new OpenApiReference
-                    {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
-                    }
-                    },
-                    new string[] {}
-                    }
-                });
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
