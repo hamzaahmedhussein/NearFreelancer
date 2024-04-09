@@ -17,9 +17,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         context.Set<T>().AddRange(entities);
     }
-    public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
+    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
+
     {
-        return context.Set<T>().Where(expression);
+        return  context.Set<T>().Where(expression);
     }
 
     public async Task<T> FindFirstAsync(Expression<Func<T, bool>> expression)

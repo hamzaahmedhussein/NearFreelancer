@@ -13,6 +13,9 @@ namespace Connect.API.Controllers
         {  
             _freelancerService = freelancerService;
         }
+
+
+
         [Authorize]
         [HttpPost("add-freelancer-business")]
         public async Task<IActionResult> AddFreelancerBusiness( AddFreelancerBusinessDto freelancerDto)
@@ -37,6 +40,23 @@ namespace Connect.API.Controllers
             var result = await _freelancerService.GetFreelancerProfile();
             return result != null ? Ok(result) : NotFound("Freelancer profile not found.");
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetFreelancerById(int id)
+        {
+            try
+            {
+                var result = await _freelancerService.GetFreelancerById(id);
+                if (result != null)
+                    return Ok(result);
+                else
+                    return NotFound(new { message = "Freelancer not found." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+    
 
         [Authorize]       
         [HttpPost("add-offered-service")]
@@ -64,6 +84,55 @@ namespace Connect.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
+        [HttpGet("get-freelancer-requests")]
+        public async Task<IActionResult> GetMyRequests()
+        {
+            try
+            {
+                var requests = await _freelancerService.GetFreelancerRequests();
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("accept/{requestId}")]
+        public async Task<IActionResult> AcceptRequest(int requestId)
+        {
+            try
+            {
+                var result = await _freelancerService.AcceptServiceRequest(requestId);
+                if (result)
+                    return Ok(new { message = "Request accepted successfully." });
+                else
+                    return BadRequest(new { message = "Failed to accept request." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("refuse/{requestId}")]
+        public async Task<IActionResult> RefuseRequest(int requestId)
+        {
+            try
+            {
+                var result = await _freelancerService.RefuseServiceRequest(requestId);
+                if (result)
+                    return Ok(new { message = "Request refused successfully." });
+                else
+                    return BadRequest(new { message = "Failed to refuse request." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
+
 }
+

@@ -15,5 +15,8 @@ namespace Connect.Application.Services
         Task<FreelancerBusinessResult> GetFreelancerById(int id);
         Task<bool> AddOfferedService(AddOfferedServiceDto serviceDto);
         Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto);
+        Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests();
+        Task<bool> AcceptServiceRequest(int requestId);
+        Task<bool> RefuseServiceRequest(int requestId); 
     }
 }

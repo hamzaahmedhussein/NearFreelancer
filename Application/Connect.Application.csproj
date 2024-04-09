@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Connect.Core.csproj" />
+    <ProjectReference Include="..\Infrastructure\Connect.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -69,7 +69,7 @@ namespace Connect.Application.Services
 
 
 
-        public async Task<string> AddFreelancerProfileImage(IFormFile? file)
+        public async Task<string> AddCustomerImage(IFormFile? file)
         {
             if (file == null || file.Length == 0)
             {
@@ -98,7 +98,7 @@ namespace Connect.Application.Services
             return $"/Images/{userName}/Profile/{fileName}";
         }
 
-        public async Task<string> AddFreelancerServiceImage(IFormFile file)
+        public async Task<string> AddFreelancerImage(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {

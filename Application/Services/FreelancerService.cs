@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
 using Connect.Application.DTOs;
-using Connect.Application.Helpers;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Connect.Application.Services
@@ -18,7 +14,7 @@ namespace Connect.Application.Services
         private readonly IMapper _mapper;
         private readonly IUserHelpers _userHelpers;
         private readonly UserManager<Customer> _userManager;
-        
+
         public FreelancerService(IUnitOfWork unitOfWork,
             IConfiguration config, IMapper mapper,
             IUserHelpers userHelpers, UserManager<Customer> userManager
@@ -28,38 +24,38 @@ namespace Connect.Application.Services
             _mapper = mapper;
             _userHelpers = userHelpers;
             _userManager = userManager;
-            
+
         }
 
-public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto)
-    {
-        if (freelancerDto == null)
-            return false;
+        public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto)
+        {
+            if (freelancerDto == null)
+                return false;
 
-        var user = await _userHelpers.GetCurrentUserAsync();
+            var user = await _userHelpers.GetCurrentUserAsync();
 
-        if (user == null)
-            throw new Exception("User not found.");
+            if (user == null)
+                throw new Exception("User not found.");
 
-        if (await _userManager.IsInRoleAsync(user, "Freelancer"))
-            throw new Exception("User already has a freelancer profile.");
+            if (await _userManager.IsInRoleAsync(user, "Freelancer"))
+                throw new Exception("User already has a freelancer profile.");
 
-        var result = await _userManager.AddToRoleAsync(user, "Freelancer");
-        if (!result.Succeeded)
-            throw new Exception("Failed to assign Freelancer role to the user.");
+            var result = await _userManager.AddToRoleAsync(user, "Freelancer");
+            if (!result.Succeeded)
+                throw new Exception("Failed to assign Freelancer role to the user.");
 
-        var freelancer = _mapper.Map<Freelancer>(freelancerDto);
-        freelancer.Owner = user;
+            var freelancer = _mapper.Map<Freelancer>(freelancerDto);
+            freelancer.Owner = user;
 
-        user.Freelancer = freelancer;
+            user.Freelancer = freelancer;
 
-        _unitOfWork.Save();
+            _unitOfWork.Save();
 
-        return true;
-    }
+            return true;
+        }
 
-    
-    public async Task<FreelancerBusinessResult> GetFreelancerProfile()
+
+        public async Task<FreelancerBusinessResult> GetFreelancerProfile()
         {
 
             var user = await _userHelpers.GetCurrentUserAsync();
@@ -88,12 +84,12 @@ public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelance
             if (currentUser == null)
                 return false;
 
-            var offeredService = _mapper.Map<OfferedService>(serviceDto);           
-            offeredService.Image=await _userHelpers.AddFreelancerServiceImage(serviceDto.Image);
+            var offeredService = _mapper.Map<OfferedService>(serviceDto);
+            offeredService.Image = await _userHelpers.AddFreelancerImage(serviceDto.Image);
             if (currentUser.Freelancer != null)
             {
                 currentUser.Freelancer.OfferedServicesList.Add(offeredService);
-                _unitOfWork.Save(); 
+                _unitOfWork.Save();
                 return true;
             }
 
@@ -102,7 +98,7 @@ public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelance
 
         public async Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto)
         {
-            var query = await _unitOfWork.FreelancerBusiness.GetAllAsync(); 
+            var query = await _unitOfWork.FreelancerBusiness.GetAllAsync();
 
             if (!string.IsNullOrWhiteSpace(filterDto.Name))
             {
@@ -136,6 +132,55 @@ public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelance
 
             return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(query);
         }
+
+        public async Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests()
+        {
+            var customer = await _userHelpers.GetCurrentUserAsync();
+            if (customer == null)
+                throw new Exception("User not found");
+
+            if (await _userManager.IsInRoleAsync(customer, "Freelancer") == false)
+                throw new Exception("User not freelancer");
+
+
+
+            var requests = await _unitOfWork.ServiceRequest.FindAsync(c => c.FreelanceId == customer.Freelancer.Id);
+
+            if (requests == null)
+                throw new Exception("No requests");
+
+
+            return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
+        }
+
+        public async Task<bool> AcceptServiceRequest(int requestId)
+        {
+            var serviceRequest = _unitOfWork.ServiceRequest.GetById(requestId);
+            if (serviceRequest == null)
+                throw new Exception("Service request not found.");
+
+            if (serviceRequest.Status != RequisStatus.Pending)
+                throw new Exception("Service request is not in a pending state.");
+
+            serviceRequest.Status = RequisStatus.Accepted;
+            _unitOfWork.Save();
+            return true;
+        }
+
+        public async Task<bool> RefuseServiceRequest(int requestId)
+        {
+            var serviceRequest = _unitOfWork.ServiceRequest.GetById(requestId);
+            if (serviceRequest == null)
+                throw new Exception("Service request not found.");
+
+            if (serviceRequest.Status != RequisStatus.Pending)
+                throw new Exception("Service request is not in a pending state.");
+
+            serviceRequest.Status = RequisStatus.Refused;
+            _unitOfWork.Save();
+            return true;
+        }
+
     }
 }
 

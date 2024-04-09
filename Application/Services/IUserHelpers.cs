@@ -14,7 +14,7 @@ namespace Connect.Application.Services
     {
         Task<LoginResult> GenerateJwtTokenAsync(IEnumerable<Claim> claims);
         Task<Customer> GetCurrentUserAsync();
-        Task<string> AddFreelancerServiceImage(IFormFile file);
-        Task<string> AddFreelancerProfileImage(IFormFile? file);
+        Task<string> AddCustomerImage(IFormFile file);
+        Task<string> AddFreelancerImage(IFormFile? file);
     }
 }
