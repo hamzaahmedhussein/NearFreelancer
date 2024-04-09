@@ -4,6 +4,7 @@ using Connect.Application.Helpers;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +18,17 @@ namespace Connect.Application.Services
         private readonly IMapper _mapper;
         private readonly IUserHelpers _userHelpers;
         private readonly UserManager<Customer> _userManager;
-
+        
         public FreelancerService(IUnitOfWork unitOfWork,
             IConfiguration config, IMapper mapper,
-            IUserHelpers userHelpers, UserManager<Customer> userManager)
+            IUserHelpers userHelpers, UserManager<Customer> userManager
+            )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userHelpers = userHelpers;
             _userManager = userManager;
+            
         }
 
 public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto)
@@ -55,7 +58,7 @@ public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelance
         return true;
     }
 
-
+    
     public async Task<FreelancerBusinessResult> GetFreelancerProfile()
         {
 
@@ -86,7 +89,7 @@ public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelance
                 return false;
 
             var offeredService = _mapper.Map<OfferedService>(serviceDto);           
-
+            offeredService.Image=await _userHelpers.AddFreelancerServiceImage(serviceDto.Image);
             if (currentUser.Freelancer != null)
             {
                 currentUser.Freelancer.OfferedServicesList.Add(offeredService);

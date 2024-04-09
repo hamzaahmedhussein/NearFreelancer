@@ -1,5 +1,6 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Core.Entities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -12,16 +13,19 @@ namespace Connect.Application.Services
 {
     public class UserHelpers : IUserHelpers
     {
+        IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _config;
         private readonly UserManager<Customer> _userManager;
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public UserHelpers(IConfiguration config, UserManager<Customer> userManager, IHttpContextAccessor contextAccessor)
+        public UserHelpers(IConfiguration config, UserManager<Customer> userManager, IHttpContextAccessor contextAccessor
+            , IWebHostEnvironment webHostEnvironment)
         {
 
             _config = config;
             _userManager = userManager;
             _contextAccessor = contextAccessor;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<LoginResult> GenerateJwtTokenAsync(IEnumerable<Claim> claims)
         {
@@ -52,6 +56,76 @@ namespace Connect.Application.Services
             ClaimsPrincipal currentUser = _contextAccessor.HttpContext.User;
             return await _userManager.GetUserAsync(currentUser);
         }
-       
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<string> AddFreelancerProfileImage(IFormFile? file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                throw new ArgumentException("File is null or empty.", nameof(file));
+            }
+
+            string rootPath = _webHostEnvironment.WebRootPath;
+            var user = await GetCurrentUserAsync();
+            string userName = user.UserName;
+            string userFolderPath = Path.Combine(rootPath, "Images", userName);
+            string profileFolderPath = Path.Combine(userFolderPath, "Profile");
+
+            if (!Directory.Exists(profileFolderPath))
+            {
+                Directory.CreateDirectory(profileFolderPath);
+            }
+
+            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            string filePath = Path.Combine(profileFolderPath, fileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return $"/Images/{userName}/Profile/{fileName}";
+        }
+
+        public async Task<string> AddFreelancerServiceImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                throw new ArgumentException("File is null or empty.", nameof(file));
+            }
+
+            string rootPath = _webHostEnvironment.WebRootPath;
+            var user = await GetCurrentUserAsync();
+            string userName = user.UserName;
+            string userFolderPath = Path.Combine(rootPath, "Images", userName);
+            string FrelanceFolderPath = Path.Combine(userFolderPath, "Freelancer");
+
+            if (!Directory.Exists(FrelanceFolderPath))
+            {
+                Directory.CreateDirectory(FrelanceFolderPath);
+            }
+
+            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            string filePath = Path.Combine(FrelanceFolderPath, fileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return $"/Images/{userName}/Freelancer/{fileName}";
+        }
+
     }
 }

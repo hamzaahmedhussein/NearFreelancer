@@ -33,6 +33,9 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<string>("BackgroundImage")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -54,9 +57,6 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -86,6 +86,9 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -169,6 +172,9 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<string>("BackgroundImage")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DOJ")
                         .HasColumnType("datetime2");
 
@@ -185,10 +191,6 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -199,6 +201,9 @@ namespace Connect.Infrastructure.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -217,13 +222,13 @@ namespace Connect.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AvailableFrom")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("AvailableTo")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("Availability")
+                        .HasColumnType("bit");
 
                     b.Property<string>("BackgroundImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DOJ")
@@ -239,10 +244,6 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -255,12 +256,15 @@ namespace Connect.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Profession")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Skills")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("profession")
-                        .IsRequired()
+                    b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -423,21 +427,21 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d70b88a3-ebf0-49e5-86e4-36646cdb5907",
+                            Id = "96d0e9b3-fc1d-447e-93e5-7dae40aff685",
                             ConcurrencyStamp = "0",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
-                            Id = "6025d525-5abc-4d7f-962a-57e7ecfc63bb",
+                            Id = "67ef1d23-556a-47ae-baee-37f950f40e76",
                             ConcurrencyStamp = "1",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         },
                         new
                         {
-                            Id = "b821298a-3dee-4e80-8d7a-1caebda595b1",
+                            Id = "85e10ccc-fe0e-4055-b830-6248dd040598",
                             ConcurrencyStamp = "2",
                             Name = "ReservationProvider",
                             NormalizedName = "ReservationProvider"

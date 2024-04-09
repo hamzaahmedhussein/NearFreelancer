@@ -40,7 +40,7 @@ namespace Connect.API.Controllers
 
         [Authorize]       
         [HttpPost("add-offered-service")]
-        public async Task<IActionResult> AddOfferedService([FromBody] AddOfferedServiceDto serviceDto)
+        public async Task<IActionResult> AddOfferedService([FromBody] AddOfferedServiceDto serviceDto, IFormFile? file)
         {
             var result = await _freelancerService.AddOfferedService(serviceDto);
             if (result)
@@ -64,5 +64,6 @@ namespace Connect.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
     }
 }
