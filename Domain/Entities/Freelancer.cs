@@ -22,10 +22,10 @@ namespace Connect.Core.Models
         public string? BackgroundImage { get; set; }
         public string? City { get; set; }
         public string? Street { get; set; }
-        public ICollection<Message> SentMessages { get; set; }
-        public ICollection<Message> ReceivedMessages { get; set; }
-        public ICollection<OfferedService> OfferedServicesList { get; set; }
-        public ICollection<ServiceRequest> Requests { get; set; }
+        public ICollection<Message>? SentMessages { get; set; }
+        public ICollection<Message>? ReceivedMessages { get; set; }
+        public ICollection<OfferedService>? OfferedServicesList { get; set; }
+        public ICollection<ServiceRequest>? Requests { get; set; }
         public DateTime DOJ { get; set; }
         public ICollection<string> Skills { get; set; }
         public bool Availability { get; set; }

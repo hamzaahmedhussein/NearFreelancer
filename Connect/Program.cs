@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Connect.Infrastructure.Repsitory_UOW;
 using Microsoft.AspNetCore.Mvc.Routing;
-
+using Microsoft.AspNetCore.Http.Features;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,7 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
     // Swagger documentation for v1
@@ -63,7 +65,6 @@ builder.Services.AddSwaggerGen(c =>
         Title = "ASP.NET Core Web API",
         Description = "ITI Project"
     });
-
     // Configure support for file upload using IFormFile
     c.MapType<IFormFile>(() => new OpenApiSchema { Type = "file", Format = "binary" });
 
@@ -115,6 +116,14 @@ builder.Services.AddCors(options =>
               
     });
 });
+
+//builder.Services.Configure<FormOptions>(o =>
+//{
+//    o.ValueLengthLimit = int.MaxValue;
+//    o.MultipartBodyLengthLimit = int.MaxValue;
+//    o.MemoryBufferThreshold = int.MaxValue;
+//});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -131,4 +140,3 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseCors("CorsPolicy");
 app.Run();
-

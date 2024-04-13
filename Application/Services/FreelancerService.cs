@@ -40,13 +40,13 @@ namespace Connect.Application.Services
             if (await _userManager.IsInRoleAsync(user, "Freelancer"))
                 throw new InvalidOperationException("User already has a freelancer profile.");
 
-            var result = await _userManager.AddToRoleAsync(user, "Freelancer");
-            if (!result.Succeeded)
-                throw new InvalidOperationException("Failed to assign Freelancer role to the user.");
 
             var freelancer = _mapper.Map<Freelancer>(freelancerDto);
             freelancer.Owner = user;
             _unitOfWork.FreelancerBusiness.Add(freelancer);
+            var result = await _userManager.AddToRoleAsync(user, "Freelancer");
+            if (!result.Succeeded)
+                throw new InvalidOperationException("Failed to assign Freelancer role to the user.");
             _unitOfWork.Save();
 
             return true;
