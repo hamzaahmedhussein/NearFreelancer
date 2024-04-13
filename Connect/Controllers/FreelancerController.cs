@@ -30,7 +30,7 @@ namespace Connect.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Already has Freelancer");
+                return BadRequest(ex.Message);
             }
         }
 

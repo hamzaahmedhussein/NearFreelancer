@@ -15,8 +15,10 @@ namespace Connect.Core.Entities
         public Gender? Gender { get; set; }
         public DateTime? DOJ { get; set; }
         public DateTime? DOB { get; set; }
-        public List<ServiceRequest> Requests { get; set; }
-        public List<ReservationAppointment> Reservations { get; set; }
+        public ICollection<Message> SentMessages { get; set; }
+        public ICollection<Message> ReceivedMessages { get; set; }
+        public ICollection<ServiceRequest> Requests { get; set; }
+        public ICollection<ReservationAppointment> Reservations { get; set; }
 
         public Freelancer Freelancer { get; set; }
 

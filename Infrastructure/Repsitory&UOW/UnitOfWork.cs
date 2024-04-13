@@ -24,9 +24,14 @@ namespace Connect.Infrastructure.Repsitory_UOW
         {
             _context = context;
             Customer = new GenericRepository<Customer>(_context);
+            ReservationBusiness = new GenericRepository<ReservationProvider>(_context);
+            FreelancerBusiness = new GenericRepository<Freelancer>(_context);
+            OfferedService = new GenericRepository<OfferedService>(_context);
+            ServiceRequest = new GenericRepository<ServiceRequest>(_context);
         }
 
-       
+
+
 
         public int Save()
         {

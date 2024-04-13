@@ -4,7 +4,7 @@ namespace Connect.Core.Entities;
 public class ReservationProvider
 {
 
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public String PhoneNumber { get; set; }

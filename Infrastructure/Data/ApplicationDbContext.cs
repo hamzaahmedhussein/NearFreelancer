@@ -17,9 +17,11 @@ namespace Infrastructure.Data
         public DbSet<OfferedService> OfferedServices { get; set; }
         public DbSet<ReservationProvider> ReservationProviders { get; set; } 
         public DbSet<ReservationAppointment> Reservations { get; set; }
-        public DbSet<Freelancer> ServiceProviders { get; set; }
+        public DbSet<Freelancer> Freelancers { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; } 
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<Message> Messages { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

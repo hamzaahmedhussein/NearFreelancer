@@ -35,24 +35,23 @@ namespace Connect.Application.Services
             var user = await _userHelpers.GetCurrentUserAsync();
 
             if (user == null)
-                throw new Exception("User not found.");
+                throw new InvalidOperationException("User not found.");
 
             if (await _userManager.IsInRoleAsync(user, "Freelancer"))
-                throw new Exception("User already has a freelancer profile.");
+                throw new InvalidOperationException("User already has a freelancer profile.");
 
             var result = await _userManager.AddToRoleAsync(user, "Freelancer");
             if (!result.Succeeded)
-                throw new Exception("Failed to assign Freelancer role to the user.");
+                throw new InvalidOperationException("Failed to assign Freelancer role to the user.");
 
             var freelancer = _mapper.Map<Freelancer>(freelancerDto);
             freelancer.Owner = user;
-
-            user.Freelancer = freelancer;
-
+            _unitOfWork.FreelancerBusiness.Add(freelancer);
             _unitOfWork.Save();
 
             return true;
         }
+
 
 
         public async Task<FreelancerBusinessResult> GetFreelancerProfile()

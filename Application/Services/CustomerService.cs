@@ -61,7 +61,7 @@ namespace Connect.Application.Services
 
             var token= await _userManager.GenerateEmailConfirmationTokenAsync(customer);
             var confirmationLink = $"{_contextAccessor.HttpContext.Request.Scheme}://{_contextAccessor.HttpContext.Request.Host}/api/Account/confirm-email?email={Uri.EscapeDataString(customer.Email)}&token={Uri.EscapeDataString(token)}";
-            var message = new Message(new string[] { customer.Email },"Confirmation email link", confirmationLink);
+            var message = new MailMessage(new string[] { customer.Email },"Confirmation email link", confirmationLink);
             _mailingService.SendMail(message);
             return result;  
         }
@@ -88,7 +88,7 @@ namespace Connect.Application.Services
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(customer);
             var resetLink = $"{_contextAccessor.HttpContext.Request.Scheme}://{_contextAccessor.HttpContext.Request.Host}/api/Account/reset-password?email={Uri.EscapeDataString(customer.Email)}&token={Uri.EscapeDataString(token)}";
-            var message = new Message(new string[] { customer.Email }, "reset email link", resetLink);
+            var message = new MailMessage(new string[] { customer.Email }, "reset email link", resetLink);
             _mailingService.SendMail(message);
             return true;
         }

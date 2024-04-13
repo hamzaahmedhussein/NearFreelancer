@@ -16,5 +16,7 @@ namespace Connect.Application.Services
         Task<Customer> GetCurrentUserAsync();
         Task<string> AddCustomerImage(IFormFile file);
         Task<string> AddFreelancerImage(IFormFile? file);
+        Task<Message> SendMessage(string content, string recipientId);
+        Task<List<Message>> GetConversation(string userId, string recipientId);
     }
 }

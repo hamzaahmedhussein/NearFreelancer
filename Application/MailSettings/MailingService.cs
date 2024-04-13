@@ -14,13 +14,13 @@ namespace Connect.Application.Settings
             _mailSettings = mailSettings.Value;
         }
 
-        public void SendMail(Message message)
+        public void SendMail(MailMessage message)
         {
             var emailMessage = CreateEmailMessage(message);
             Send(emailMessage);
         }
 
-        private MimeMessage CreateEmailMessage(Message message)
+        private MimeMessage CreateEmailMessage(MailMessage message)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("email", _mailSettings.From));

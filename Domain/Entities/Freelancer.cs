@@ -10,7 +10,7 @@ namespace Connect.Core.Models
 {
     public class Freelancer
     {
-        public int Id { get; set; }
+        public string Id { get; set; }=Guid.NewGuid().ToString();
         public string Name { get; set; } 
         public string PhoneNumber { get; set; }
         public string Profession { get; set; }
@@ -22,10 +22,12 @@ namespace Connect.Core.Models
         public string? BackgroundImage { get; set; }
         public string? City { get; set; }
         public string? Street { get; set; }
-        public List<OfferedService> OfferedServicesList { get; set; }
-        public List<ServiceRequest> Requests { get; set; }
+        public ICollection<Message> SentMessages { get; set; }
+        public ICollection<Message> ReceivedMessages { get; set; }
+        public ICollection<OfferedService> OfferedServicesList { get; set; }
+        public ICollection<ServiceRequest> Requests { get; set; }
         public DateTime DOJ { get; set; }
-        public List<string> Skills { get; set; }
+        public ICollection<string> Skills { get; set; }
         public bool Availability { get; set; }
 
     }

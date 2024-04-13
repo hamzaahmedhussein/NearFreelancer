@@ -5,7 +5,7 @@ namespace Connect.Application.Settings
 {
     public interface IMailingService
     {   
-        void SendMail(Message message);
+        void SendMail(MailMessage message);
 
     }
 }

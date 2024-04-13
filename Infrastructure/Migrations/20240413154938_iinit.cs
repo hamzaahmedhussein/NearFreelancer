@@ -7,7 +7,7 @@
 namespace Connect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class update : Migration
+    public partial class iinit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,26 +15,30 @@ namespace Connect.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "35feef3b-bfa2-41ae-9b80-0872ef76c5be");
+                keyValue: "14c717f9-3c3c-4211-98b7-eb3351d79c93");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "43523ced-8c4f-47dc-9e18-b05fdad6b74e");
+                keyValue: "3d220b1a-b894-46fc-b547-10af01e359ac");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "9949757f-2ef3-4867-a44a-709fd7dc2c6a");
+                keyValue: "89c62224-5e07-4dc4-abb1-1c3f408af649");
+
+            migrationBuilder.DropColumn(
+                name: "IsCustomerSent",
+                table: "Messages");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "67ef1d23-556a-47ae-baee-37f950f40e76", "1", "Freelancer", "Freelancer" },
-                    { "85e10ccc-fe0e-4055-b830-6248dd040598", "2", "ReservationProvider", "ReservationProvider" },
-                    { "96d0e9b3-fc1d-447e-93e5-7dae40aff685", "0", "Customer", "Customer" }
+                    { "77d7312d-3e0b-4721-a3f0-36b93369ed63", "2", "ReservationProvider", "ReservationProvider" },
+                    { "b1c96699-fb57-410a-851c-58ce17268c2f", "0", "Customer", "Customer" },
+                    { "f9cdb562-f49e-44c6-83ba-0dd87a3a10e5", "1", "Freelancer", "Freelancer" }
                 });
         }
 
@@ -44,26 +48,33 @@ namespace Connect.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "67ef1d23-556a-47ae-baee-37f950f40e76");
+                keyValue: "77d7312d-3e0b-4721-a3f0-36b93369ed63");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "85e10ccc-fe0e-4055-b830-6248dd040598");
+                keyValue: "b1c96699-fb57-410a-851c-58ce17268c2f");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "96d0e9b3-fc1d-447e-93e5-7dae40aff685");
+                keyValue: "f9cdb562-f49e-44c6-83ba-0dd87a3a10e5");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsCustomerSent",
+                table: "Messages",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "35feef3b-bfa2-41ae-9b80-0872ef76c5be", "0", "Customer", "Customer" },
-                    { "43523ced-8c4f-47dc-9e18-b05fdad6b74e", "1", "Freelancer", "Freelancer" },
-                    { "9949757f-2ef3-4867-a44a-709fd7dc2c6a", "2", "ReservationProvider", "ReservationProvider" }
+                    { "14c717f9-3c3c-4211-98b7-eb3351d79c93", "2", "ReservationProvider", "ReservationProvider" },
+                    { "3d220b1a-b894-46fc-b547-10af01e359ac", "0", "Customer", "Customer" },
+                    { "89c62224-5e07-4dc4-abb1-1c3f408af649", "1", "Freelancer", "Freelancer" }
                 });
         }
     }

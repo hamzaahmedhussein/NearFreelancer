@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240409080058_update")]
-    partial class update
+    [Migration("20240413154938_iinit")]
+    partial class iinit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,13 +114,55 @@ namespace Connect.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Connect.Core.Entities.Message", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CustomerId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FreelancerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FreelancerId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("CustomerId1");
+
+                    b.HasIndex("FreelancerId");
+
+                    b.HasIndex("FreelancerId1");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Connect.Core.Entities.OfferedService", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DOJ")
                         .HasColumnType("datetime2");
@@ -129,8 +171,8 @@ namespace Connect.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FreelancerId")
-                        .HasColumnType("int");
+                    b.Property<string>("FreelancerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Image")
                         .IsRequired()
@@ -146,8 +188,8 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int?>("ReservationProviderId")
-                        .HasColumnType("int");
+                    b.Property<string>("ReservationProviderId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -160,11 +202,8 @@ namespace Connect.Infrastructure.Migrations
 
             modelBuilder.Entity("Connect.Core.Entities.ReservationProvider", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("AvailableFrom")
                         .HasColumnType("datetime2");
@@ -219,11 +258,8 @@ namespace Connect.Infrastructure.Migrations
 
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Availability")
                         .HasColumnType("bit");
@@ -275,29 +311,24 @@ namespace Connect.Infrastructure.Migrations
                     b.HasIndex("OwnerId")
                         .IsUnique();
 
-                    b.ToTable("ServiceProviders");
+                    b.ToTable("Freelancers");
                 });
 
             modelBuilder.Entity("Connect.Core.Models.ReservationAppointment", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CustomerId1")
+                    b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsAvialable")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RoomID")
-                        .HasColumnType("int");
+                    b.Property<string>("RoomID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("from")
                         .HasColumnType("datetime2");
@@ -307,7 +338,7 @@ namespace Connect.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId1");
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("RoomID");
 
@@ -316,11 +347,8 @@ namespace Connect.Infrastructure.Migrations
 
             modelBuilder.Entity("Connect.Core.Models.Room", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BackgroundImage")
                         .IsRequired()
@@ -347,8 +375,9 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ProviderId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProviderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -359,11 +388,8 @@ namespace Connect.Infrastructure.Migrations
 
             modelBuilder.Entity("Connect.Core.Models.ServiceRequest", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
@@ -376,11 +402,13 @@ namespace Connect.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FreelanceId")
-                        .HasColumnType("int");
+                    b.Property<string>("FreelanceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FreelancerId")
-                        .HasColumnType("int");
+                    b.Property<string>("FreelancerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -430,21 +458,21 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "96d0e9b3-fc1d-447e-93e5-7dae40aff685",
+                            Id = "b1c96699-fb57-410a-851c-58ce17268c2f",
                             ConcurrencyStamp = "0",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
-                            Id = "67ef1d23-556a-47ae-baee-37f950f40e76",
+                            Id = "f9cdb562-f49e-44c6-83ba-0dd87a3a10e5",
                             ConcurrencyStamp = "1",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         },
                         new
                         {
-                            Id = "85e10ccc-fe0e-4055-b830-6248dd040598",
+                            Id = "77d7312d-3e0b-4721-a3f0-36b93369ed63",
                             ConcurrencyStamp = "2",
                             Name = "ReservationProvider",
                             NormalizedName = "ReservationProvider"
@@ -557,6 +585,25 @@ namespace Connect.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Connect.Core.Entities.Message", b =>
+                {
+                    b.HasOne("Connect.Core.Entities.Customer", null)
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("Connect.Core.Entities.Customer", null)
+                        .WithMany("SentMessages")
+                        .HasForeignKey("CustomerId1");
+
+                    b.HasOne("Connect.Core.Models.Freelancer", null)
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("FreelancerId");
+
+                    b.HasOne("Connect.Core.Models.Freelancer", null)
+                        .WithMany("SentMessages")
+                        .HasForeignKey("FreelancerId1");
+                });
+
             modelBuilder.Entity("Connect.Core.Entities.OfferedService", b =>
                 {
                     b.HasOne("Connect.Core.Models.Freelancer", null)
@@ -594,7 +641,7 @@ namespace Connect.Infrastructure.Migrations
                 {
                     b.HasOne("Connect.Core.Entities.Customer", "Customer")
                         .WithMany("Reservations")
-                        .HasForeignKey("CustomerId1")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -695,12 +742,16 @@ namespace Connect.Infrastructure.Migrations
                     b.Navigation("Freelancer")
                         .IsRequired();
 
+                    b.Navigation("ReceivedMessages");
+
                     b.Navigation("Requests");
 
                     b.Navigation("ReservationProvider")
                         .IsRequired();
 
                     b.Navigation("Reservations");
+
+                    b.Navigation("SentMessages");
                 });
 
             modelBuilder.Entity("Connect.Core.Entities.ReservationProvider", b =>
@@ -714,7 +765,11 @@ namespace Connect.Infrastructure.Migrations
                 {
                     b.Navigation("OfferedServicesList");
 
+                    b.Navigation("ReceivedMessages");
+
                     b.Navigation("Requests");
+
+                    b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,8 +1,10 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Core.Entities;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,15 +19,17 @@ namespace Connect.Application.Services
         private readonly IConfiguration _config;
         private readonly UserManager<Customer> _userManager;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ApplicationDbContext _context;
+
 
         public UserHelpers(IConfiguration config, UserManager<Customer> userManager, IHttpContextAccessor contextAccessor
-            , IWebHostEnvironment webHostEnvironment)
+            , IWebHostEnvironment webHostEnvironment,ApplicationDbContext context)
         {
-
             _config = config;
             _userManager = userManager;
             _contextAccessor = contextAccessor;
             _webHostEnvironment = webHostEnvironment;
+            _context = context;
         }
         public async Task<LoginResult> GenerateJwtTokenAsync(IEnumerable<Claim> claims)
         {
@@ -57,19 +61,7 @@ namespace Connect.Application.Services
             return await _userManager.GetUserAsync(currentUser);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-        public async Task<string> AddCustomerImage(IFormFile? file)
+    public async Task<string> AddCustomerImage(IFormFile? file)
         {
             if (file == null || file.Length == 0)
             {
@@ -127,5 +119,38 @@ namespace Connect.Application.Services
             return $"/Images/{userName}/Freelancer/{fileName}";
         }
 
+
+
+
+
+
+        public async Task<Message> SendMessage(string content, string recipientId)
+        {
+            var user = await GetCurrentUserAsync();
+                var message = new Message
+            {
+                Content = content,
+                SentAt = DateTime.UtcNow,
+                SenderId = user.Id,
+                RecipientId = recipientId,
+            };
+
+            _context.Messages.Add(message);
+            await _context.SaveChangesAsync();
+
+            return message;
+        }
+
+        public async Task<List<Message>> GetConversation(string userId, string recipientId)
+        {
+            return await _context.Messages
+              .Where(m => (m.SenderId == userId && m.RecipientId == recipientId) || (m.SenderId == recipientId && m.RecipientId == userId))
+              .OrderBy(m => m.SentAt)
+              .ToListAsync();
+        }
     }
 }
+
+
+
+

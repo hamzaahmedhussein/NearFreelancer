@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Connect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class teststringid : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,8 @@ namespace Connect.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
                     DOJ = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DOB = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -166,11 +167,40 @@ namespace Connect.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Freelancers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Profession = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EmployeesId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DOJ = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Skills = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Availability = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Freelancers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Freelancers_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ReservationProviders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -178,7 +208,8 @@ namespace Connect.Infrastructure.Migrations
                     EmployeesId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DOJ = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FeatureList = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AvailableFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -196,47 +227,115 @@ namespace Connect.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ServiceProviders",
+                name: "Messages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    profession = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EmployeesId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DOJ = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Skills = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AvailableFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AvailableTo = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SenderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RecipientId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsCustomerSent = table.Column<bool>(type: "bit", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CustomerId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FreelancerId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceProviders", x => x.Id);
+                    table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ServiceProviders_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
+                        name: "FK_Messages_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_CustomerId1",
+                        column: x => x.CustomerId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Messages_Freelancers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "Freelancers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Messages_Freelancers_FreelancerId1",
+                        column: x => x.FreelancerId1,
+                        principalTable: "Freelancers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ServiceRequests",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FreelanceId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServiceRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ServiceRequests_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ServiceRequests_Freelancers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "Freelancers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OfferedServices",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DOJ = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ReservationProviderId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfferedServices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OfferedServices_Freelancers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "Freelancers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OfferedServices_ReservationProviders_ReservationProviderId",
+                        column: x => x.ReservationProviderId,
+                        principalTable: "ReservationProviders",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CostPerNight = table.Column<double>(type: "float", nullable: false),
-                    ProviderId = table.Column<int>(type: "int", nullable: false),
+                    ProviderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     BedsNumber = table.Column<int>(type: "int", nullable: false),
                     FeatureList = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -253,76 +352,12 @@ namespace Connect.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OfferedServices",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DOJ = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    FreelancerId = table.Column<int>(type: "int", nullable: true),
-                    ReservationProviderId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OfferedServices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OfferedServices_ReservationProviders_ReservationProviderId",
-                        column: x => x.ReservationProviderId,
-                        principalTable: "ReservationProviders",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_OfferedServices_ServiceProviders_FreelancerId",
-                        column: x => x.FreelancerId,
-                        principalTable: "ServiceProviders",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ServiceRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    FreelanceId = table.Column<int>(type: "int", nullable: false),
-                    FreelancerId = table.Column<int>(type: "int", nullable: false),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ServiceRequests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ServiceRequests_AspNetUsers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ServiceRequests_ServiceProviders_FreelancerId",
-                        column: x => x.FreelancerId,
-                        principalTable: "ServiceProviders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Reservations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomID = table.Column<int>(type: "int", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    CustomerId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoomID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     from = table.Column<DateTime>(type: "datetime2", nullable: false),
                     to = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsAvialable = table.Column<bool>(type: "bit", nullable: false)
@@ -331,8 +366,8 @@ namespace Connect.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservations_AspNetUsers_CustomerId1",
-                        column: x => x.CustomerId1,
+                        name: "FK_Reservations_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -349,9 +384,9 @@ namespace Connect.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6025d525-5abc-4d7f-962a-57e7ecfc63bb", "1", "Freelancer", "Freelancer" },
-                    { "b821298a-3dee-4e80-8d7a-1caebda595b1", "2", "ReservationProvider", "ReservationProvider" },
-                    { "d70b88a3-ebf0-49e5-86e4-36646cdb5907", "0", "Customer", "Customer" }
+                    { "14c717f9-3c3c-4211-98b7-eb3351d79c93", "2", "ReservationProvider", "ReservationProvider" },
+                    { "3d220b1a-b894-46fc-b547-10af01e359ac", "0", "Customer", "Customer" },
+                    { "89c62224-5e07-4dc4-abb1-1c3f408af649", "1", "Freelancer", "Freelancer" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -394,6 +429,32 @@ namespace Connect.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Freelancers_OwnerId",
+                table: "Freelancers",
+                column: "OwnerId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_CustomerId",
+                table: "Messages",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_CustomerId1",
+                table: "Messages",
+                column: "CustomerId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_FreelancerId",
+                table: "Messages",
+                column: "FreelancerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_FreelancerId1",
+                table: "Messages",
+                column: "FreelancerId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OfferedServices_FreelancerId",
                 table: "OfferedServices",
                 column: "FreelancerId");
@@ -410,9 +471,9 @@ namespace Connect.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_CustomerId1",
+                name: "IX_Reservations_CustomerId",
                 table: "Reservations",
-                column: "CustomerId1");
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_RoomID",
@@ -423,12 +484,6 @@ namespace Connect.Infrastructure.Migrations
                 name: "IX_Rooms_ProviderId",
                 table: "Rooms",
                 column: "ProviderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ServiceProviders_OwnerId",
-                table: "ServiceProviders",
-                column: "OwnerId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceRequests_CustomerId",
@@ -460,6 +515,9 @@ namespace Connect.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Messages");
+
+            migrationBuilder.DropTable(
                 name: "OfferedServices");
 
             migrationBuilder.DropTable(
@@ -475,7 +533,7 @@ namespace Connect.Infrastructure.Migrations
                 name: "Rooms");
 
             migrationBuilder.DropTable(
-                name: "ServiceProviders");
+                name: "Freelancers");
 
             migrationBuilder.DropTable(
                 name: "ReservationProviders");

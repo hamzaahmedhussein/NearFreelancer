@@ -10,12 +10,12 @@ namespace Connect.Core.Models
 {
     public class Room
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
         public string BackgroundImage { get; set; }
         public double CostPerNight { get; set; }
-        public int ProviderId { get; set; }
+        public string ProviderId { get; set; }
         [ForeignKey("ProviderId")]
         public ReservationProvider Provider { get; set; }
         public bool IsAvailable { get; set; }

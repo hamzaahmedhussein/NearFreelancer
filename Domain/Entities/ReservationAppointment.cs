@@ -9,10 +9,10 @@ namespace Connect.Core.Models
 {
     public class ReservationAppointment
     {
-        public int Id { get; set; }
-        public int RoomID { get; set; }
+        public string Id { get; set; }
+        public string RoomID { get; set; }
         public Room Room { get; set; }
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
         public Customer Customer { get; set;}
         public DateTime from { get; set; }
         public DateTime to { get; set; }
