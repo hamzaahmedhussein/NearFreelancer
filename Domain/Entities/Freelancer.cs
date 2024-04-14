@@ -15,20 +15,21 @@ namespace Connect.Core.Models
         public string PhoneNumber { get; set; }
         public string Profession { get; set; }
         public string Description { get; set; }
-        public string OwnerId { get; set; }
-        public Customer Owner { get; set; }
+        public string? OwnerId { get; set; }
+        public Customer? Owner { get; set; }
         public List<int>? EmployeesId { get; set; } 
         public string? Image { get; set; }
         public string? BackgroundImage { get; set; }
-        public string? City { get; set; }
         public string? Street { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
         public ICollection<Message>? SentMessages { get; set; }
         public ICollection<Message>? ReceivedMessages { get; set; }
         public ICollection<OfferedService>? OfferedServicesList { get; set; }
         public ICollection<ServiceRequest>? Requests { get; set; }
         public DateTime DOJ { get; set; }
-        public ICollection<string> Skills { get; set; }
-        public bool Availability { get; set; }
+        public ICollection<string>? Skills { get; set; }
+        public bool? Availability { get; set; }
 
     }
 }

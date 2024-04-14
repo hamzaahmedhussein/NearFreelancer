@@ -20,19 +20,8 @@ namespace Connect.Application.Helpers
                .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
             CreateMap<AddFreelancerBusinessDto, Freelancer>()
-            .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()))
-            //.ForMember(dest => dest.Id, opt => opt.Ignore())  
-            //.ForMember(dest => dest.OwnerId, opt => opt.Ignore())  
-            //.ForMember(dest => dest.EmployeesId, opt => opt.Ignore()) 
-            //.ForMember(dest => dest.Image, opt => opt.Ignore())  
-            //.ForMember(dest => dest.BackgroundImage, opt => opt.Ignore())  
-            //.ForMember(dest => dest.Owner, opt => opt.Ignore())  
-            //.ForMember(dest => dest.SentMessages, opt => opt.Ignore())  
-            //.ForMember(dest => dest.ReceivedMessages, opt => opt.Ignore()) 
-            //.ForMember(dest => dest.OfferedServicesList, opt => opt.Ignore()) 
-            //.ForMember(dest => dest.Requests, opt => opt.Ignore())
-            .ForMember(dest => dest.Profession, opt => opt.MapFrom(src => ""))
-            .ForMember(dest => dest.Availability, opt => opt.MapFrom(src => src.Availability));
+            .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
+          
 
             CreateMap<Freelancer, FreelancerBusinessResult>();
 

@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240413231116_iinitt")]
+    partial class iinitt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,6 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -87,10 +89,6 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
@@ -207,14 +205,16 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool?>("Availability")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("AvailableFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("AvailableTo")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("BackgroundImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DOJ")
@@ -245,10 +245,6 @@ namespace Connect.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
@@ -265,14 +261,13 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool?>("Availability")
+                    b.Property<bool>("Availability")
                         .HasColumnType("bit");
 
                     b.Property<string>("BackgroundImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DOJ")
@@ -304,10 +299,6 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Skills")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
@@ -466,21 +457,21 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bcb097d2-effd-4d2a-9ac8-380b8d51845a",
+                            Id = "4acb414c-fdf6-48ff-ad70-70a205e1b0b7",
                             ConcurrencyStamp = "0",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
-                            Id = "6939322f-0555-46ae-8b31-c08d14557079",
+                            Id = "87760280-3116-4851-8f5f-d8727a8b0468",
                             ConcurrencyStamp = "1",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         },
                         new
                         {
-                            Id = "740d6156-ba8a-4d9a-8232-808f43eb2bb8",
+                            Id = "7515b25d-96f8-4d17-b66e-8d91ea967250",
                             ConcurrencyStamp = "2",
                             Name = "ReservationProvider",
                             NormalizedName = "ReservationProvider"

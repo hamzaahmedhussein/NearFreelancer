@@ -44,6 +44,7 @@ namespace Connect.Application.Services
             var freelancer = _mapper.Map<Freelancer>(freelancerDto);
             freelancer.Owner = user;
             _unitOfWork.FreelancerBusiness.Add(freelancer);
+
             var result = await _userManager.AddToRoleAsync(user, "Freelancer");
             if (!result.Succeeded)
                 throw new InvalidOperationException("Failed to assign Freelancer role to the user.");

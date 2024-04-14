@@ -10,8 +10,9 @@ namespace Connect.Core.Entities
         public string? Name { get; set; }
         public string? Image { get; set; }
         public string? BackgroundImage { get; set; }
-        public string? City { get; set; }
         public string? Street { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
         public Gender? Gender { get; set; }
         public DateTime? DOJ { get; set; }
         public DateTime? DOB { get; set; }
