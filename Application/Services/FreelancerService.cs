@@ -39,16 +39,25 @@ namespace Connect.Application.Services
 
             if (await _userManager.IsInRoleAsync(user, "Freelancer"))
                 throw new InvalidOperationException("User already has a freelancer profile.");
-
-
-            var freelancer = _mapper.Map<Freelancer>(freelancerDto);
-            freelancer.Owner = user;
-            _unitOfWork.FreelancerBusiness.Add(freelancer);
-
-            var result = await _userManager.AddToRoleAsync(user, "Freelancer");
-            if (!result.Succeeded)
-                throw new InvalidOperationException("Failed to assign Freelancer role to the user.");
-            _unitOfWork.Save();
+            try
+            {
+                _unitOfWork.CreateTransaction();
+                var result = await _userManager.AddToRoleAsync(user, "Freelancer");
+                if (!result.Succeeded)
+                    throw new InvalidOperationException("Failed to assign Freelancer role to the user.");
+                //_unitOfWork.Save();
+                var freelancer = _mapper.Map<Freelancer>(freelancerDto);
+                freelancer.Owner = user;
+                _unitOfWork.FreelancerBusiness.Add(freelancer);
+                user.Freelancer = freelancer;
+                _unitOfWork.Save();
+                _unitOfWork.Commit();
+            }catch
+            {
+                _unitOfWork.Rollback();
+                return false;
+            }
+            
 
             return true;
         }
@@ -72,7 +81,7 @@ namespace Connect.Application.Services
             return null;
         }
 
-        public async Task<FreelancerBusinessResult> GetFreelancerById(int id)
+        public async Task<FreelancerBusinessResult> GetFreelancerById(string id)
         {
             var profile = _unitOfWork.FreelancerBusiness.GetById(id);
             return _mapper.Map<FreelancerBusinessResult>(profile);
@@ -83,15 +92,28 @@ namespace Connect.Application.Services
             var currentUser = await _userHelpers.GetCurrentUserAsync();
             if (currentUser == null)
                 return false;
-
-            var offeredService = _mapper.Map<OfferedService>(serviceDto);
-            offeredService.Image = await _userHelpers.AddFreelancerImage(serviceDto.Image);
-            if (currentUser.Freelancer != null)
+            _unitOfWork.CreateTransaction();
+            var image = await _userHelpers.AddFreelancerImage(serviceDto.Image);
+            try
             {
-                currentUser.Freelancer.OfferedServicesList.Add(offeredService);
-                _unitOfWork.Save();
-                return true;
+                var offeredService = _mapper.Map<OfferedService>(serviceDto);
+                offeredService.Image = image;
+                var freelancer = await _unitOfWork.FreelancerBusiness.FindFirstAsync(f => f.OwnerId == "d592884d-7986-47bb-b8e7-7a4c1d531542");
+
+                if (freelancer != null)
+                {
+                    freelancer.OfferedServicesList.Add(offeredService);
+                    _unitOfWork.Save();
+                }
+                _unitOfWork.Commit();
+                    return true;
             }
+            catch
+            {
+                _unitOfWork.Rollback();
+                await _userHelpers.DeleteFreelancerImageAsync(image);
+            }
+            
 
             return false;
         }
@@ -153,7 +175,7 @@ namespace Connect.Application.Services
             return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
         }
 
-        public async Task<bool> AcceptServiceRequest(int requestId)
+        public async Task<bool> AcceptServiceRequest(string requestId)
         {
             var serviceRequest = _unitOfWork.ServiceRequest.GetById(requestId);
             if (serviceRequest == null)
@@ -167,7 +189,7 @@ namespace Connect.Application.Services
             return true;
         }
 
-        public async Task<bool> RefuseServiceRequest(int requestId)
+        public async Task<bool> RefuseServiceRequest(string requestId)
         {
             var serviceRequest = _unitOfWork.ServiceRequest.GetById(requestId);
             if (serviceRequest == null)

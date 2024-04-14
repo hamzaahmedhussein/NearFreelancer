@@ -17,7 +17,7 @@ namespace Connect.Core.Models
         public double CostPerNight { get; set; }
         public string ProviderId { get; set; }
         [ForeignKey("ProviderId")]
-        public ReservationProvider Provider { get; set; }
+        public virtual ReservationProvider Provider { get; set; }
         public bool IsAvailable { get; set; }
         public int BedsNumber { get; set; }
         public List<string> FeatureList { get; set; }

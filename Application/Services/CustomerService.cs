@@ -178,7 +178,7 @@ namespace Connect.Application.Services
 
         }
 
-        public async Task<bool> SendServiceRequist(int Id, SendServiceRequestDto request)
+        public async Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request)
         {
            var customer= await _userHelpers.GetCurrentUserAsync();
             if (customer == null) 

@@ -44,7 +44,7 @@ namespace Connect.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetFreelancerById(int id)
+        public async Task<IActionResult> GetFreelancerById(string id)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace Connect.API.Controllers
 
         [Authorize]
         [HttpPost("add-offered-service")]
-        public async Task<IActionResult> AddOfferedService([FromBody] AddOfferedServiceDto serviceDto)
+        public async Task<IActionResult> AddOfferedService( AddOfferedServiceDto serviceDto)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace Connect.API.Controllers
 
         [Authorize]
         [HttpPost("accept/{requestId}")]
-        public async Task<IActionResult> AcceptRequest(int requestId)
+        public async Task<IActionResult> AcceptRequest(string requestId)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace Connect.API.Controllers
 
         [Authorize]
         [HttpPost("refuse/{requestId}")]
-        public async Task<IActionResult> RefuseRequest(int requestId)
+        public async Task<IActionResult> RefuseRequest(string requestId)
         {
             try
             {

@@ -67,7 +67,7 @@ namespace Connect.Application.Services
             return null;
         }
 
-        public async Task<ReservationBusinessResult> GetReservationProviderById(int id)
+        public async Task<ReservationBusinessResult> GetReservationProviderById(string id)
         {
             var profile = _unitOfWork.ReservationBusiness.GetById(id);
             return _mapper.Map<ReservationBusinessResult>(profile);

@@ -10,7 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Security.Claims;
 namespace Connect.Application.Services
 {
     public class UserHelpers : IUserHelpers
@@ -59,6 +61,12 @@ namespace Connect.Application.Services
         {
             ClaimsPrincipal currentUser = _contextAccessor.HttpContext.User;
             return await _userManager.GetUserAsync(currentUser);
+
+            
+            //var user = await _userManager.Users
+            //    .Include(u => u.Freelancer) // Eagerly load the associated Freelancer
+            //    .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(currentUser));
+            //return user;
         }
 
     public async Task<string> AddCustomerImage(IFormFile? file)
@@ -120,6 +128,34 @@ namespace Connect.Application.Services
         }
 
 
+        public async Task DeleteFreelancerImageAsync(string imagePath)
+        {
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                throw new ArgumentException("Image path is null or empty.", nameof(imagePath));
+            }
+
+            string rootPath = _webHostEnvironment.WebRootPath;
+            var user = await GetCurrentUserAsync();
+            string userName = user.UserName;
+
+            // Check if the provided imagePath is valid
+            if (!imagePath.StartsWith($"/Images/{userName}/Freelancer/"))
+            {
+                throw new ArgumentException("Invalid image path.", nameof(imagePath));
+            }
+
+            string filePath = Path.Combine(rootPath, imagePath.TrimStart('/'));
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            else
+            {
+                throw new FileNotFoundException("File not found.", filePath);
+            }
+        }
 
 
 

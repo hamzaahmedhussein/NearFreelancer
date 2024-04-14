@@ -11,9 +11,9 @@ namespace Connect.Core.Models
     {
         public string Id { get; set; }
         public string RoomID { get; set; }
-        public Room Room { get; set; }
+        public virtual Room Room { get; set; }
         public string CustomerId { get; set; }
-        public Customer Customer { get; set;}
+        public virtual Customer Customer { get; set;}
         public DateTime from { get; set; }
         public DateTime to { get; set; }
         public bool IsAvialable { get; set; }

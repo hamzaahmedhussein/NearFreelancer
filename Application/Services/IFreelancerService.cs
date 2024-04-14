@@ -12,11 +12,11 @@ namespace Connect.Application.Services
     {
         Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto);
         Task<FreelancerBusinessResult> GetFreelancerProfile();
-        Task<FreelancerBusinessResult> GetFreelancerById(int id);
+        Task<FreelancerBusinessResult> GetFreelancerById(string id);
         Task<bool> AddOfferedService(AddOfferedServiceDto serviceDto);
         Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto);
         Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests();
-        Task<bool> AcceptServiceRequest(int requestId);
-        Task<bool> RefuseServiceRequest(int requestId); 
+        Task<bool> AcceptServiceRequest(string requestId);
+        Task<bool> RefuseServiceRequest(string requestId); 
     }
 }

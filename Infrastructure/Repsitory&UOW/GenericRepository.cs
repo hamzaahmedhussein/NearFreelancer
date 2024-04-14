@@ -26,13 +26,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task<T> FindFirstAsync(Expression<Func<T, bool>> expression)
     {
         return await context.Set<T>().FirstOrDefaultAsync(expression);
+
     }
 
     public async Task<IEnumerable<T>>GetAllAsync()
     {
         return  context.Set<T>().ToList();
     }
-    public T GetById(int id)
+    public T GetById(string id)
     {
         return context.Set<T>().Find(id);
     }

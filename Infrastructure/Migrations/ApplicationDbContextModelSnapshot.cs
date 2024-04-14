@@ -158,7 +158,7 @@ namespace Connect.Infrastructure.Migrations
 
                     b.HasIndex("FreelancerId1");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Connect.Core.Entities.OfferedService", b =>
@@ -199,7 +199,7 @@ namespace Connect.Infrastructure.Migrations
 
                     b.HasIndex("ReservationProviderId");
 
-                    b.ToTable("OfferedServices");
+                    b.ToTable("OfferedServices", (string)null);
                 });
 
             modelBuilder.Entity("Connect.Core.Entities.ReservationProvider", b =>
@@ -257,7 +257,7 @@ namespace Connect.Infrastructure.Migrations
                     b.HasIndex("OwnerId")
                         .IsUnique();
 
-                    b.ToTable("ReservationProviders");
+                    b.ToTable("ReservationProviders", (string)null);
                 });
 
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
@@ -319,7 +319,7 @@ namespace Connect.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[OwnerId] IS NOT NULL");
 
-                    b.ToTable("Freelancers");
+                    b.ToTable("Freelancers", (string)null);
                 });
 
             modelBuilder.Entity("Connect.Core.Models.ReservationAppointment", b =>
@@ -350,7 +350,7 @@ namespace Connect.Infrastructure.Migrations
 
                     b.HasIndex("RoomID");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Connect.Core.Models.Room", b =>
@@ -391,7 +391,7 @@ namespace Connect.Infrastructure.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("Connect.Core.Models.ServiceRequest", b =>
@@ -434,7 +434,7 @@ namespace Connect.Infrastructure.Migrations
 
                     b.HasIndex("FreelancerId");
 
-                    b.ToTable("ServiceRequests");
+                    b.ToTable("ServiceRequests", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -3,7 +3,7 @@ using Connect.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.Proxies;
 namespace Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext<Customer>
@@ -25,9 +25,14 @@ namespace Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            
             base.OnModelCreating(builder);
-
             SeedRoles(builder);
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+            base.OnConfiguring(optionsBuilder);
         }
         private void SeedRoles(ModelBuilder builder)
         {

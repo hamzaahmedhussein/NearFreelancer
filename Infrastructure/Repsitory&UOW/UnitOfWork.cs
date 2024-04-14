@@ -2,23 +2,28 @@
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Connect.Infrastructure.Repsitory_UOW
 {
     public class UnitOfWork : IUnitOfWork
     {
         private ApplicationDbContext _context;
-        public IGenericRepository<Customer> Customer { get; set; }
-        public IGenericRepository<ReservationProvider> ReservationBusiness { get; set; }
-        public IGenericRepository<Freelancer> FreelancerBusiness { get; set; }
-        public IGenericRepository<OfferedService> OfferedService { get; set; }
-        public IGenericRepository<ServiceRequest> ServiceRequest { get; set; }
+        public virtual IGenericRepository<Customer> Customer { get; set; }
+        public virtual IGenericRepository<ReservationProvider> ReservationBusiness { get; set; }
+        public virtual IGenericRepository<Freelancer> FreelancerBusiness { get; set; }
+        public virtual IGenericRepository<OfferedService> OfferedService { get; set; }
+        public virtual IGenericRepository<ServiceRequest> ServiceRequest { get; set; }
 
+
+        private IDbContextTransaction transaction;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -30,7 +35,21 @@ namespace Connect.Infrastructure.Repsitory_UOW
             ServiceRequest = new GenericRepository<ServiceRequest>(_context);
         }
 
-
+        public void CreateTransaction()
+        {
+             transaction = _context.Database.BeginTransaction();
+        }
+   
+        public void Commit()
+        {
+            transaction.Commit();
+        }
+        
+        public void Rollback()
+        {
+            transaction.Rollback();
+            
+        }
 
 
         public int Save()

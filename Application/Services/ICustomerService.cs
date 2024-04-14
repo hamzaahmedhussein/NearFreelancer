@@ -14,7 +14,7 @@ namespace Connect.Application.Services
         Task<IdentityResult> ResetPassword(ResetPasswordDto resetPasswordDto);
         Task<CurrentProfileResult> GetCurrentProfileAsync();
         Task<IEnumerable<GetCustomerRequestsDto>> GetMyRequests();
-        Task<bool> SendServiceRequist(int Id, SendServiceRequestDto request);
+        Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request);
         // IEnumerable<HomePageFilterDto> GetFilteredProviders(HomePageFilterDto filterDto);
 
 

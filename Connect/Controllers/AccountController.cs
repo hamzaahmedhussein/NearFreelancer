@@ -101,14 +101,14 @@ namespace Connect.API.Controllers
         }
 
         [HttpPost("get-freelancer")]
-        public IActionResult GetFreelancer(int id)
+        public IActionResult GetFreelancer(string id)
         {
             var model = _freelanceService.GetFreelancerById(id);
             return Ok(model);
         }
 
         [HttpPost("get-reservationProvider")]
-        public IActionResult GetReservationProvider(int id)
+        public IActionResult GetReservationProvider(string id)
         {
             var model = _reservationProviderService.GetReservationProviderById(id);
             return Ok(model);
@@ -188,7 +188,7 @@ namespace Connect.API.Controllers
 
 
         [HttpPost("send-service-request")]
-        public async Task<IActionResult> SendServiceRequest(int freelancerId, [FromBody] SendServiceRequestDto requestDto)
+        public async Task<IActionResult> SendServiceRequest(string freelancerId, [FromBody] SendServiceRequestDto requestDto)
         {
             var result = await _customerService.SendServiceRequist(freelancerId, requestDto);
 

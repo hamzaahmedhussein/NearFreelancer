@@ -5,7 +5,7 @@ namespace Connect.Application.Services
     {
         Task<bool> AddReservationBusiness(AddReservationBusinessDto reservationDto);
         Task<ReservationBusinessResult> GetReservationProfile();
-        Task<ReservationBusinessResult> GetReservationProviderById(int id);
+        Task<ReservationBusinessResult> GetReservationProviderById(string id);
 
     }
 }
