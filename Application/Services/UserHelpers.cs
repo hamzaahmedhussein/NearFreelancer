@@ -61,7 +61,7 @@ namespace Connect.Application.Services
 
         }
 
-    public async Task<string> AddCustomerImage(IFormFile? file)
+    public async Task<string> AddImage(IFormFile? file,string folderName)
         {
             if (file == null || file.Length == 0)
             {
@@ -72,7 +72,7 @@ namespace Connect.Application.Services
             var user = await GetCurrentUserAsync();
             string userName = user.UserName;
             string userFolderPath = Path.Combine(rootPath, "Images", userName);
-            string profileFolderPath = Path.Combine(userFolderPath, "Profile");
+            string profileFolderPath = Path.Combine(userFolderPath, folderName);
 
             if (!Directory.Exists(profileFolderPath))
             {
@@ -87,40 +87,40 @@ namespace Connect.Application.Services
                 await file.CopyToAsync(fileStream);
             }
 
-            return $"/Images/{userName}/Profile/{fileName}";
+            return $"/Images/{userName}/{folderName}/{fileName}";
         }
 
-        public async Task<string> AddFreelancerImage(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                throw new ArgumentException("File is null or empty.", nameof(file));
-            }
+        //public async Task<string> AddFreelancerImage(IFormFile file)
+        //{
+        //    if (file == null || file.Length == 0)
+        //    {
+        //        throw new ArgumentException("File is null or empty.", nameof(file));
+        //    }
 
-            string rootPath = _webHostEnvironment.WebRootPath;
-            var user = await GetCurrentUserAsync();
-            string userName = user.UserName;
-            string userFolderPath = Path.Combine(rootPath, "Images", userName);
-            string FrelanceFolderPath = Path.Combine(userFolderPath, "Freelancer");
+        //    string rootPath = _webHostEnvironment.WebRootPath;
+        //    var user = await GetCurrentUserAsync();
+        //    string userName = user.UserName;
+        //    string userFolderPath = Path.Combine(rootPath, "Images", userName);
+        //    string FrelanceFolderPath = Path.Combine(userFolderPath, "Freelancer");
 
-            if (!Directory.Exists(FrelanceFolderPath))
-            {
-                Directory.CreateDirectory(FrelanceFolderPath);
-            }
+        //    if (!Directory.Exists(FrelanceFolderPath))
+        //    {
+        //        Directory.CreateDirectory(FrelanceFolderPath);
+        //    }
 
-            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            string filePath = Path.Combine(FrelanceFolderPath, fileName);
+        //    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+        //    string filePath = Path.Combine(FrelanceFolderPath, fileName);
 
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(fileStream);
-            }
+        //    using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        await file.CopyToAsync(fileStream);
+        //    }
 
-            return $"/Images/{userName}/Freelancer/{fileName}";
-        }
+        //    return $"/Images/{userName}/Freelancer/{fileName}";
+        //}
 
 
-        public async Task DeleteFreelancerImageAsync(string imagePath)
+        public async Task DeleteImageAsync(string imagePath, string folderName)
         {
             if (string.IsNullOrEmpty(imagePath))
             {
@@ -131,8 +131,8 @@ namespace Connect.Application.Services
             var user = await GetCurrentUserAsync();
             string userName = user.UserName;
 
-            // Check if the provided imagePath is valid
-            if (!imagePath.StartsWith($"/Images/{userName}/Freelancer/"))
+            
+            if (!imagePath.StartsWith($"/Images/{userName}/{folderName}/"))
             {
                 throw new ArgumentException("Invalid image path.", nameof(imagePath));
             }
@@ -148,6 +148,36 @@ namespace Connect.Application.Services
                 throw new FileNotFoundException("File not found.", filePath);
             }
         }
+
+
+
+        public async Task<string> UpdateImageAsync(IFormFile? file, string oldImagePath, string folderName)
+        {
+            if (string.IsNullOrEmpty(oldImagePath))
+            {
+                throw new ArgumentException("Image path is null or empty.", nameof(oldImagePath));
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                throw new ArgumentException("File is null or empty.", nameof(file));
+            }
+
+            var user = await GetCurrentUserAsync();
+            string userName = user.UserName;
+
+            if (!oldImagePath.StartsWith($"/Images/{userName}/{folderName}/"))
+            {
+                throw new ArgumentException("Invalid image path.", nameof(oldImagePath));
+            }
+
+            await DeleteImageAsync(oldImagePath, folderName);
+
+            string newImagePath = await AddImage(file, folderName);
+
+             return newImagePath;
+        }
+
 
 
 

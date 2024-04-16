@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Castle.Core.Resource;
+using Connect.Application.Consts;
 using Connect.Application.DTOs;
+using Connect.Application.Consts;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
@@ -8,6 +10,7 @@ using Connect.Core.Specification;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Connect.Application.Services
 {
@@ -98,8 +101,8 @@ namespace Connect.Application.Services
             var freelancer = currentUser.Freelancer;
 
             _unitOfWork.CreateTransaction();
-
-            var image = await _userHelpers.AddFreelancerImage(serviceDto.Image);
+            
+            var image = await _userHelpers.AddImage(serviceDto.Image, Consts.Consts.Freelancer);
             var offeredService = _mapper.Map<OfferedService>(serviceDto);
             offeredService.Image = image;
 
@@ -116,11 +119,39 @@ namespace Connect.Application.Services
             catch
             {
                 _unitOfWork.Rollback();
-                await _userHelpers.DeleteFreelancerImageAsync(image);
+                await _userHelpers.DeleteImageAsync(image,Consts.Consts.Freelancer);
                 return false;
             }
         }
 
+        public async Task<bool> UpdateOfferedService(string id, AddOfferedServiceDto serviceDto)
+        {
+            var offeredService = _unitOfWork.OfferedService.GetById(id);
+            var currentUser = await _userHelpers.GetCurrentUserAsync();
+
+            if (currentUser.Freelancer != null)
+            {
+                try
+                {
+                    _unitOfWork.CreateTransaction();
+                    var image = await _userHelpers.UpdateImageAsync(serviceDto.Image,offeredService.Image , Consts.Consts.Freelancer);
+                    offeredService = _mapper.Map<OfferedService>(serviceDto);
+                    offeredService.Image = image;
+                    _unitOfWork.OfferedService.Update(offeredService);
+                    _unitOfWork.Save();
+                
+                    _unitOfWork.Commit();
+                    return true;
+                }
+                catch
+                {
+                    _unitOfWork.Rollback();
+                    //await _userHelpers.DeleteImageAsync(image, Consts.Consts.Freelancer);
+                    return false;
+                }
+            }
+            return false;
+        }
 
         public async Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto)
             {
@@ -210,6 +241,46 @@ namespace Connect.Application.Services
                 return true;
             }
 
-        } }
+        public async Task<bool> UpdateFreelancerBusiness(AddFreelancerBusinessDto freelancerDto)
+        {
+            var user=await _userHelpers.GetCurrentUserAsync();
+            var oldFreelancerBusiness = user.Freelancer;
+            
+            try
+            {
+                oldFreelancerBusiness = _mapper.Map<Freelancer>(freelancerDto);
+                _unitOfWork.FreelancerBusiness.Update(oldFreelancerBusiness);
+                _unitOfWork.Save();
+                return true;
+            }
+            catch
+            {
+                
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteFreelancerBusinessAsync()
+        {
+            _unitOfWork.CreateTransaction();
+            try
+            {
+                var user = await _userHelpers.GetCurrentUserAsync();
+                await _userManager.RemoveFromRoleAsync(user, "Freelancer");
+                var freelancer = user.Freelancer;
+                var services = freelancer.OfferedServicesList.ToList();
+                _unitOfWork.FreelancerBusiness.Remove(user.Freelancer);
+                if (_unitOfWork.Save() > 0)
+                    foreach (var service in services)
+                        await _userHelpers.DeleteImageAsync(service.Image, Consts.Consts.Freelancer);
+                _unitOfWork.Commit();
+                return true;
+            }catch
+            {
+                _unitOfWork.Rollback();
+                return false;
+            }
+        }
+    } }
 
 

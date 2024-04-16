@@ -96,6 +96,21 @@ namespace Connect.API.Controllers
             return NotFound("User profile not found.");
         }
 
+        [Authorize]
+        [HttpDelete("delete-user-account")]
+        public async Task<IActionResult> DeleteUserAccount()
+        {
+            try
+            {
+                var isDeleted = await _customerService.DeleteCustomerAsync();
+                return isDeleted ? Ok("user Deleted successfully.") : BadRequest("Failed to Delete user.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("get-reservationProvider")]
         public IActionResult GetReservationProvider(string id)
         {

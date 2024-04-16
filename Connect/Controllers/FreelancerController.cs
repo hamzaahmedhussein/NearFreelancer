@@ -36,6 +36,41 @@ namespace Connect.API.Controllers
             }
         }
 
+        [Authorize]
+        [HttpDelete("delete-freelancer-business")]
+        public async Task<IActionResult> DeleteFreelancerBusiness()
+        {
+            try
+            {
+                var isDeleted = await _freelancerService.DeleteFreelancerBusinessAsync();
+                return isDeleted ? Ok("Freelancer Deleted successfully.") : BadRequest("Failed to Delete freelancer.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPut("update-freelancer-business")]
+        public async Task<IActionResult> UpdateFreelancerBusiness([FromBody] AddFreelancerBusinessDto freelancerDto)
+        {
+            try
+            {
+                var result = await _freelancerService.UpdateFreelancerBusiness(freelancerDto);
+                return result ? Ok("Freelancer updated successfully.") : BadRequest("Failed to update freelancer.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+
+
         [HttpGet("freelancer-profile")]
         public async Task<IActionResult> GetFreelancerProfile()
         {
@@ -71,6 +106,22 @@ namespace Connect.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [Authorize]
+        [HttpPut("update-offered-service")]
+        public async Task<IActionResult> UpdateOfferedService(string id, AddOfferedServiceDto serviceDto)
+        {
+            try
+            {
+                var result = await _freelancerService.UpdateOfferedService(id,serviceDto);
+                return result ? Ok("Offered service Updated successfully.") : BadRequest("Failed to Upfate offered service.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPost("filter-freelancers")]
         public async Task<IActionResult> FilterFreelancers([FromBody] FilterFreelancersDto filterDto)

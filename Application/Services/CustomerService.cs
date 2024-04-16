@@ -13,22 +13,22 @@ using Connect.Core.Models;
 using Connect.Core.Interfaces;
 namespace Connect.Application.Services
 {
-    public class CustomerService:ICustomerService
+    public class CustomerService : ICustomerService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<Customer> _userManager;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ILogger <CustomerService> _logger ;
+        private readonly ILogger<CustomerService> _logger;
         private readonly IMapper _mapper;
         private readonly IUserHelpers _userHelpers;
         private readonly IMailingService _mailingService;
 
 
-        public CustomerService(IUnitOfWork unitOfWork ,
+        public CustomerService(IUnitOfWork unitOfWork,
             UserManager<Customer> userManager,
-            IConfiguration config,IMapper mapper,
+            IConfiguration config, IMapper mapper,
             IHttpContextAccessor contextAccessor,
-            ILogger<CustomerService> logger ,
+            ILogger<CustomerService> logger,
             IUserHelpers userHelpers,
             IMailingService mailingService
             )
@@ -52,18 +52,18 @@ namespace Connect.Application.Services
             if (existingUserByEmail != null)
                 return IdentityResult.Failed(new IdentityError { Description = "User with this email already exists." });
 
-              var customer = _mapper.Map<Customer>(userDto);
-            IdentityResult result=await _userManager.CreateAsync(customer,userDto.Password);
+            var customer = _mapper.Map<Customer>(userDto);
+            IdentityResult result = await _userManager.CreateAsync(customer, userDto.Password);
             if (result.Succeeded)
                 await _userManager.AddToRoleAsync(customer, "Customer");
 
 
 
-            var token= await _userManager.GenerateEmailConfirmationTokenAsync(customer);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
             var confirmationLink = $"{_contextAccessor.HttpContext.Request.Scheme}://{_contextAccessor.HttpContext.Request.Host}/api/Account/confirm-email?email={Uri.EscapeDataString(customer.Email)}&token={Uri.EscapeDataString(token)}";
-            var message = new MailMessage(new string[] { customer.Email },"Confirmation email link", confirmationLink);
+            var message = new MailMessage(new string[] { customer.Email }, "Confirmation email link", confirmationLink);
             _mailingService.SendMail(message);
-            return result;  
+            return result;
         }
 
         public async Task<bool> ConfirmEmail(string email, string token)
@@ -82,7 +82,7 @@ namespace Connect.Application.Services
         #region ForgetPassword
         public async Task<bool> ForgetPassword(string email)
         {
-           var customer = await _userManager.FindByEmailAsync(email);
+            var customer = await _userManager.FindByEmailAsync(email);
             if (customer == null) return false;
 
 
@@ -108,9 +108,9 @@ namespace Connect.Application.Services
 
 
         #region ChangePassword
-        public async Task<IdentityResult> ChangePassword( ChangePasswordDto changePasswordDto)
+        public async Task<IdentityResult> ChangePassword(ChangePasswordDto changePasswordDto)
         {
-            var user =  await _userHelpers.GetCurrentUserAsync();
+            var user = await _userHelpers.GetCurrentUserAsync();
             if (user == null)
             {
                 return IdentityResult.Failed(new IdentityError { Description = "User not found." });
@@ -180,18 +180,18 @@ namespace Connect.Application.Services
 
         public async Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request)
         {
-           var customer= await _userHelpers.GetCurrentUserAsync();
-            if (customer == null) 
+            var customer = await _userHelpers.GetCurrentUserAsync();
+            if (customer == null)
                 return false;
 
-            var freelancer=_unitOfWork.FreelancerBusiness.GetById(Id);
+            var freelancer = _unitOfWork.FreelancerBusiness.GetById(Id);
             if (freelancer == null)
                 return false;
 
 
             var serviceRequist = _mapper.Map<ServiceRequest>(request);
             serviceRequist.Freelancer = freelancer;
-            serviceRequist.Customer=customer;
+            serviceRequist.Customer = customer;
             _unitOfWork.ServiceRequest.Add(serviceRequist);
             _unitOfWork.Save();
             return true;
@@ -204,7 +204,7 @@ namespace Connect.Application.Services
             if (customer == null)
                 throw new Exception("User not found");
 
-            var requests = await _unitOfWork.ServiceRequest.FindAsync(c=>c.CustomerId==customer.Id);
+            var requests = await _unitOfWork.ServiceRequest.FindAsync(c => c.CustomerId == customer.Id);
 
             if (requests == null)
                 throw new Exception("No requests");
@@ -215,7 +215,33 @@ namespace Connect.Application.Services
 
 
 
+
+
+        public async Task<bool> DeleteCustomerAsync()
+        {
+            _unitOfWork.CreateTransaction();
+            try
+            {
+                var user = await _userHelpers.GetCurrentUserAsync();
+                var roles=await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, roles);
+                if(user.Freelancer != null)
+                    _unitOfWork.FreelancerBusiness.Remove(user.Freelancer);
+                await _userManager.DeleteAsync(user);
+                _unitOfWork.Save();
+                _unitOfWork.Commit();
+                return true;
+            }
+            catch
+            {
+                _unitOfWork.Rollback();
+                return false;
+            }
+        }
+
     }
+
+
 }
     
 

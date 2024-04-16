@@ -37,7 +37,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     }
     public T GetById(string id)
     {
+        
         return context.Set<T>().Find(id);
+    }
+    public void Update(T entity)
+    {
+        context.Attach(entity);
+        context.Entry<T>(entity).State = EntityState.Modified;
     }
     public void Remove(T entity)
     {

@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Identity;
 namespace Connect.Application.Services
 {
     public interface ICustomerService
-    { 
+    {
+        Task<bool> DeleteCustomerAsync();
         Task<IdentityResult> Register(RegisterUserDto userDto);
         Task<LoginResult> Login(LoginUserDto userDto);
         Task<bool> ConfirmEmail(string email, string token);
