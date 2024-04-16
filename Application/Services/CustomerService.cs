@@ -310,6 +310,33 @@ namespace Connect.Application.Services
 
         }
 
+        public async Task<bool> DeletePendingRequestAsync(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new ArgumentException("Invalid request ID");
+
+            var request =  _unitOfWork.ServiceRequest.GetById(id);
+
+            if (request == null || request.Customer != await _userHelpers.GetCurrentUserAsync())
+                return false;
+
+            if (request.Status != RequisStatus.Pending)
+                return false;
+
+            try
+            {
+                _unitOfWork.ServiceRequest.Remove(request);
+
+                 _unitOfWork.Save();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+               
+                throw ex;
+            }
+        }
 
     }
 

@@ -19,6 +19,7 @@ namespace Connect.Application.Services
         Task<CurrentProfileResult> GetCurrentProfileAsync();
         Task<IEnumerable<GetCustomerRequestsDto>> GetMyRequests();
         Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request);
+        Task<bool> DeletePendingRequestAsync(string id);
         // IEnumerable<HomePageFilterDto> GetFilteredProviders(HomePageFilterDto filterDto);
 
 

@@ -244,6 +244,34 @@ namespace Connect.API.Controllers
             return Ok(); 
         }
 
+        [HttpPost]
+        [Route("api/delete-request/{id}")]
+        public async Task<IActionResult> DeleteRequest(string id)
+        {
+            try
+            {
+                var result = await _customerService.DeletePendingRequestAsync(id);
+
+                if (result)
+                {
+                    return Ok("Request deleted successfully.");
+                }
+                else
+                {
+                    return NotFound("Request not found or you don't have permission to delete it.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while processing the request.");
+            }
+        }
+
+
     }
 
 }
