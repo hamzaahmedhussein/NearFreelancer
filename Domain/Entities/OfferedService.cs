@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Connect.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,7 @@ namespace Connect.Core.Entities
         public string? Image { get; set; }
         public DateTime DOJ { get; set; }
         public bool IsAvailable { get; set; }
+        public string? FreelancerId { get; set; }
+        public virtual Freelancer Freelancer { get; set; }
     }
 }
