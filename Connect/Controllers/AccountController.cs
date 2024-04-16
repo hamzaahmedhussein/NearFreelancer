@@ -80,6 +80,21 @@ namespace Connect.API.Controllers
             return Unauthorized(ModelState);
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var result = await _customerService.LogoutAsync();
+
+            if (result.Success)
+            {
+                return Ok(new { message = result.Message });
+            }
+            else
+            {
+                return BadRequest(new { error = result.Message });
+            }
+        }
+
         #endregion 
 
 
@@ -96,20 +111,7 @@ namespace Connect.API.Controllers
             return NotFound("User profile not found.");
         }
 
-        [Authorize]
-        [HttpDelete("delete-user-account")]
-        public async Task<IActionResult> DeleteUserAccount()
-        {
-            try
-            {
-                var isDeleted = await _customerService.DeleteCustomerAsync();
-                return isDeleted ? Ok("user Deleted successfully.") : BadRequest("Failed to Delete user.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+      
 
         [HttpPost("get-reservationProvider")]
         public IActionResult GetReservationProvider(string id)
@@ -214,6 +216,32 @@ namespace Connect.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPut("update-customer-info")]
+        public async Task<IActionResult> UpdateCustomerInfo([FromBody] UpdateCustomerInfoDto updateDto)
+        {
+            var success = await _customerService.UpdateCustomerInfo(updateDto);
+
+            if (!success)
+            {
+                return BadRequest("Failed to update customer information.");
+            }
+
+            return Ok("Customer information updated successfully.");
+        }
+
+        [HttpDelete("delete-account")]
+        public async Task<IActionResult> DeleteAccountAsync()
+        {
+            var success = await _customerService.DeleteAccountAsync();
+
+            if (!success)
+            {
+                return NotFound(); 
+            }
+
+            return Ok(); 
         }
 
     }

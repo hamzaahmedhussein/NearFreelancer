@@ -6,9 +6,12 @@ namespace Connect.Application.Services
 {
     public interface ICustomerService
     {
-        Task<bool> DeleteCustomerAsync();
+       // Task<bool> DeleteCustomerAsync();
         Task<IdentityResult> Register(RegisterUserDto userDto);
         Task<LoginResult> Login(LoginUserDto userDto);
+        Task<LogoutResult> LogoutAsync();
+        Task<bool> DeleteAccountAsync();
+        Task<bool> UpdateCustomerInfo(UpdateCustomerInfoDto updateDto);
         Task<bool> ConfirmEmail(string email, string token);
         Task<bool> ForgetPassword(string email);
         Task<IdentityResult> ChangePassword(ChangePasswordDto changePasswordDto);

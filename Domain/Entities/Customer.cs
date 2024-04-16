@@ -16,7 +16,6 @@ namespace Connect.Core.Entities
         public DateTime? DOB { get; set; }
         public virtual ICollection<Message> SentMessages { get; set; }
         public virtual ICollection<Message> ReceivedMessages { get; set; }
-        public virtual ICollection<ServiceRequest> Requests { get; set; }
         public virtual ICollection<ReservationAppointment> Reservations { get; set; }
 
         public virtual Freelancer Freelancer { get; set; }

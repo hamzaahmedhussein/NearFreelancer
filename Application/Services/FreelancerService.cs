@@ -9,7 +9,6 @@ using Connect.Core.Models;
 using Connect.Core.Specification;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Connect.Application.Services
@@ -193,8 +192,6 @@ namespace Connect.Application.Services
             public async Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests()
             {
             var customer = await _userHelpers.GetCurrentUserAsync();
-           // var spec = new CustomerWithFreelancer(customer.Id);
-           // var user = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
             var freelancer = customer.Freelancer;
             if (customer == null)
                     throw new Exception("User not found");
@@ -202,15 +199,14 @@ namespace Connect.Application.Services
                 if (await _userManager.IsInRoleAsync(customer, "Freelancer") == false)
                     throw new Exception("User not freelancer");
 
+            System.Console.WriteLine(freelancer.Id);
+            var requests = await _unitOfWork.ServiceRequest.FindAsync(r=>r.FreelancerId == freelancer.Id);
+
+            if (requests == null)
+                throw new Exception("No requests");
 
 
-                var requests =freelancer.Requests;
-
-                if (requests == null)
-                    throw new Exception("No requests");
-
-
-                return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
+            return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
             }
 
             public async Task<bool> AcceptServiceRequest(string requestId)

@@ -19,7 +19,7 @@ public class ReservationProvider
     public virtual List<OfferedService>? OfferedServicesList { get; set; }
     public DateTime DOJ { get; set; }
     public List<string>? FeatureList { get; set; }
-    public virtual List<Room>? Rooms { get; set; }
+   // public virtual List<Room>? Rooms { get; set; }
     public bool? Availability { get; set; }
 }
 

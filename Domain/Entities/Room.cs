@@ -20,7 +20,6 @@ namespace Connect.Core.Models
         public virtual ReservationProvider Provider { get; set; }
         public bool IsAvailable { get; set; }
         public int BedsNumber { get; set; }
-        public List<
-            string> FeatureList { get; set; }
+        public List< string> FeatureList { get; set; }
     }
 }

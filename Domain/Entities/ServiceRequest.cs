@@ -10,7 +10,7 @@ namespace Connect.Core.Models
         public DateTime? DateTime { get; set; }
         public RequisStatus? Status { get; set; }
         public decimal Price { get; set; }
-        public string? FreelanceId { get; set; }
+        public string? FreelancerId { get; set; }
         public virtual Freelancer Freelancer { get; set; }
         public string? CustomerId { get; set; }
         public virtual Customer Customer { get; set; }

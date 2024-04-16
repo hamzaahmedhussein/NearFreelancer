@@ -283,9 +283,6 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeesId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
@@ -334,7 +331,6 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RoomID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("from")
@@ -407,11 +403,7 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FreelanceId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FreelancerId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -461,21 +453,21 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b790cdc4-4e35-483c-968e-dd06f354a744",
+                            Id = "fee7b781-ea62-46d7-ba59-d0f6d4c4c402",
                             ConcurrencyStamp = "0",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
-                            Id = "c6064aa6-0248-4a87-b5b4-343ccaf3a81b",
+                            Id = "38e1c995-c92e-4e05-9927-0a8e41c82a0c",
                             ConcurrencyStamp = "1",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         },
                         new
                         {
-                            Id = "d4fc50ea-73b5-44a8-9610-33721029bb47",
+                            Id = "a2827db5-deeb-41f1-bd32-46a02b31bcf1",
                             ConcurrencyStamp = "2",
                             Name = "ReservationProvider",
                             NormalizedName = "ReservationProvider"
@@ -648,9 +640,7 @@ namespace Connect.Infrastructure.Migrations
 
                     b.HasOne("Connect.Core.Models.Room", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoomID");
 
                     b.Navigation("Customer");
 
@@ -660,7 +650,7 @@ namespace Connect.Infrastructure.Migrations
             modelBuilder.Entity("Connect.Core.Models.Room", b =>
                 {
                     b.HasOne("Connect.Core.Entities.ReservationProvider", "Provider")
-                        .WithMany("Rooms")
+                        .WithMany()
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -671,14 +661,12 @@ namespace Connect.Infrastructure.Migrations
             modelBuilder.Entity("Connect.Core.Models.ServiceRequest", b =>
                 {
                     b.HasOne("Connect.Core.Entities.Customer", "Customer")
-                        .WithMany("Requests")
+                        .WithMany()
                         .HasForeignKey("CustomerId");
 
                     b.HasOne("Connect.Core.Models.Freelancer", "Freelancer")
-                        .WithMany("Requests")
-                        .HasForeignKey("FreelancerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("FreelancerId");
 
                     b.Navigation("Customer");
 
@@ -743,8 +731,6 @@ namespace Connect.Infrastructure.Migrations
 
                     b.Navigation("ReceivedMessages");
 
-                    b.Navigation("Requests");
-
                     b.Navigation("ReservationProvider")
                         .IsRequired();
 
@@ -756,8 +742,6 @@ namespace Connect.Infrastructure.Migrations
             modelBuilder.Entity("Connect.Core.Entities.ReservationProvider", b =>
                 {
                     b.Navigation("OfferedServicesList");
-
-                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
@@ -765,8 +749,6 @@ namespace Connect.Infrastructure.Migrations
                     b.Navigation("OfferedServicesList");
 
                     b.Navigation("ReceivedMessages");
-
-                    b.Navigation("Requests");
 
                     b.Navigation("SentMessages");
                 });

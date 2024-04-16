@@ -22,6 +22,8 @@ namespace Connect.Application.Services
         private readonly IMapper _mapper;
         private readonly IUserHelpers _userHelpers;
         private readonly IMailingService _mailingService;
+        private readonly SignInManager<Customer> _signInManager;
+
 
 
         public CustomerService(IUnitOfWork unitOfWork,
@@ -30,7 +32,9 @@ namespace Connect.Application.Services
             IHttpContextAccessor contextAccessor,
             ILogger<CustomerService> logger,
             IUserHelpers userHelpers,
-            IMailingService mailingService
+            IMailingService mailingService,
+            SignInManager<Customer> signInManager
+
             )
         {
             _unitOfWork = unitOfWork;
@@ -40,6 +44,7 @@ namespace Connect.Application.Services
             _mapper = mapper;
             _userHelpers = userHelpers;
             _mailingService = mailingService;
+            _signInManager = signInManager;
 
 
         }
@@ -165,6 +170,40 @@ namespace Connect.Application.Services
         }
 
 
+
+        public async Task<LogoutResult> LogoutAsync()
+        {
+            try
+            {
+                var currentUser = await _userHelpers.GetCurrentUserAsync();
+                if (currentUser == null)
+                {
+                    return new LogoutResult
+                    {
+                        Success = false,
+                        Message = "User Not Found"
+                    };
+                }
+
+                await _signInManager.SignOutAsync();
+                return new LogoutResult
+                {
+                    Success = true,
+                    Message = "User successfully logged out."
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return new LogoutResult
+                {
+                    Success = false,
+                    Message = "An error occurred while logging out."
+                };
+            }
+        }
+
+
         public async Task<CurrentProfileResult> GetCurrentProfileAsync()
         {
             var user = await _userHelpers.GetCurrentUserAsync();
@@ -190,6 +229,7 @@ namespace Connect.Application.Services
 
 
             var serviceRequist = _mapper.Map<ServiceRequest>(request);
+            serviceRequist.FreelancerId= Id;
             serviceRequist.Freelancer = freelancer;
             serviceRequist.Customer = customer;
             _unitOfWork.ServiceRequest.Add(serviceRequist);
@@ -217,27 +257,59 @@ namespace Connect.Application.Services
 
 
 
-        public async Task<bool> DeleteCustomerAsync()
+        //public async Task<bool> DeleteCustomerAsync()
+        //{
+        //    _unitOfWork.CreateTransaction();
+        //    try
+        //    {
+        //        var user = await _userHelpers.GetCurrentUserAsync();
+        //        var roles=await _userManager.GetRolesAsync(user);
+        //        await _userManager.RemoveFromRolesAsync(user, roles);
+        //        if(user.Freelancer != null)
+        //            _unitOfWork.FreelancerBusiness.Remove(user.Freelancer);
+        //        await _userManager.DeleteAsync(user);
+        //        _unitOfWork.Save();
+        //        _unitOfWork.Commit();
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        _unitOfWork.Rollback();
+        //        return false;
+        //    }
+        //}
+        public async Task<bool> DeleteAccountAsync()
         {
-            _unitOfWork.CreateTransaction();
-            try
+            var user = await _userHelpers.GetCurrentUserAsync();
+            if (user == null)
             {
-                var user = await _userHelpers.GetCurrentUserAsync();
-                var roles=await _userManager.GetRolesAsync(user);
-                await _userManager.RemoveFromRolesAsync(user, roles);
-                if(user.Freelancer != null)
-                    _unitOfWork.FreelancerBusiness.Remove(user.Freelancer);
-                await _userManager.DeleteAsync(user);
-                _unitOfWork.Save();
-                _unitOfWork.Commit();
-                return true;
+                return false; 
             }
-            catch
-            {
-                _unitOfWork.Rollback();
-                return false;
-            }
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded; 
         }
+
+
+        public async Task<bool> UpdateCustomerInfo(UpdateCustomerInfoDto updateDto)
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            if (user == null)
+                return false;
+            user.Name = updateDto.Name;
+            user.State = updateDto.State;
+            user.City = updateDto.City;
+            user.Street= updateDto.Street;
+            user.DOB = updateDto.DOB;
+            user.Gender= updateDto.Gender;
+
+            _unitOfWork.Customer.Update(user);
+            _unitOfWork.Save();
+            return true;
+
+
+
+        }
+
 
     }
 

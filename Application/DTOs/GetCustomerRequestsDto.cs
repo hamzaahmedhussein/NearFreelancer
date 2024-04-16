@@ -12,6 +12,5 @@ namespace Connect.Application.DTOs
         public string FreelancerName { get; set; }
         public string Status { get; set; }
 
-
            }
 }

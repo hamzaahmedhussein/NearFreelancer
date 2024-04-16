@@ -15,10 +15,8 @@ namespace Connect.Application.Services
         Task<LoginResult> GenerateJwtTokenAsync(IEnumerable<Claim> claims);
         Task<Customer> GetCurrentUserAsync();
         Task<string> AddImage(IFormFile file,string folderName);
-        //Task<string> AddFreelancerImage(IFormFile? file);
         Task<Message> SendMessage(string content, string recipientId);
-        Task<List<
-            Message>> GetConversation(string userId, string recipientId);
+        Task<List<Message>> GetConversation(string userId, string recipientId);
         Task DeleteImageAsync(string fileName, string folderName);
         Task<string> UpdateImageAsync(IFormFile? file, string fileName, string folderName);
     }
