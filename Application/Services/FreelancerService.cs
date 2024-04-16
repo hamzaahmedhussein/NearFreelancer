@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Castle.Core.Resource;
 using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
@@ -94,9 +95,7 @@ namespace Connect.Application.Services
             if (currentUser == null)
                 return false;
 
-            var spec = new CustomerWithFreelancer(currentUser.Id);
-            var user = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
-            var freelancer = user.Freelancer;
+            var freelancer = currentUser.Freelancer;
 
             _unitOfWork.CreateTransaction();
 
@@ -162,8 +161,11 @@ namespace Connect.Application.Services
 
             public async Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests()
             {
-                var customer = await _userHelpers.GetCurrentUserAsync();
-                if (customer == null)
+            var customer = await _userHelpers.GetCurrentUserAsync();
+           // var spec = new CustomerWithFreelancer(customer.Id);
+           // var user = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
+            var freelancer = customer.Freelancer;
+            if (customer == null)
                     throw new Exception("User not found");
 
                 if (await _userManager.IsInRoleAsync(customer, "Freelancer") == false)
@@ -171,7 +173,7 @@ namespace Connect.Application.Services
 
 
 
-                var requests = await _unitOfWork.ServiceRequest.FindAsync(c => c.FreelanceId == customer.Freelancer.Id);
+                var requests =freelancer.Requests;
 
                 if (requests == null)
                     throw new Exception("No requests");

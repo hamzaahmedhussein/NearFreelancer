@@ -192,7 +192,8 @@ namespace Connect.Application.Services
             var serviceRequist = _mapper.Map<ServiceRequest>(request);
             serviceRequist.Freelancer = freelancer;
             serviceRequist.Customer=customer;
-
+            _unitOfWork.ServiceRequest.Add(serviceRequist);
+            _unitOfWork.Save();
             return true;
 
         }

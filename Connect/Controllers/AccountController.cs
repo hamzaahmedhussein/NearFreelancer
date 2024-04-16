@@ -13,16 +13,12 @@ namespace Connect.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ICustomerService _customerService;
-        private readonly IFreelancerService _freelanceService;
         private readonly IReservationProviderService _reservationProviderService;
         private readonly IMailingService _mailingService;
 
-
-
-        public AccountController(ICustomerService customerService, IFreelancerService freelance, IReservationProviderService reservationProviderService,IMailingService mailingService)
+        public AccountController(ICustomerService customerService, IReservationProviderService reservationProviderService,IMailingService mailingService)
         {
             _customerService = customerService;
-            _freelanceService = freelance;
             _reservationProviderService = reservationProviderService;
             _mailingService = mailingService;
         }
@@ -98,13 +94,6 @@ namespace Connect.API.Controllers
             }
 
             return NotFound("User profile not found.");
-        }
-
-        [HttpPost("get-freelancer")]
-        public IActionResult GetFreelancer(string id)
-        {
-            var model = _freelanceService.GetFreelancerById(id);
-            return Ok(model);
         }
 
         [HttpPost("get-reservationProvider")]
