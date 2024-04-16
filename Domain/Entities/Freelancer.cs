@@ -12,9 +12,9 @@ namespace Connect.Core.Models
     {
         public string Id { get; set; }=Guid.NewGuid().ToString();
         public string Name { get; set; } 
-        public string PhoneNumber { get; set; }
-        public string Profession { get; set; }
-        public string Description { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Profession { get; set; }
+        public string? Description { get; set; }
         public string? OwnerId { get; set; }
         public virtual Customer? Owner { get; set; }
         public List<int>? EmployeesId { get; set; } 
@@ -23,12 +23,12 @@ namespace Connect.Core.Models
         public string? Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
-        public virtual ICollection<Message>? SentMessages { get; set; }
-        public virtual ICollection<Message>? ReceivedMessages { get; set; }
-        public virtual ICollection<OfferedService>? OfferedServicesList { get; set; }
-        public virtual ICollection<ServiceRequest>? Requests { get; set; }
+        public virtual List<Message>? SentMessages { get; set; }
+        public virtual List<Message>? ReceivedMessages { get; set; }
+        public virtual List<OfferedService> OfferedServicesList { get; set; }
+        public virtual List<ServiceRequest>? Requests { get; set; }
         public DateTime DOJ { get; set; }
-        public virtual ICollection<string>? Skills { get; set; }
+        public virtual List<string>? Skills { get; set; }
         public bool? Availability { get; set; }
 
     }

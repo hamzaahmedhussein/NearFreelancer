@@ -10,9 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Security.Claims;
 namespace Connect.Application.Services
 {
     public class UserHelpers : IUserHelpers
@@ -62,11 +59,6 @@ namespace Connect.Application.Services
             ClaimsPrincipal currentUser = _contextAccessor.HttpContext.User;
             return await _userManager.GetUserAsync(currentUser);
 
-            
-            //var user = await _userManager.Users
-            //    .Include(u => u.Freelancer) // Eagerly load the associated Freelancer
-            //    .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(currentUser));
-            //return user;
         }
 
     public async Task<string> AddCustomerImage(IFormFile? file)

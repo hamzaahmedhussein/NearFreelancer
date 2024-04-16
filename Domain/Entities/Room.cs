@@ -10,7 +10,7 @@ namespace Connect.Core.Models
 {
     public class Room
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Description { get; set; }
         public string Image { get; set; }
         public string BackgroundImage { get; set; }
@@ -20,6 +20,7 @@ namespace Connect.Core.Models
         public virtual ReservationProvider Provider { get; set; }
         public bool IsAvailable { get; set; }
         public int BedsNumber { get; set; }
-        public List<string> FeatureList { get; set; }
+        public List<
+            string> FeatureList { get; set; }
     }
 }

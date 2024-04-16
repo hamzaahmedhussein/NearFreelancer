@@ -9,7 +9,7 @@ namespace Connect.Core.Models
 {
     public class ReservationAppointment
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string RoomID { get; set; }
         public virtual Room Room { get; set; }
         public string CustomerId { get; set; }

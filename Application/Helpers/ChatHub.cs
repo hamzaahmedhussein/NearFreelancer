@@ -21,7 +21,8 @@ namespace Connect.Application.Helpers
             await Clients.Client(recipientId).SendAsync("ReceiveMessage", sentMessage);
         }
 
-        public async Task<List<Message>> GetConversation(string recipientId)
+        public async Task<List<
+            Message>> GetConversation(string recipientId)
         {
             var user = await _userHelper.GetCurrentUserAsync(); 
             return await _userHelper.GetConversation(user.Id, recipientId);

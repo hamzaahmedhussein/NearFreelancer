@@ -3,8 +3,10 @@ using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
+using Connect.Core.Specification;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Connect.Application.Services
 {
@@ -52,12 +54,12 @@ namespace Connect.Application.Services
                 user.Freelancer = freelancer;
                 _unitOfWork.Save();
                 _unitOfWork.Commit();
-            }catch
+            } catch
             {
                 _unitOfWork.Rollback();
                 return false;
             }
-            
+
 
             return true;
         }
@@ -66,16 +68,15 @@ namespace Connect.Application.Services
 
         public async Task<FreelancerBusinessResult> GetFreelancerProfile()
         {
-
-            var user = await _userHelpers.GetCurrentUserAsync();
-
-            if (user != null)
+            var currentUser = await _userHelpers.GetCurrentUserAsync();
+            if (currentUser == null)
+                return null;
+            var spec = new CustomerWithFreelancer(currentUser.Id);
+            var user = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
+            var freelancer = user?.Freelancer;
+            if (freelancer != null)
             {
-                var profile = user.Freelancer;
-                if (profile != null)
-                {
-                    return _mapper.Map<FreelancerBusinessResult>(profile);
-                }
+                return _mapper.Map<FreelancerBusinessResult>(freelancer);
             }
 
             return null;
@@ -92,117 +93,121 @@ namespace Connect.Application.Services
             var currentUser = await _userHelpers.GetCurrentUserAsync();
             if (currentUser == null)
                 return false;
+
+            var spec = new CustomerWithFreelancer(currentUser.Id);
+            var user = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
+            var freelancer = user.Freelancer;
+
             _unitOfWork.CreateTransaction();
+
             var image = await _userHelpers.AddFreelancerImage(serviceDto.Image);
+            var offeredService = _mapper.Map<OfferedService>(serviceDto);
+            offeredService.Image = image;
+
             try
             {
-                var offeredService = _mapper.Map<OfferedService>(serviceDto);
-                offeredService.Image = image;
-                var freelancer = await _unitOfWork.FreelancerBusiness.FindFirstAsync(f => f.OwnerId == "d592884d-7986-47bb-b8e7-7a4c1d531542");
-
                 if (freelancer != null)
                 {
                     freelancer.OfferedServicesList.Add(offeredService);
                     _unitOfWork.Save();
                 }
                 _unitOfWork.Commit();
-                    return true;
+                return true;
             }
             catch
             {
                 _unitOfWork.Rollback();
                 await _userHelpers.DeleteFreelancerImageAsync(image);
+                return false;
             }
-            
-
-            return false;
         }
+
 
         public async Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto)
-        {
-            var query = await _unitOfWork.FreelancerBusiness.GetAllAsync();
-
-            if (!string.IsNullOrWhiteSpace(filterDto.Name))
             {
-                query = query.Where(e => e.Name.Contains(filterDto.Name));
-            }
+                var query = await _unitOfWork.FreelancerBusiness.GetAllAsync();
 
-            if (!string.IsNullOrWhiteSpace(filterDto.Profession))
-            {
-                query = query.Where(e => e.Profession.Contains(filterDto.Profession));
-            }
-
-            if (!string.IsNullOrWhiteSpace(filterDto.City))
-            {
-                query = query.Where(e => e.City == filterDto.City);
-            }
-
-            if (!string.IsNullOrWhiteSpace(filterDto.Street))
-            {
-                query = query.Where(e => e.Street == filterDto.Street);
-            }
-
-            if (filterDto.Skills != null && filterDto.Skills.Any())
-            {
-                foreach (var skill in filterDto.Skills)
+                if (!string.IsNullOrWhiteSpace(filterDto.Name))
                 {
-                    query = query.Where(e => e.Skills.Contains(skill));
+                    query = query.Where(e => e.Name.Contains(filterDto.Name));
                 }
+
+                if (!string.IsNullOrWhiteSpace(filterDto.Profession))
+                {
+                    query = query.Where(e => e.Profession.Contains(filterDto.Profession));
+                }
+
+                if (!string.IsNullOrWhiteSpace(filterDto.City))
+                {
+                    query = query.Where(e => e.City == filterDto.City);
+                }
+
+                if (!string.IsNullOrWhiteSpace(filterDto.Street))
+                {
+                    query = query.Where(e => e.Street == filterDto.Street);
+                }
+
+                if (filterDto.Skills != null && filterDto.Skills.Any())
+                {
+                    foreach (var skill in filterDto.Skills)
+                    {
+                        query = query.Where(e => e.Skills.Contains(skill));
+                    }
+                }
+
+                query = query.Where(e => e.Availability == filterDto.Availability);
+
+                return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(query);
             }
 
-            query = query.Where(e => e.Availability == filterDto.Availability);
+            public async Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests()
+            {
+                var customer = await _userHelpers.GetCurrentUserAsync();
+                if (customer == null)
+                    throw new Exception("User not found");
 
-            return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(query);
-        }
-
-        public async Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests()
-        {
-            var customer = await _userHelpers.GetCurrentUserAsync();
-            if (customer == null)
-                throw new Exception("User not found");
-
-            if (await _userManager.IsInRoleAsync(customer, "Freelancer") == false)
-                throw new Exception("User not freelancer");
+                if (await _userManager.IsInRoleAsync(customer, "Freelancer") == false)
+                    throw new Exception("User not freelancer");
 
 
 
-            var requests = await _unitOfWork.ServiceRequest.FindAsync(c => c.FreelanceId == customer.Freelancer.Id);
+                var requests = await _unitOfWork.ServiceRequest.FindAsync(c => c.FreelanceId == customer.Freelancer.Id);
 
-            if (requests == null)
-                throw new Exception("No requests");
+                if (requests == null)
+                    throw new Exception("No requests");
 
 
-            return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
-        }
+                return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
+            }
 
-        public async Task<bool> AcceptServiceRequest(string requestId)
-        {
-            var serviceRequest = _unitOfWork.ServiceRequest.GetById(requestId);
-            if (serviceRequest == null)
-                throw new Exception("Service request not found.");
+            public async Task<bool> AcceptServiceRequest(string requestId)
+            {
+                var serviceRequest = _unitOfWork.ServiceRequest.GetById(requestId);
+                if (serviceRequest == null)
+                    throw new Exception("Service request not found.");
 
-            if (serviceRequest.Status != RequisStatus.Pending)
-                throw new Exception("Service request is not in a pending state.");
+                if (serviceRequest.Status != RequisStatus.Pending)
+                    throw new Exception("Service request is not in a pending state.");
 
-            serviceRequest.Status = RequisStatus.Accepted;
-            _unitOfWork.Save();
-            return true;
-        }
+                serviceRequest.Status = RequisStatus.Accepted;
+                _unitOfWork.Save();
+                return true;
+            }
 
-        public async Task<bool> RefuseServiceRequest(string requestId)
-        {
-            var serviceRequest = _unitOfWork.ServiceRequest.GetById(requestId);
-            if (serviceRequest == null)
-                throw new Exception("Service request not found.");
+            public async Task<bool> RefuseServiceRequest(string requestId)
+            {
+                var serviceRequest = _unitOfWork.ServiceRequest.GetById(requestId);
+                if (serviceRequest == null)
+                    throw new Exception("Service request not found.");
 
-            if (serviceRequest.Status != RequisStatus.Pending)
-                throw new Exception("Service request is not in a pending state.");
+                if (serviceRequest.Status != RequisStatus.Pending)
+                    throw new Exception("Service request is not in a pending state.");
 
-            serviceRequest.Status = RequisStatus.Refused;
-            _unitOfWork.Save();
-            return true;
-        }
+                serviceRequest.Status = RequisStatus.Refused;
+                _unitOfWork.Save();
+                return true;
+            }
 
-    }
-}
+        } }
+
 

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 #nullable disable
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Connect.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -17,7 +16,6 @@ namespace Connect.Infrastructure.Migrations
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "4acb414c-fdf6-48ff-ad70-70a205e1b0b7");
-
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",

@@ -1,4 +1,6 @@
-﻿using Infrastructure.Data;
+﻿using Connect.Application.Helpers;
+using Connect.Core.Specification;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -45,4 +47,21 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         context.Set<T>().RemoveRange(entities);
     }
+
+    public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecification<T> spec)
+    {
+        return await ApplySpecification(spec).ToListAsync();
+    }
+
+    public async Task<T> GetByIdWithSpecAsync(ISpecification<T> spec)
+    {
+        return await ApplySpecification(spec).FirstOrDefaultAsync();
+
+    }
+
+    public IQueryable<T> ApplySpecification(ISpecification<T> specification)
+    {
+        return SpecificationEvaluator<T>.GetQuery(context.Set<T>().AsQueryable(), specification);
+    }
+
 }

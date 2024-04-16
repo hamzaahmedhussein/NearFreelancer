@@ -8,7 +8,7 @@ namespace Connect.Core.Entities
 {
     public class Message
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Content { get; set; }
         public DateTime SentAt { get; set; }
         public string SenderId { get; set; } 

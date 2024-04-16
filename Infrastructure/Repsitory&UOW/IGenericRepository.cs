@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Connect.Core.Specification;
+using System.Linq.Expressions;
 
 public interface IGenericRepository<T> where T : class
 {
@@ -10,4 +11,7 @@ public interface IGenericRepository<T> where T : class
     void RemoveRange(IEnumerable<T> entities);
     Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
     Task<T> FindFirstAsync(Expression<Func<T, bool>> expression);
+    Task<T> GetByIdWithSpecAsync(ISpecification<T> spec);
+    Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecification<T> spec);
+    IQueryable<T> ApplySpecification(ISpecification<T> specification);
 }

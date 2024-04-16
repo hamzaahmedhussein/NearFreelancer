@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Connect.Core.Models;
+﻿using Connect.Core.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Connect.Core.Entities

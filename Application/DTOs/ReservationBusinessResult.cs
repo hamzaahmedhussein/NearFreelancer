@@ -11,7 +11,7 @@ namespace Connect.Application.DTOs
         public string BackgroundImage { get; set; }
         public string City { get; set; }
         public string Street { get; set; }
-        public List<OfferedService> OfferedServicesList { get; set; }
+        public List< OfferedService> OfferedServicesList { get; set; }
         public List<string> FeatureList { get; set; }
         public List<Room> Rooms { get; set; }
         public DateTime AvailableFrom { get; set; }

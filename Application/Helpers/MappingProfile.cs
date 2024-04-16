@@ -35,8 +35,7 @@ namespace Connect.Application.Helpers
             CreateMap<Customer, CurrentProfileResult>();
 
             CreateMap<AddOfferedServiceDto, OfferedService>()
-          .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()))
-           .ForMember(dest => dest.Image, opt => opt.Ignore());
+          .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
             CreateMap<SendServiceRequestDto, ServiceRequest>()
               .ForMember(dest => dest.DateTime, opt => opt.MapFrom(_ => DateTime.Now))

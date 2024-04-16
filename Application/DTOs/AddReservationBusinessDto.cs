@@ -18,6 +18,6 @@ namespace Connect.Application.DTOs
         public string? Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
-        public List<string>? FeatureList { get; set; }
+        public List<string>? FeatureICollection { get; set; }
     }
 }
