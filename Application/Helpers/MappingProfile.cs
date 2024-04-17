@@ -19,6 +19,8 @@ namespace Connect.Application.Helpers
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => new MailAddress(src.Email).User))
                .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
+            CreateMap<UpdateCustomerInfoDto, Customer>();
+
             CreateMap<AddFreelancerBusinessDto, Freelancer>()
             .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
           
@@ -34,8 +36,10 @@ namespace Connect.Application.Helpers
 
             CreateMap<Customer, CurrentProfileResult>();
 
-            CreateMap<AddOfferedServiceDto, OfferedService>()
+            CreateMap<AddOfferedServiceDto, OfferedService>()//remove date of join when update
           .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
+
+
 
             CreateMap<SendServiceRequestDto, ServiceRequest>()
               .ForMember(dest => dest.DateTime, opt => opt.MapFrom(_ => DateTime.Now))

@@ -55,15 +55,8 @@ namespace Connect.API.Controllers
         [HttpPut("update-freelancer-business")]
         public async Task<IActionResult> UpdateFreelancerBusiness([FromBody] AddFreelancerBusinessDto freelancerDto)
         {
-            try
-            {
                 var result = await _freelancerService.UpdateFreelancerBusiness(freelancerDto);
                 return result ? Ok("Freelancer updated successfully.") : BadRequest("Failed to update freelancer.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
 
 

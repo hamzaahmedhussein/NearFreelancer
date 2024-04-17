@@ -295,13 +295,9 @@ namespace Connect.Application.Services
             var user = await _userHelpers.GetCurrentUserAsync();
             if (user == null)
                 return false;
-            user.Name = updateDto.Name;
-            user.State = updateDto.State;
-            user.City = updateDto.City;
-            user.Street= updateDto.Street;
-            user.DOB = updateDto.DOB;
-            user.Gender= updateDto.Gender;
 
+            user=_mapper.Map(updateDto,user);
+                
             _unitOfWork.Customer.Update(user);
             _unitOfWork.Save();
             return true;

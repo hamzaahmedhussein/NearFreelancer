@@ -41,9 +41,9 @@ namespace Connect.Application.Services
 
             if (await _userManager.IsInRoleAsync(user, "Freelancer"))
                 throw new InvalidOperationException("User already has a freelancer profile.");
+                _unitOfWork.CreateTransaction();
             try
             {
-                _unitOfWork.CreateTransaction();
                 var result = await _userManager.AddToRoleAsync(user, "Freelancer");
                 if (!result.Succeeded)
                     throw new InvalidOperationException("Failed to assign Freelancer role to the user.");
@@ -132,21 +132,26 @@ namespace Connect.Application.Services
 
             if (currentUser.Freelancer != null)
             {
+                    _unitOfWork.CreateTransaction();
                 try
                 {
-                    _unitOfWork.CreateTransaction();
-                    var image = await _userHelpers.UpdateImageAsync(serviceDto.Image, offeredService.Image, Consts.Consts.Freelancer);
-                    offeredService = _mapper.Map<OfferedService>(serviceDto);
-                    offeredService.Image = image;
+                    string newImagePath = await _userHelpers.AddImage(serviceDto.Image,Consts.Consts.Freelancer);
+                    var oldImagePath=offeredService.Image;
+                    offeredService = _mapper.Map(serviceDto, offeredService);
+                    offeredService.Image = newImagePath;
                     _unitOfWork.OfferedService.Update(offeredService);
-                    _unitOfWork.Save();
+                    var saved = _unitOfWork.Save();
                     _unitOfWork.Commit();
+                    if( saved > 0)
+                        if(oldImagePath != null)
+                            await _userHelpers.DeleteImageAsync(oldImagePath, Consts.Consts.Freelancer);
+                    else
+                        await _userHelpers.DeleteImageAsync(newImagePath, Consts.Consts.Freelancer);
                     return true;
                 }
                 catch
                 {
                     _unitOfWork.Rollback();
-                    //await _userHelpers.DeleteImageAsync(image, Consts.Consts.Freelancer);
                     return false;
                 }
             }
@@ -245,7 +250,7 @@ namespace Connect.Application.Services
 
             try
             {
-                oldFreelancerBusiness = _mapper.Map<Freelancer>(freelancerDto);
+                oldFreelancerBusiness = _mapper.Map(freelancerDto, oldFreelancerBusiness);
                 _unitOfWork.FreelancerBusiness.Update(oldFreelancerBusiness);
                 _unitOfWork.Save();
                 return true;
