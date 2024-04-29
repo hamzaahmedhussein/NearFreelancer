@@ -40,6 +40,8 @@ namespace Connect.Application.Helpers
           .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
 
+            CreateMap<OfferedService, OfferedServiceResult>();
+
 
             CreateMap<SendServiceRequestDto, ServiceRequest>()
               .ForMember(dest => dest.DateTime, opt => opt.MapFrom(_ => DateTime.Now))

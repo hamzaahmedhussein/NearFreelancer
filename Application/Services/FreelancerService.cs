@@ -3,10 +3,8 @@ using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
-using Connect.Core.Specification;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Connect.Application.Services
 {
@@ -72,9 +70,8 @@ namespace Connect.Application.Services
             var currentUser = await _userHelpers.GetCurrentUserAsync();
             if (currentUser == null)
                 return null;
-            var spec = new CustomerWithFreelancer(currentUser.Id);
-            var user = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
-            var freelancer = user?.Freelancer;
+
+           var freelancer = currentUser?.Freelancer;
             if (freelancer != null)
             {
                 return _mapper.Map<FreelancerBusinessResult>(freelancer);
@@ -275,8 +272,20 @@ namespace Connect.Application.Services
             return true;
         }
 
-       
-    }         
-    } 
+        public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId)
+        {
+           
+            var offeredServices = await _unitOfWork.OfferedService.FindAsync(s => s.FreelancerId == freelancerId);
+            return _mapper.Map<List<OfferedServiceResult>>(offeredServices);
+        }
+
+
+
+
+
+
+
+    }
+} 
 
 

@@ -172,6 +172,20 @@ namespace Connect.API.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+                
+          
+        }
+        [Authorize]
+        [HttpGet("get-offered-services/{freelancerId}")]
+        public async Task<IActionResult> GetOfferedServices(string freelancerId)
+        {
+            if (string.IsNullOrWhiteSpace(freelancerId))
+            {
+                return BadRequest("Freelancer ID must be provided.");
+            }
+
+            var offeredServiceResults = await _freelancerService.GetOfferedServicesAsync(freelancerId);
+            return Ok(offeredServiceResults);
         }
     }
 }

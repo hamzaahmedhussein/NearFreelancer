@@ -10,7 +10,7 @@ namespace Connect.Application.DTOs
         public string Image { get; set; }
         public string BackgroundImage { get; set; }
         public List< ServiceRequest> Requests { get; set; }
-        public List<ReservationAppointment> Reservations { get; set; }
+       // public List<ReservationAppointment> Reservations { get; set; }
 
     }
 }

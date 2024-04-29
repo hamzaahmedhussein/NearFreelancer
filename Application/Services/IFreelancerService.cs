@@ -25,5 +25,6 @@ namespace Connect.Application.Services
         Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests();
         Task<bool> AcceptServiceRequest(string requestId);
         Task<bool> RefuseServiceRequest(string requestId);
+        Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId);
     }
 }
