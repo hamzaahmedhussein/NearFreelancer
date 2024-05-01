@@ -89,7 +89,7 @@ namespace Connect.Application.Services
         }
 
         
-        public async Task DeleteImageAsync(string imagePath, string profileType)
+        public async Task<bool> DeleteImageAsync(string imagePath, string profileType)
         {
             if (string.IsNullOrEmpty(imagePath))
             {
@@ -111,6 +111,7 @@ namespace Connect.Application.Services
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
+                return true;
             }
             else
             {

@@ -3,8 +3,10 @@ using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Connect.Application.Services
 {
@@ -304,7 +306,61 @@ namespace Connect.Application.Services
 
 
 
+        #region file handlling
+        public async Task<bool> AddFreelancerPictureAsync(IFormFile file)
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            var freelancer = user.Freelancer;
+            if (freelancer == null) return false;
+            var picture = await _userHelpers.AddImage(file, Consts.Consts.Freelancer);
+            if (picture != null)
+                freelancer.Image = picture;
+            _unitOfWork.FreelancerBusiness.Update(freelancer);
+            if (_unitOfWork.Save() > 0) return true;
+            return false;
+        }
 
+        public async Task<bool> DeleteFreelancerPictureAsync()
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            var freelancer = user.Freelancer;
+            if (freelancer == null) return false;
+            var oldPicture = freelancer.Image;
+            freelancer.Image = null;
+            _unitOfWork.FreelancerBusiness.Update(freelancer);
+            if (_unitOfWork.Save() > 0)
+                return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Freelancer);
+            return false;
+        }
+
+        public async Task<bool> UpdateFreelancerPictureAsync(IFormFile? file)
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            var freelancer = user.Freelancer;
+            if (freelancer == null) return false;
+            var newPicture = await _userHelpers.AddImage(file, Consts.Consts.Freelancer);
+            var oldPicture = freelancer.Image;
+            freelancer.Image = newPicture;
+            _unitOfWork.FreelancerBusiness.Update(freelancer);
+            if (_unitOfWork.Save() > 0 && !oldPicture.IsNullOrEmpty())
+            {
+                return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Freelancer);
+            }
+            await _userHelpers.DeleteImageAsync(newPicture, Consts.Consts.Freelancer);
+            return false;
+        }
+
+        public async Task<string> GetFreelancerPictureAsync()
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            var freelancer = user.Freelancer;
+            if (freelancer == null)
+                throw new Exception("freelancer not found");
+            else if (freelancer.Image.IsNullOrEmpty())
+                throw new Exception("freelancer dont have profile image");
+            return freelancer.Image;
+        }
+        #endregion
 
 
     }

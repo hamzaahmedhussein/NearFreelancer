@@ -271,7 +271,36 @@ namespace Connect.API.Controllers
             }
         }
 
-
+        #region file handling
+        [Authorize]
+        [HttpGet("get-customer-picture")]
+        public async Task<IActionResult> GetCustomerPictureAsync()
+        {
+            var result = await _customerService.GetCustomerPictureAsync();
+            return result != string.Empty ? Ok(result) : BadRequest("there is not picture.");
+        }
+        [Authorize]
+        [HttpPost("add-customer-picture")]
+        public async Task<IActionResult> AddCustomerPictureAsync(IFormFile? file)
+        {
+            var result = await _customerService.AddCustomerPictureAsync(file);
+            return result ? Ok("picture has been added successfully.") : BadRequest("failed to add picture");
+        }
+        [Authorize]
+        [HttpPut("Update-customer-picture")]
+        public async Task<IActionResult> UpdateCustomerPictureAsync(IFormFile? file)
+        {
+            var result = await _customerService.UpdateCustomerPictureAsync(file);
+            return result ? Ok("picture has been added successfully.") : BadRequest("failed to add picture");
+        }
+        [Authorize]
+        [HttpDelete("delete-customer-picture")]
+        public async Task<IActionResult> DeleteCustomerPictureAsync()
+        {
+            var result = await _customerService.DeleteCustomerPictureAsync();
+            return result ? Ok("picture has been deleted successfully.") : BadRequest("failed to delete picture");
+        }
+        #endregion
     }
 
 }

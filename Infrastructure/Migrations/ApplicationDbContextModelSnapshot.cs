@@ -453,21 +453,21 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "cb044256-3e04-407f-a87b-fba3dbada4a8",
+                            Id = "2be07556-df2c-4c80-9de3-0d3b2d77fdc8",
                             ConcurrencyStamp = "0",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
-                            Id = "030b85b3-4978-42ad-b80b-d9e4c779c331",
+                            Id = "dd7839b5-8618-4806-ba4b-dedd772a85ef",
                             ConcurrencyStamp = "1",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         },
                         new
                         {
-                            Id = "93817bc2-e7c6-4c41-845e-ab1b0aa78b42",
+                            Id = "a3949f31-d9c8-4d79-b882-6d43044e2fa5",
                             ConcurrencyStamp = "2",
                             Name = "ReservationProvider",
                             NormalizedName = "ReservationProvider"

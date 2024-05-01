@@ -187,5 +187,37 @@ namespace Connect.API.Controllers
             var offeredServiceResults = await _freelancerService.GetOfferedServicesAsync(freelancerId);
             return Ok(offeredServiceResults);
         }
+
+
+        #region file handling
+        [Authorize]
+        [HttpGet("get-freelancer-picture")]
+        public async Task<IActionResult> GetUserPictureAsync()
+        {
+            var result = await _freelancerService.GetFreelancerPictureAsync();
+            return result != string.Empty ? Ok(result) : BadRequest("there is not picture.");
+        }
+        [Authorize]
+        [HttpPost("add-freelancer-picture")]
+        public async Task<IActionResult> AddUserPictureAsync(IFormFile? file)
+        {
+            var result = await _freelancerService.AddFreelancerPictureAsync(file);
+            return result ? Ok("picture has been added successfully.") : BadRequest("failed to add picture");
+        }
+        [Authorize]
+        [HttpPut("Update-freelancer-picture")]
+        public async Task<IActionResult> UpdateUserPictureAsync(IFormFile? file)
+        {
+            var result = await _freelancerService.UpdateFreelancerPictureAsync(file);
+            return result ? Ok("picture has been added successfully.") : BadRequest("failed to add picture");
+        }
+        [Authorize]
+        [HttpDelete("delete-freelancer-picture")]
+        public async Task<IActionResult> DeleteUserPictureAsync()
+        {
+            var result = await _freelancerService.DeleteFreelancerPictureAsync();
+            return result ? Ok("picture has been deleted successfully.") : BadRequest("failed to delete picture");
+        }
+        #endregion
     }
 }

@@ -26,5 +26,10 @@ namespace Connect.Application.Services
         Task<bool> AcceptServiceRequest(string requestId);
         Task<bool> RefuseServiceRequest(string requestId);
         Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId);
+
+        Task<bool> AddFreelancerPictureAsync(IFormFile file);
+        Task<bool> DeleteFreelancerPictureAsync();
+        Task<bool> UpdateFreelancerPictureAsync(IFormFile? file);
+        Task<string> GetFreelancerPictureAsync();
     }
 }
