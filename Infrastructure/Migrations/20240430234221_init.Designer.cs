@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240429215610_aaa")]
-    partial class aaa
+    [Migration("20240430234221_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -456,21 +456,21 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a6e81a03-e35b-4f53-90ee-41430eef29ef",
+                            Id = "cb044256-3e04-407f-a87b-fba3dbada4a8",
                             ConcurrencyStamp = "0",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
-                            Id = "baa79ffc-c827-4883-941b-f718a42febb5",
+                            Id = "030b85b3-4978-42ad-b80b-d9e4c779c331",
                             ConcurrencyStamp = "1",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         },
                         new
                         {
-                            Id = "a233c3b7-4db5-4cf0-a55e-8d365022a22e",
+                            Id = "93817bc2-e7c6-4c41-845e-ab1b0aa78b42",
                             ConcurrencyStamp = "2",
                             Name = "ReservationProvider",
                             NormalizedName = "ReservationProvider"
@@ -605,7 +605,7 @@ namespace Connect.Infrastructure.Migrations
             modelBuilder.Entity("Connect.Core.Entities.OfferedService", b =>
                 {
                     b.HasOne("Connect.Core.Models.Freelancer", "Freelancer")
-                        .WithMany("OfferedServices")
+                        .WithMany()
                         .HasForeignKey("FreelancerId");
 
                     b.HasOne("Connect.Core.Entities.ReservationProvider", null)
@@ -751,8 +751,6 @@ namespace Connect.Infrastructure.Migrations
 
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
                 {
-                    b.Navigation("OfferedServices");
-
                     b.Navigation("ReceivedMessages");
 
                     b.Navigation("SentMessages");

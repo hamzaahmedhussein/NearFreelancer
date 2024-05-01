@@ -261,16 +261,38 @@ namespace Connect.Application.Services
 
         public async Task<bool> DeleteFreelancerBusinessAsync()
         {
+            try
+            {
+                var user = await _userHelpers.GetCurrentUserAsync();
+                if (user == null)
+                    return false;
 
-            var user = await _userHelpers.GetCurrentUserAsync();
-            if (user == null)
+                var removeRoleResult = await _userManager.RemoveFromRoleAsync(user, "Freelancer");
+                if (!removeRoleResult.Succeeded)
+                {
+                    return false;
+                }
+
+                var freelancer = user.Freelancer;
+                if (freelancer != null)
+                {
+                    _unitOfWork.FreelancerBusiness.Remove(freelancer);
+                }
+                else
+                {
+                    return false;
+                }
+
+                _unitOfWork.Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                
                 return false;
-            await _userManager.RemoveFromRoleAsync(user, "Freelancer");
-            var freelancer = user.Freelancer;
-            _unitOfWork.FreelancerBusiness.Remove(user.Freelancer);
-            _unitOfWork.Save();
-            return true;
+            }
         }
+
 
         public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId)
         {

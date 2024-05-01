@@ -155,10 +155,15 @@ namespace Connect.Application.Services
 
             var claims = new List<Claim>
     {
+        new Claim(ClaimTypes.Name, user.UserName),
         new Claim(ClaimTypes.Email, user.Email),
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
+
+            claims.Add(new Claim("ConfirmedEmail", user.EmailConfirmed ? "True" : "False"));
+
+
 
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)

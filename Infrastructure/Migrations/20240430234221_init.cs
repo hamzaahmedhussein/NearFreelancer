@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Connect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class getMigration : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -193,11 +193,9 @@ namespace Connect.Infrastructure.Migrations
                         name: "FK_Freelancers_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                         onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                });
 
-        });
-            
             migrationBuilder.CreateTable(
                 name: "ReservationProviders",
                 columns: table => new
@@ -381,9 +379,9 @@ namespace Connect.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2fd18829-46c3-40be-9c73-63a0c235d9ac", "0", "Customer", "Customer" },
-                    { "36696970-c4ee-4d4b-abb6-c9b38bf9ffcb", "2", "ReservationProvider", "ReservationProvider" },
-                    { "5de1c0d8-abd3-430d-8ddc-1a27f6514675", "1", "Freelancer", "Freelancer" }
+                    { "030b85b3-4978-42ad-b80b-d9e4c779c331", "1", "Freelancer", "Freelancer" },
+                    { "93817bc2-e7c6-4c41-845e-ab1b0aa78b42", "2", "ReservationProvider", "ReservationProvider" },
+                    { "cb044256-3e04-407f-a87b-fba3dbada4a8", "0", "Customer", "Customer" }
                 });
 
             migrationBuilder.CreateIndex(
