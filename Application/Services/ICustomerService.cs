@@ -1,5 +1,6 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Core.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace Connect.Application.Services
@@ -24,7 +25,9 @@ namespace Connect.Application.Services
        
         // IEnumerable<HomePageFilterDto> GetFilteredProviders(HomePageFilterDto filterDto);
 
-
-
+        Task<bool> AddCustomerPictureAsync(IFormFile file);
+        Task<bool> DeleteCustomerPictureAsync();
+        Task<bool> UpdateCustomerPictureAsync(IFormFile? file);
+        Task<string> GetCustomerPictureAsync();
     }
 }

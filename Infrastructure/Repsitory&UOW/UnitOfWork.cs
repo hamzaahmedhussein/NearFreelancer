@@ -2,13 +2,6 @@
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
 using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Connect.Infrastructure.Repsitory_UOW

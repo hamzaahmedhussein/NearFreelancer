@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Connect.Core.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Connect.Application.Services
 {
@@ -328,5 +329,58 @@ namespace Connect.Application.Services
             }
         }
         #endregion
+
+        #region file handlling
+        public async Task<bool> AddCustomerPictureAsync(IFormFile file)
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            if (user == null) return false;
+            var picture = await _userHelpers.AddImage(file, Consts.Consts.Customer);
+            if (picture != null)
+                user.Image = picture;
+            _unitOfWork.Customer.Update(user);
+            if (_unitOfWork.Save() > 0) return true;
+            return false;
+        }
+
+        public async Task<bool> DeleteCustomerPictureAsync()
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            if (user == null) return false;
+            var oldPicture = user.Image;
+            user.Image = null;
+            _unitOfWork.Customer.Update(user);
+            if (_unitOfWork.Save() > 0)
+                return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Customer);
+            return false;
+        }
+
+        public async Task<bool> UpdateCustomerPictureAsync(IFormFile? file)
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            if (user == null) return false;
+            var newPicture = await _userHelpers.AddImage(file, Consts.Consts.Customer);
+            var oldPicture = user.Image;
+            user.Image = newPicture;
+            _unitOfWork.Customer.Update(user);
+            if (_unitOfWork.Save() > 0 && !oldPicture.IsNullOrEmpty())
+            {
+                return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Customer);
+            }
+            await _userHelpers.DeleteImageAsync(newPicture, Consts.Consts.Customer);
+            return false;
+        }
+
+        public async Task<string> GetCustomerPictureAsync()
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            if (user == null)
+                throw new Exception("customer not found");
+            else if (user.Image.IsNullOrEmpty())
+                throw new Exception("customer dont have profile image");
+            return user.Image;
+        }
+        #endregion
+
     }
 }
