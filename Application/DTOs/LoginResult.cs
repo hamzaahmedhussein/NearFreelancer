@@ -17,7 +17,8 @@ namespace Connect.Application.DTOs
     public enum LoginErrorType
     {
         InvalidPassword,
-        UserNotFound
+        UserNotFound,
+        EmailNotConfirmed
     }
 
 }

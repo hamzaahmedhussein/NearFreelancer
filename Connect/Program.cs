@@ -11,10 +11,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Connect.Infrastructure.Repsitory_UOW;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(new ConfigurationBuilder()
+    .AddJsonFile("seri-log.config.json")
+    .Build())
+    .Enrich.FromLogContext()
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

@@ -24,6 +24,7 @@ namespace Connect.Core.Models
         public string City { get; set; }
         public string State { get; set; }
         public virtual List<Message>? SentMessages { get; set; }
+        public  List<OfferedService>? OfferedServices { get; set; }
         public virtual List<Message>? ReceivedMessages { get; set; }
         public DateTime DOJ { get; set; }
         public virtual List<string>? Skills { get; set; }

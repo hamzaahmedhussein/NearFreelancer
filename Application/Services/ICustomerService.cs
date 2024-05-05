@@ -7,7 +7,8 @@ namespace Connect.Application.Services
     public interface ICustomerService
     {
        // Task<bool> DeleteCustomerAsync();
-        Task<IdentityResult> Register(RegisterUserDto userDto);
+        Task<IdentityResult> Register(RegisterUserDto userDto); 
+        Task<IdentityResult> CreateUserAsync(RegisterUserDto userDto);
         Task<LoginResult> Login(LoginUserDto userDto);
         Task<LogoutResult> LogoutAsync();
         Task<bool> DeleteAccountAsync();
@@ -20,6 +21,7 @@ namespace Connect.Application.Services
         Task<IEnumerable<GetCustomerRequestsDto>> GetMyRequests();
         Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request);
         Task<bool> DeletePendingRequestAsync(string id);
+       
         // IEnumerable<HomePageFilterDto> GetFilteredProviders(HomePageFilterDto filterDto);
 
 

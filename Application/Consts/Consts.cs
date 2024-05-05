@@ -8,7 +8,8 @@ namespace Connect.Application.Consts
 {
     public class Consts
     {
-        public const string Profile = "Profile";
+        public const string Customer = "Customer"; 
         public const string Freelancer = "Freelancer";
+
     }
 }

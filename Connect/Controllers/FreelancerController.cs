@@ -2,20 +2,22 @@
 using Connect.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace Connect.API.Controllers
-{
+{ 
     [Route("api/[controller]")]
     [ApiController]
     public class FreelancerController : ControllerBase
     {
         private readonly IFreelancerService _freelancerService;
+        private readonly ILogger<FreelancerService> _logger;
 
-        public FreelancerController(IFreelancerService freelancerService)
+
+        public FreelancerController(IFreelancerService freelancerService, ILogger<FreelancerService> logger)
         {
             _freelancerService = freelancerService ?? throw new ArgumentNullException(nameof(freelancerService));
+            _logger = logger;
         }
 
         [Authorize]
@@ -60,31 +62,37 @@ namespace Connect.API.Controllers
         }
 
 
+        //[HttpGet("freelancer-profile")]
+        //public async Task<IActionResult> GetFreelancerProfile()
+        //{
+        //    var result = await _freelancerService.GetFreelancerProfile();
+        //    return result != null ? Ok(result) : NotFound("Freelancer profile not found.");
+        //}
 
-
-
-
-        [HttpGet("freelancer-profile")]
-        public async Task<IActionResult> GetFreelancerProfile()
-        {
-            var result = await _freelancerService.GetFreelancerProfile();
-            return result != null ? Ok(result) : NotFound("Freelancer profile not found.");
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetFreelancerById(string id)
+        [HttpGet("get-freelancer-by-id/{id}")]
+        public async Task<IActionResult> GetFreelancerById(string id, int servicesPageIndex = 0)
         {
             try
             {
-                var result = await _freelancerService.GetFreelancerById(id);
-                return result != null ? Ok(result) : NotFound(new { message = "Freelancer not found." });
+                _logger.LogInformation("API request: Getting freelancer profile for ID: {FreelancerId} with offered services page index: {PageIndex}", id, servicesPageIndex);
+
+                var result = await _freelancerService.GetFreelancerById(id, servicesPageIndex);
+
+                if (result == null)
+                {
+                    _logger.LogWarning("Freelancer with ID: {FreelancerId} not found", id);
+                    return NotFound();
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogError(ex, "API error: Error retrieving freelancer profile for ID: {FreelancerId}", id);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, "An error occurred while processing your request.");
             }
         }
-
         [Authorize]
         [HttpPost("add-offered-service")]
         public async Task<IActionResult> AddOfferedService( AddOfferedServiceDto serviceDto)

@@ -3,29 +3,37 @@ using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
+using Connect.Core.Specification;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Connect.Application.Services
 {
     public class FreelancerService : IFreelancerService
     {
+        #region Constructor
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUserHelpers _userHelpers;
         private readonly UserManager<Customer> _userManager;
+        private readonly ILogger<FreelancerService> _logger;
+
 
         public FreelancerService(IUnitOfWork unitOfWork,
             IConfiguration config, IMapper mapper,
-            IUserHelpers userHelpers, UserManager<Customer> userManager
+            IUserHelpers userHelpers, UserManager<Customer> userManager,
+            ILogger<FreelancerService> logger
             )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userHelpers = userHelpers;
             _userManager = userManager;
+            _logger = logger;
 
         }
+        #endregion
 
         public async Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto)
         {
@@ -45,7 +53,6 @@ namespace Connect.Application.Services
                 var result = await _userManager.AddToRoleAsync(user, "Freelancer");
                 if (!result.Succeeded)
                     throw new InvalidOperationException("Failed to assign Freelancer role to the user.");
-                //_unitOfWork.Save();
                 var freelancer = _mapper.Map<Freelancer>(freelancerDto);
                 freelancer.Owner = user;
                 _unitOfWork.FreelancerBusiness.Add(freelancer);
@@ -65,26 +72,50 @@ namespace Connect.Application.Services
 
 
 
-        public async Task<FreelancerBusinessResult> GetFreelancerProfile()
-        {
-            var currentUser = await _userHelpers.GetCurrentUserAsync();
-            if (currentUser == null)
-                return null;
+        //public async Task<FreelancerBusinessResult> GetFreelancerProfile()
+        //{
+        //    var currentUser = await _userHelpers.GetCurrentUserAsync();
+        //    if (currentUser == null)
+        //        return null;
 
-           var freelancer = currentUser?.Freelancer;
-            if (freelancer != null)
+        //   var freelancer = currentUser?.Freelancer;
+        //    if (freelancer != null)
+        //    {
+        //        return _mapper.Map<FreelancerBusinessResult>(freelancer);
+        //    }
+
+        //    return null;
+        //}
+        #region GetFreelancerById
+        public async Task<FreelancerBusinessResult> GetFreelancerById(string id, int servicesPageIndex = 0)
+        {
+            try
             {
-                return _mapper.Map<FreelancerBusinessResult>(freelancer);
+                _logger.LogInformation("Getting freelancer profile for ID: {FreelancerId} with offered services page index: {PageIndex}", id, servicesPageIndex);
+
+                var specification = new FreelancerWithOfferedServices(id, servicesPageIndex);
+
+                var profile = await _unitOfWork.FreelancerBusiness.GetByIdWithSpecAsync(specification);
+
+                if (profile == null)
+                {
+                    _logger.LogWarning("Freelancer with ID: {FreelancerId} not found", id);
+                    return null;
+                }
+
+                var result = _mapper.Map<FreelancerBusinessResult>(profile);
+
+                _logger.LogInformation("Successfully retrieved freelancer profile for ID: {FreelancerId}", id);
+                return result;
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving freelancer profile for ID: {FreelancerId}", id);
+                throw;
+            }
         }
+        #endregion
 
-        public async Task<FreelancerBusinessResult> GetFreelancerById(string id)
-        {
-            var profile = _unitOfWork.FreelancerBusiness.GetById(id);
-            return _mapper.Map<FreelancerBusinessResult>(profile);
-        }
 
         public async Task<bool> AddOfferedService(AddOfferedServiceDto serviceDto)
         {

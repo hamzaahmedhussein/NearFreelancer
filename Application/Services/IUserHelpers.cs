@@ -1,6 +1,7 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace Connect.Application.Services
 {
     public interface IUserHelpers
     {
+        Task<IdentityResult> AddUserToRoleAsync(string email, string role);
+        List<Claim> CreateClaimsForUser(Customer user);
         Task<LoginResult> GenerateJwtTokenAsync(IEnumerable<Claim> claims);
         Task<Customer> GetCurrentUserAsync();
         Task<string> AddImage(IFormFile file,string folderName);

@@ -1,10 +1,9 @@
 ﻿using Connect.Application.DTOs;
-using Connect.Application.MailSettings;
 using Connect.Application.Services;
 using Connect.Application.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MimeKit;
+using Serilog;
 
 namespace Connect.API.Controllers
 {
@@ -12,36 +11,98 @@ namespace Connect.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        #region Constructor
         private readonly ICustomerService _customerService;
         private readonly IReservationProviderService _reservationProviderService;
         private readonly IMailingService _mailingService;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(ICustomerService customerService, IReservationProviderService reservationProviderService,IMailingService mailingService)
+        public AccountController(ICustomerService customerService, IReservationProviderService reservationProviderService,IMailingService mailingService, ILogger<AccountController> logger)
         {
             _customerService = customerService;
             _reservationProviderService = reservationProviderService;
             _mailingService = mailingService;
+            _logger = logger;
         }
-
+        #endregion
 
         #region Registeration
 
+
         [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] RegisterUserDto userDto)
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto userDto)
         {
             if (!ModelState.IsValid)
             {
+                Log.Warning("Invalid model state in registration request.");
                 return BadRequest(ModelState);
             }
 
-            var result = await _customerService.Register(userDto);
-            if (result.Succeeded)
+            try
             {
-                return Ok("Registration succeeded.");
+                Log.Information("Processing registration request for email: {Email}", userDto.Email);
+
+                var result = await _customerService.Register(userDto);
+
+                if (result.Succeeded)
+                {
+                    Log.Information("Registration succeeded for email: {Email}", userDto.Email);
+                    return Ok("Registration succeeded.");
+                }
+
+                var errorDescription = result.Errors.FirstOrDefault()?.Description ?? "Registration failed.";
+                Log.Warning("Registration failed for email: {Email}. Error: {Error}", userDto.Email, errorDescription);
+
+                return BadRequest(errorDescription);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An unexpected error occurred during registration for email: {Email}", userDto.Email);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred. Please try again later.");
+            }
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserDto userDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                Log.Warning("Invalid model state in login request.");
+                return BadRequest(ModelState);
             }
 
-            return BadRequest(result.Errors);
+            try
+            {
+                Log.Information("Processing login request for email: {Email}", userDto.Email);
+
+                var result = await _customerService.Login(userDto);
+
+                if (result.Success)
+                {
+                    Log.Information("Login successful for email: {Email}", userDto.Email);
+                    return Ok(result);
+                }
+
+                string errorMessage = result.ErrorType switch
+                {
+                    LoginErrorType.UserNotFound => "User not found.",
+                    LoginErrorType.InvalidPassword => "Incorrect password.",
+                    LoginErrorType.EmailNotConfirmed => "Email not confirmed.",
+                    _ => "Invalid login attempt."
+                };
+
+                Log.Warning("Login failed for email: {Email}. Error: {Error}", userDto.Email, errorMessage);
+
+                return Unauthorized(new { message = errorMessage });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while processing the login request for email: {Email}", userDto.Email);
+
+                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
+            }
         }
+
 
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string email, [FromQuery] string token)
@@ -52,33 +113,7 @@ namespace Connect.API.Controllers
 
             return BadRequest("Failed to confirm email.");
         }
-        [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] LoginUserDto userDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _customerService.Login(userDto);
-            if (result.Success)
-                return Ok(result);
-
-            string errorMessage;
-            if (result.ErrorType == LoginErrorType.UserNotFound)
-            {
-                errorMessage = "User not found.";
-            }
-            else if (result.ErrorType == LoginErrorType.InvalidPassword)
-            {
-                errorMessage = "Incorrect password.";
-            }
-            else
-            {
-                errorMessage = "Invalid login attempt.";
-            }
-
-            ModelState.AddModelError(string.Empty, errorMessage);
-            return Unauthorized(ModelState);
-        }
+       
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
@@ -100,7 +135,7 @@ namespace Connect.API.Controllers
 
         [Authorize]
         [HttpGet("profile")]
-        public async Task<IActionResult> GetProfileAsync()
+        public async Task<IActionResult> GetProfileAsync()  
         {
             var result = await _customerService.GetCurrentProfileAsync();
             if (result != null)

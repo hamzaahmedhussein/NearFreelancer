@@ -15,8 +15,8 @@ namespace Connect.Application.Services
         Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto);
         Task<bool> UpdateFreelancerBusiness(AddFreelancerBusinessDto freelancerDto);
         Task<bool> DeleteFreelancerBusinessAsync();
-        Task<FreelancerBusinessResult> GetFreelancerProfile();
-        Task<FreelancerBusinessResult> GetFreelancerById(string id);
+    //    Task<FreelancerBusinessResult> GetFreelancerProfile();
+        Task<FreelancerBusinessResult> GetFreelancerById(string id, int pageIndex = 0);
         Task<bool> AddOfferedService(AddOfferedServiceDto serviceDto);
         Task<bool> UpdateOfferedService(string id, AddOfferedServiceDto serviceDto);
        
