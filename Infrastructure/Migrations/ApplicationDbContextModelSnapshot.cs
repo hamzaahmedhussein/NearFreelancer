@@ -403,24 +403,24 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bedf680e-20b2-48fc-ad2b-61129db514f0",
-                            ConcurrencyStamp = "0",
+                            Id = "3c9ae575-5ea9-4c06-b342-f893d1449d34",
+                            ConcurrencyStamp = "be06b733-1c20-44eb-a839-c3f61e654e5b",
                             Name = "Customer",
-                            NormalizedName = "Customer"
+                            NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "6357d77b-edc2-4ae0-9963-15d45f6bd0ae",
-                            ConcurrencyStamp = "1",
+                            Id = "bfcb2eeb-2f5b-4a1d-86e8-6e0c44440dc3",
+                            ConcurrencyStamp = "77397812-7a92-4f98-b04a-7674e95a3b73",
                             Name = "Freelancer",
-                            NormalizedName = "Freelancer"
+                            NormalizedName = "FREELANCER"
                         },
                         new
                         {
-                            Id = "bd1613e6-dfd5-4e53-bbdf-e2163027fa26",
-                            ConcurrencyStamp = "2",
+                            Id = "3673f322-7f6c-4d5e-b538-aaf234545a5c",
+                            ConcurrencyStamp = "95ed625c-072c-40bb-8e12-ff38ff71f7f8",
                             Name = "ReservationProvider",
-                            NormalizedName = "ReservationProvider"
+                            NormalizedName = "RESERVATIONPROVIDER"
                         });
                 });
 

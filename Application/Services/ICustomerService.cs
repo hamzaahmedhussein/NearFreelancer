@@ -18,7 +18,8 @@ namespace Connect.Application.Services
         Task<bool> ForgetPassword(string email);
         Task<IdentityResult> ChangePassword(ChangePasswordDto changePasswordDto);
         Task<IdentityResult> ResetPassword(ResetPasswordDto resetPasswordDto);
-        Task<CurrentProfileResult> GetCurrentProfileAsync();
+        Task<CustomerProfileResult> GetCurrentProfileAsync();
+        Task<CustomerProfileResult> GetCustomerById(string id);
         Task<IEnumerable<GetCustomerRequestsDto>> GetMyRequests();
         Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request);
         Task<bool> DeletePendingRequestAsync(string id);

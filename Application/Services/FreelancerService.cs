@@ -73,7 +73,6 @@ namespace Connect.Application.Services
         }
 
 
-
         public async Task<FreelancerBusinessResult> GetFreelancerProfile()
         {
             var currentUser = await _userHelpers.GetCurrentUserAsync();
@@ -89,16 +88,14 @@ namespace Connect.Application.Services
             return null;
         }
         #region GetFreelancerById
-        public async Task<FreelancerBusinessResult> GetFreelancerById(string id, int servicesPageIndex = 0)
+        public async Task<FreelancerBusinessResult> GetFreelancerById(string id)
         {
             try
             {
-                _logger.LogInformation("Getting freelancer profile for ID: {FreelancerId} with offered services page index: {PageIndex}", id, servicesPageIndex);
+                _logger.LogInformation("Getting freelancer profile for ID: {FreelancerId} with offered services", id);
 
-                var specification = new FreelancerWithOfferedServices(id, servicesPageIndex);
 
-                var profile = await _unitOfWork.FreelancerBusiness.GetByIdWithSpecAsync(specification);
-
+                var profile =  _unitOfWork.FreelancerBusiness.GetById(id);
                 if (profile == null)
                 {
                     _logger.LogWarning("Freelancer with ID: {FreelancerId} not found", id);

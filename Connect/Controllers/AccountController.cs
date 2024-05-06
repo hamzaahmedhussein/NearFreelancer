@@ -4,6 +4,7 @@ using Connect.Application.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Net;
 
 namespace Connect.API.Controllers
 {
@@ -144,8 +145,31 @@ namespace Connect.API.Controllers
             return NotFound("User profile not found.");
         }
 
-      
 
+        [HttpGet("get-customer-by-id/{id}")]
+        public async Task<IActionResult> GetFreelancerById(string id)
+        {
+            try
+            {
+                _logger.LogInformation("API request: Getting customer profile for ID: {CustomerId} with requests ", id);
+
+                var result = await _customerService.GetCustomerById(id);
+
+                if (result == null)
+                {
+                    _logger.LogWarning("Freelancer with ID: {customerId} not found", id);
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "API error: Error retrieving customer profile for ID: {customerId}", id);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, "An error occurred while processing your request.");
+            }
+        }
         //[HttpPost("get-reservationProvider")]
         //public IActionResult GetReservationProvider(string id)
         //{

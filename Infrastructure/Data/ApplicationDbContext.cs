@@ -10,7 +10,7 @@ namespace Infrastructure.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
+        
         }   
 
         public DbSet<Customer> Customers { get; set; }
@@ -36,13 +36,29 @@ namespace Infrastructure.Data
         }
         private void SeedRoles(ModelBuilder builder)
         {
-            builder.Entity<IdentityRole>().HasData
-                (
-                  new IdentityRole() { Name = "Customer", ConcurrencyStamp = "0", NormalizedName = "Customer" },
-                  new IdentityRole() { Name = "Freelancer", ConcurrencyStamp = "1", NormalizedName = "Freelancer" },
-                  new IdentityRole() { Name = "ReservationProvider", ConcurrencyStamp = "2", NormalizedName = "ReservationProvider" }
-                );
-           
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Customer",
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                    NormalizedName = "CUSTOMER"
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Freelancer",
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                    NormalizedName = "FREELANCER"
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "ReservationProvider",
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                    NormalizedName = "RESERVATIONPROVIDER"
+                }
+            );
         }
     }
 }

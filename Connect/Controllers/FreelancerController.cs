@@ -70,13 +70,13 @@ namespace Connect.API.Controllers
         }
 
         [HttpGet("get-freelancer-by-id/{id}")]
-        public async Task<IActionResult> GetFreelancerById(string id, int servicesPageIndex = 0)
+        public async Task<IActionResult> GetFreelancerById(string id)
         {
             try
             {
-                _logger.LogInformation("API request: Getting freelancer profile for ID: {FreelancerId} with offered services page index: {PageIndex}", id, servicesPageIndex);
+                _logger.LogInformation("API request: Getting freelancer profile for ID: {FreelancerId} with offered services ", id);
 
-                var result = await _freelancerService.GetFreelancerById(id, servicesPageIndex);
+                var result = await _freelancerService.GetFreelancerById(id);
 
                 if (result == null)
                 {

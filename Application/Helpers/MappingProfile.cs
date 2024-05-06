@@ -20,6 +20,8 @@ namespace Connect.Application.Helpers
                .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
             CreateMap<UpdateCustomerInfoDto, Customer>();
+            CreateMap<ServiceRequest, ServiceRequestResult>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Freelancer.Name));
 
             CreateMap<AddFreelancerBusinessDto, Freelancer>()
             .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
@@ -34,7 +36,7 @@ namespace Connect.Application.Helpers
 
             CreateMap<ReservationProvider, ReservationBusinessResult>();
 
-            CreateMap<Customer, CurrentProfileResult>();
+            CreateMap<Customer, CustomerProfileResult>();
 
             CreateMap<AddOfferedServiceDto, OfferedService>()//remove date of join when update
           .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));

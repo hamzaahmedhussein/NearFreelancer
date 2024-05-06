@@ -223,7 +223,7 @@ namespace Connect.Application.Services
         #endregion
 
         #region GetCurrentProfile
-        public async Task<CurrentProfileResult> GetCurrentProfileAsync()
+        public async Task<CustomerProfileResult> GetCurrentProfileAsync()
         {
             var user = await _userHelpers.GetCurrentUserAsync();
 
@@ -232,7 +232,35 @@ namespace Connect.Application.Services
                 throw new KeyNotFoundException("User not found");
             }
 
-            return _mapper.Map<CurrentProfileResult>(user);
+            return _mapper.Map<CustomerProfileResult>(user);
+        }
+        #endregion
+
+        #region GetCustomerById
+        public async Task<CustomerProfileResult> GetCustomerById(string id)
+        {
+            try
+            {
+                _logger.LogInformation("Getting customer profile for ID: {customerId} with requests", id);
+
+
+                var profile = _unitOfWork.Customer.GetById(id);
+                if (profile == null)
+                {
+                    _logger.LogWarning("Customer with ID: {CustomerId} not found", id);
+                    return null;
+                }
+
+                var result = _mapper.Map<CustomerProfileResult>(profile);
+
+                _logger.LogInformation("Successfully retrieved customer profile for ID: {customerId}", id);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving freelancer profile for ID: {CustomerrId}", id);
+                throw;
+            }
         }
         #endregion
 
