@@ -17,6 +17,6 @@ namespace Connect.Core.Entities
         public DateTime DOJ { get; set; }
         public bool IsAvailable { get; set; }
         public string? FreelancerId { get; set; }
-        public virtual Freelancer Freelancer { get; set; }
+        public virtual  Freelancer Freelancer { get; set; }
     }
 }

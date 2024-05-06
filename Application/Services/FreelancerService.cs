@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Connect.Application.Services
@@ -76,20 +74,20 @@ namespace Connect.Application.Services
 
 
 
-        //public async Task<FreelancerBusinessResult> GetFreelancerProfile()
-        //{
-        //    var currentUser = await _userHelpers.GetCurrentUserAsync();
-        //    if (currentUser == null)
-        //        return null;
+        public async Task<FreelancerBusinessResult> GetFreelancerProfile()
+        {
+            var currentUser = await _userHelpers.GetCurrentUserAsync();
+            if (currentUser == null)
+                return null;
 
-        //   var freelancer = currentUser?.Freelancer;
-        //    if (freelancer != null)
-        //    {
-        //        return _mapper.Map<FreelancerBusinessResult>(freelancer);
-        //    }
+            var freelancer = currentUser?.Freelancer;
+            if (freelancer != null)
+            {
+                return _mapper.Map<FreelancerBusinessResult>(freelancer);
+            }
 
-        //    return null;
-        //}
+            return null;
+        }
         #region GetFreelancerById
         public async Task<FreelancerBusinessResult> GetFreelancerById(string id, int servicesPageIndex = 0)
         {
@@ -162,7 +160,7 @@ namespace Connect.Application.Services
             var offeredService = _unitOfWork.OfferedService.GetById(id);
             var currentUser = await _userHelpers.GetCurrentUserAsync();
 
-            if (currentUser.Freelancer != null)
+            if  (currentUser.Freelancer != null)
             {
                     _unitOfWork.CreateTransaction();
                 try
@@ -294,39 +292,39 @@ namespace Connect.Application.Services
             }
         }
 
-        public async Task<bool> DeleteFreelancerBusinessAsync()
-        {
-            try
+            public async Task<bool> DeleteFreelancerBusinessAsync()
             {
-                var user = await _userHelpers.GetCurrentUserAsync();
-                if (user == null)
-                    return false;
-
-                var removeRoleResult = await _userManager.RemoveFromRoleAsync(user, "Freelancer");
-                if (!removeRoleResult.Succeeded)
+                try
                 {
-                    return false;
-                }
+                    var user = await _userHelpers.GetCurrentUserAsync();
+                    if (user == null)
+                        return false;
 
-                var freelancer = user.Freelancer;
-                if (freelancer != null)
-                {
-                    _unitOfWork.FreelancerBusiness.Remove(freelancer);
-                }
-                else
-                {
-                    return false;
-                }
+                    var removeRoleResult = await _userManager.RemoveFromRoleAsync(user, "Freelancer");
+                    if (!removeRoleResult.Succeeded)
+                    {
+                        return false;
+                    }
 
-                _unitOfWork.Save();
-                return true;
-            }
-            catch (Exception ex)
-            {
+                    var freelancer = user.Freelancer;
+                    if (freelancer != null)
+                    {
+                        _unitOfWork.FreelancerBusiness.Remove(freelancer);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                    _unitOfWork.Save();
+                    return true;
+                }
+                catch (Exception ex)
+                {
                 
-                return false;
+                    return false;
+                }
             }
-        }
 
 
         public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId)

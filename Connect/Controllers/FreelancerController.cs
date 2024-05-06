@@ -62,12 +62,12 @@ namespace Connect.API.Controllers
         }
 
 
-        //[HttpGet("freelancer-profile")]
-        //public async Task<IActionResult> GetFreelancerProfile()
-        //{
-        //    var result = await _freelancerService.GetFreelancerProfile();
-        //    return result != null ? Ok(result) : NotFound("Freelancer profile not found.");
-        //}
+        [HttpGet("freelancer-profile")]
+        public async Task<IActionResult> GetFreelancerProfile()
+        {
+            var result = await _freelancerService.GetFreelancerProfile();
+            return result != null ? Ok(result) : NotFound("Freelancer profile not found.");
+        }
 
         [HttpGet("get-freelancer-by-id/{id}")]
         public async Task<IActionResult> GetFreelancerById(string id, int servicesPageIndex = 0)

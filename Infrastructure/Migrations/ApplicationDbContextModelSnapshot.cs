@@ -18,6 +18,9 @@ namespace Connect.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -116,51 +119,6 @@ namespace Connect.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Connect.Core.Entities.Message", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CustomerId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FreelancerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FreelancerId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RecipientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("CustomerId1");
-
-                    b.HasIndex("FreelancerId");
-
-                    b.HasIndex("FreelancerId1");
-
-                    b.ToTable("Messages");
-                });
-
             modelBuilder.Entity("Connect.Core.Entities.OfferedService", b =>
                 {
                     b.Property<string>("Id")
@@ -189,14 +147,9 @@ namespace Connect.Infrastructure.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<string>("ReservationProviderId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FreelancerId");
-
-                    b.HasIndex("ReservationProviderId");
 
                     b.ToTable("OfferedServices");
                 });
@@ -450,21 +403,21 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3b7792da-77d6-4ba5-97c6-e2f258b81250",
+                            Id = "bedf680e-20b2-48fc-ad2b-61129db514f0",
                             ConcurrencyStamp = "0",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
-                            Id = "38ccf09b-06e4-40b8-9cd3-a0bedd83f93f",
+                            Id = "6357d77b-edc2-4ae0-9963-15d45f6bd0ae",
                             ConcurrencyStamp = "1",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         },
                         new
                         {
-                            Id = "58566680-ec31-4283-a47c-3b61a1a451ab",
+                            Id = "bd1613e6-dfd5-4e53-bbdf-e2163027fa26",
                             ConcurrencyStamp = "2",
                             Name = "ReservationProvider",
                             NormalizedName = "ReservationProvider"
@@ -577,34 +530,11 @@ namespace Connect.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Connect.Core.Entities.Message", b =>
-                {
-                    b.HasOne("Connect.Core.Entities.Customer", null)
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("CustomerId");
-
-                    b.HasOne("Connect.Core.Entities.Customer", null)
-                        .WithMany("SentMessages")
-                        .HasForeignKey("CustomerId1");
-
-                    b.HasOne("Connect.Core.Models.Freelancer", null)
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("FreelancerId");
-
-                    b.HasOne("Connect.Core.Models.Freelancer", null)
-                        .WithMany("SentMessages")
-                        .HasForeignKey("FreelancerId1");
-                });
-
             modelBuilder.Entity("Connect.Core.Entities.OfferedService", b =>
                 {
                     b.HasOne("Connect.Core.Models.Freelancer", "Freelancer")
                         .WithMany("OfferedServices")
                         .HasForeignKey("FreelancerId");
-
-                    b.HasOne("Connect.Core.Entities.ReservationProvider", null)
-                        .WithMany("OfferedServicesList")
-                        .HasForeignKey("ReservationProviderId");
 
                     b.Navigation("Freelancer");
                 });
@@ -632,7 +562,7 @@ namespace Connect.Infrastructure.Migrations
             modelBuilder.Entity("Connect.Core.Models.ReservationAppointment", b =>
                 {
                     b.HasOne("Connect.Core.Entities.Customer", "Customer")
-                        .WithMany("Reservations")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -728,28 +658,13 @@ namespace Connect.Infrastructure.Migrations
                     b.Navigation("Freelancer")
                         .IsRequired();
 
-                    b.Navigation("ReceivedMessages");
-
                     b.Navigation("ReservationProvider")
                         .IsRequired();
-
-                    b.Navigation("Reservations");
-
-                    b.Navigation("SentMessages");
-                });
-
-            modelBuilder.Entity("Connect.Core.Entities.ReservationProvider", b =>
-                {
-                    b.Navigation("OfferedServicesList");
                 });
 
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
                 {
                     b.Navigation("OfferedServices");
-
-                    b.Navigation("ReceivedMessages");
-
-                    b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618
         }

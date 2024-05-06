@@ -14,11 +14,9 @@ namespace Connect.Application.DTOs
 
         public string Description { get; set; }
      
-        public string Image { get; set; }
-        public string BackgroundImage { get; set; }
         public string Location { get; set; }
         public List<string> Skills { get; set; }
-        public List<OfferedService> OfferedServices { get; set; }
+        public List<OfferedServiceResult> OfferedServices { get; set; }
 
         public bool Availability { get; set; }
     }

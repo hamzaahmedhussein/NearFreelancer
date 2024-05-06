@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Connect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -227,40 +227,24 @@ namespace Connect.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
+                name: "OfferedServices",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SenderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RecipientId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CustomerId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FreelancerId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DOJ = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.PrimaryKey("PK_OfferedServices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_CustomerId1",
-                        column: x => x.CustomerId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Messages_Freelancers_FreelancerId",
+                        name: "FK_OfferedServices_Freelancers_FreelancerId",
                         column: x => x.FreelancerId,
-                        principalTable: "Freelancers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Messages_Freelancers_FreelancerId1",
-                        column: x => x.FreelancerId1,
                         principalTable: "Freelancers",
                         principalColumn: "Id");
                 });
@@ -290,35 +274,6 @@ namespace Connect.Infrastructure.Migrations
                         name: "FK_ServiceRequests_Freelancers_FreelancerId",
                         column: x => x.FreelancerId,
                         principalTable: "Freelancers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OfferedServices",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DOJ = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ReservationProviderId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OfferedServices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OfferedServices_Freelancers_FreelancerId",
-                        column: x => x.FreelancerId,
-                        principalTable: "Freelancers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_OfferedServices_ReservationProviders_ReservationProviderId",
-                        column: x => x.ReservationProviderId,
-                        principalTable: "ReservationProviders",
                         principalColumn: "Id");
                 });
 
@@ -379,9 +334,9 @@ namespace Connect.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2be07556-df2c-4c80-9de3-0d3b2d77fdc8", "0", "Customer", "Customer" },
-                    { "a3949f31-d9c8-4d79-b882-6d43044e2fa5", "2", "ReservationProvider", "ReservationProvider" },
-                    { "dd7839b5-8618-4806-ba4b-dedd772a85ef", "1", "Freelancer", "Freelancer" }
+                    { "6357d77b-edc2-4ae0-9963-15d45f6bd0ae", "1", "Freelancer", "Freelancer" },
+                    { "bd1613e6-dfd5-4e53-bbdf-e2163027fa26", "2", "ReservationProvider", "ReservationProvider" },
+                    { "bedf680e-20b2-48fc-ad2b-61129db514f0", "0", "Customer", "Customer" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -431,34 +386,9 @@ namespace Connect.Infrastructure.Migrations
                 filter: "[OwnerId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_CustomerId",
-                table: "Messages",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_CustomerId1",
-                table: "Messages",
-                column: "CustomerId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_FreelancerId",
-                table: "Messages",
-                column: "FreelancerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_FreelancerId1",
-                table: "Messages",
-                column: "FreelancerId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OfferedServices_FreelancerId",
                 table: "OfferedServices",
                 column: "FreelancerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OfferedServices_ReservationProviderId",
-                table: "OfferedServices",
-                column: "ReservationProviderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReservationProviders_OwnerId",
@@ -509,9 +439,6 @@ namespace Connect.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "OfferedServices");

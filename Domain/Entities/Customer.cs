@@ -14,11 +14,9 @@ namespace Connect.Core.Entities
         public Gender? Gender { get; set; }
         public DateTime? DOJ { get; set; }
         public DateTime? DOB { get; set; }
-        public virtual ICollection<Message> SentMessages { get; set; }
-        public virtual ICollection<Message> ReceivedMessages { get; set; }
-        public virtual ICollection<ReservationAppointment> Reservations { get; set; }
+      
 
-        public virtual Freelancer Freelancer { get; set; }
+        public virtual  Freelancer Freelancer { get; set; }
 
         public virtual ReservationProvider ReservationProvider { get; set; }
     }

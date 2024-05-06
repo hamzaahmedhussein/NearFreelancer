@@ -182,31 +182,31 @@ namespace Connect.Application.Services
         }
         #endregion
 
-        #region Messaging
-        public async Task<Message> SendMessage(string content, string recipientId)
-        {
-            var user = await GetCurrentUserAsync();
-            var message = new Message
-            {
-                Content = content,
-                SentAt = DateTime.UtcNow,
-                SenderId = user.Id,
-                RecipientId = recipientId,
-            };
+        //#region Messaging
+        //public async Task<Message> SendMessage(string content, string recipientId)
+        //{
+        //    var user = await GetCurrentUserAsync();
+        //    var message = new Message
+        //    {
+        //        Content = content,
+        //        SentAt = DateTime.UtcNow,
+        //        SenderId = user.Id,
+        //        RecipientId = recipientId,
+        //    };
 
-            _context.Messages.Add(message);
-            await _context.SaveChangesAsync();
+        //    _context.Messages.Add(message);
+        //    await _context.SaveChangesAsync();
 
-            return message;
-        }
+        //    return message;
+        //}
 
-        public async Task<List<Message>> GetConversation(string userId, string recipientId)
-        {
-            return await _context.Messages
-              .Where(m => (m.SenderId == userId && m.RecipientId == recipientId) || (m.SenderId == recipientId && m.RecipientId == userId))
-              .OrderBy(m => m.SentAt)
-              .ToListAsync();
-        }
-        #endregion
+        //public async Task<List<Message>> GetConversation(string userId, string recipientId)
+        //{
+        //    return await _context.Messages
+        //      .Where(m => (m.SenderId == userId && m.RecipientId == recipientId) || (m.SenderId == recipientId && m.RecipientId == userId))
+        //      .OrderBy(m => m.SentAt)
+        //      .ToListAsync();
+        //}
+        //#endregion
     }
 }

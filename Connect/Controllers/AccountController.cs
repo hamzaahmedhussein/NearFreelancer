@@ -13,14 +13,12 @@ namespace Connect.API.Controllers
     {
         #region Constructor
         private readonly ICustomerService _customerService;
-        private readonly IReservationProviderService _reservationProviderService;
         private readonly IMailingService _mailingService;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(ICustomerService customerService, IReservationProviderService reservationProviderService,IMailingService mailingService, ILogger<AccountController> logger)
+        public AccountController(ICustomerService customerService,IMailingService mailingService, ILogger<AccountController> logger)
         {
             _customerService = customerService;
-            _reservationProviderService = reservationProviderService;
             _mailingService = mailingService;
             _logger = logger;
         }
@@ -148,12 +146,12 @@ namespace Connect.API.Controllers
 
       
 
-        [HttpPost("get-reservationProvider")]
-        public IActionResult GetReservationProvider(string id)
-        {
-            var model = _reservationProviderService.GetReservationProviderById(id);
-            return Ok(model);
-        }
+        //[HttpPost("get-reservationProvider")]
+        //public IActionResult GetReservationProvider(string id)
+        //{
+        //    var model = _reservationProviderService.GetReservationProviderById(id);
+        //    return Ok(model);
+        //}
 
 
         [HttpPost("forget-password")]

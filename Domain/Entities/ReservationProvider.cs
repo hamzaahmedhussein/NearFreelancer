@@ -16,7 +16,7 @@ public class ReservationProvider
     public string? Street { get; set; }
     public string City { get; set; }
     public string State { get; set; }
-    public virtual List<OfferedService>? OfferedServicesList { get; set; }
+    //public virtual List<OfferedService>? OfferedServicesList { get; set; }
     public DateTime DOJ { get; set; }
     public List<string>? FeatureList { get; set; }
    // public virtual List<Room>? Rooms { get; set; }

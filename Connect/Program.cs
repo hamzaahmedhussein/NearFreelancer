@@ -103,7 +103,6 @@ builder.Services.AddSwaggerGen(swagger =>
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IFreelancerService, FreelancerService>();
-builder.Services.AddScoped<IReservationProviderService, ReservationProviderService>();
 builder.Services.AddScoped<IUserHelpers, UserHelpers>();
 builder.Services.AddScoped<IMailingService, MailingService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

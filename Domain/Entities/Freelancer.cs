@@ -16,16 +16,14 @@ namespace Connect.Core.Models
         public string? Profession { get; set; }
         public string? Description { get; set; }
         public string? OwnerId { get; set; }
-        public virtual Customer? Owner { get; set; }
+        public virtual  Customer? Owner { get; set; }
       //  public List<int>? EmployeesId { get; set; } 
         public string? Image { get; set; }
         public string? BackgroundImage { get; set; }
         public string? Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
-        public virtual List<Message>? SentMessages { get; set; }
-        public  List<OfferedService>? OfferedServices { get; set; }
-        public virtual List<Message>? ReceivedMessages { get; set; }
+        public virtual List<OfferedService>? OfferedServices { get; set; }
         public DateTime DOJ { get; set; }
         public virtual List<string>? Skills { get; set; }
         public bool? Availability { get; set; }

@@ -10,14 +10,18 @@ namespace Connect.Core.Specification
 {
     public class FreelancerWithOfferedServices : Specification<Freelancer>
     {
-        public FreelancerWithOfferedServices(string id, int pageNumber)
-            : base(c => c.Id == id)
+        public FreelancerWithOfferedServices(string freelancerId, int pageNumber, int pageSize = 4)
+            : base(freelancer => freelancer.Id == freelancerId)
         {
-            AddInclude(c => c.OfferedServices);
+            // Add include for offered services
+            AddInclude(freelancer => freelancer.OfferedServices);
 
-            int pageSize = 4;  
+            // Calculate the skip count
             int skipCount = (pageNumber - 1) * pageSize;
+
+            // Apply pagination
             ApplyPaging(pageSize, skipCount);
         }
     }
+
 }

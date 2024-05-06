@@ -15,18 +15,18 @@ namespace Connect.Application.Helpers
             _userHelper = userHelpers;
         }
 
-        public async Task SendMessage(string message, string recipientId)
-        {
-            var sentMessage = await _userHelper.SendMessage(message, recipientId);
-            await Clients.Client(recipientId).SendAsync("ReceiveMessage", sentMessage);
-        }
+        //public async Task SendMessage(string message, string recipientId)
+        //{
+        //    var sentMessage = await _userHelper.SendMessage(message, recipientId);
+        //    await Clients.Client(recipientId).SendAsync("ReceiveMessage", sentMessage);
+        //}
 
-        public async Task<List<
-            Message>> GetConversation(string recipientId)
-        {
-            var user = await _userHelper.GetCurrentUserAsync(); 
-            return await _userHelper.GetConversation(user.Id, recipientId);
-        }
+        //public async Task<List<
+        //    Message>> GetConversation(string recipientId)
+        //{
+        //    var user = await _userHelper.GetCurrentUserAsync(); 
+        //    return await _userHelper.GetConversation(user.Id, recipientId);
+        //}
     }
 
 }
