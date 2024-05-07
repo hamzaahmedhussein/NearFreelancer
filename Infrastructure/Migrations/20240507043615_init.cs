@@ -334,9 +334,9 @@ namespace Connect.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3673f322-7f6c-4d5e-b538-aaf234545a5c", "95ed625c-072c-40bb-8e12-ff38ff71f7f8", "ReservationProvider", "RESERVATIONPROVIDER" },
-                    { "3c9ae575-5ea9-4c06-b342-f893d1449d34", "be06b733-1c20-44eb-a839-c3f61e654e5b", "Customer", "CUSTOMER" },
-                    { "bfcb2eeb-2f5b-4a1d-86e8-6e0c44440dc3", "77397812-7a92-4f98-b04a-7674e95a3b73", "Freelancer", "FREELANCER" }
+                    { "04314c58-e539-4e97-bb5d-b51807b01c24", "bcbb791b-2668-4d54-a9f2-526fe5289781", "ReservationProvider", "RESERVATIONPROVIDER" },
+                    { "129f483a-1e80-421f-bbce-c9d836585959", "10625529-e825-4488-9b63-f19af1c13e73", "Customer", "CUSTOMER" },
+                    { "37884a62-cff6-4cc7-9703-57b8a52f07ee", "ccb904ea-c68f-420d-ac75-88f9d667da95", "Freelancer", "FREELANCER" }
                 });
 
             migrationBuilder.CreateIndex(

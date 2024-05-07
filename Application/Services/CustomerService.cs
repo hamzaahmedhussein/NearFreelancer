@@ -296,8 +296,8 @@ namespace Connect.Application.Services
 
             if (requests == null)
                 throw new Exception("No requests");
-
-            return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
+            var requestResultDto = requests.Select(request => _mapper.Map<GetCustomerRequestsDto>(request));
+            return requestResultDto;
         }
         #endregion
 

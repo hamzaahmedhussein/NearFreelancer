@@ -403,22 +403,22 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3c9ae575-5ea9-4c06-b342-f893d1449d34",
-                            ConcurrencyStamp = "be06b733-1c20-44eb-a839-c3f61e654e5b",
+                            Id = "129f483a-1e80-421f-bbce-c9d836585959",
+                            ConcurrencyStamp = "10625529-e825-4488-9b63-f19af1c13e73",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "bfcb2eeb-2f5b-4a1d-86e8-6e0c44440dc3",
-                            ConcurrencyStamp = "77397812-7a92-4f98-b04a-7674e95a3b73",
+                            Id = "37884a62-cff6-4cc7-9703-57b8a52f07ee",
+                            ConcurrencyStamp = "ccb904ea-c68f-420d-ac75-88f9d667da95",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         },
                         new
                         {
-                            Id = "3673f322-7f6c-4d5e-b538-aaf234545a5c",
-                            ConcurrencyStamp = "95ed625c-072c-40bb-8e12-ff38ff71f7f8",
+                            Id = "04314c58-e539-4e97-bb5d-b51807b01c24",
+                            ConcurrencyStamp = "bcbb791b-2668-4d54-a9f2-526fe5289781",
                             Name = "ReservationProvider",
                             NormalizedName = "RESERVATIONPROVIDER"
                         });

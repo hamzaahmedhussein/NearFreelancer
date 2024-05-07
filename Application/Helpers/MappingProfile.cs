@@ -43,6 +43,7 @@ namespace Connect.Application.Helpers
 
 
             CreateMap<OfferedService, OfferedServiceResult>();
+            CreateMap<Freelancer,RequestedFreelancerDto>().ReverseMap();
 
 
             CreateMap<SendServiceRequestDto, ServiceRequest>()

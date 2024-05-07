@@ -222,7 +222,7 @@ namespace Connect.Application.Services
             return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(query);
         }
 
-        public async Task<IEnumerable<GetCustomerRequestsDto>> GetFreelancerRequests()
+        public async Task<IEnumerable<ServiceRequestResult>> GetFreelancerRequests()
         {
             var customer = await _userHelpers.GetCurrentUserAsync();
             var freelancer = customer.Freelancer;
@@ -238,8 +238,8 @@ namespace Connect.Application.Services
             if (requests == null)
                 throw new Exception("No requests");
 
-
-            return _mapper.Map<IEnumerable<GetCustomerRequestsDto>>(requests);
+            var requestResultDto = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
+            return requestResultDto;
         }
 
         public async Task<bool> AcceptServiceRequest(string requestId)
