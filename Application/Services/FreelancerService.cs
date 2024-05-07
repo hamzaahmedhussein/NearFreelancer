@@ -82,7 +82,11 @@ namespace Connect.Application.Services
             var freelancer = currentUser?.Freelancer;
             if (freelancer != null)
             {
-                return _mapper.Map<FreelancerBusinessResult>(freelancer);
+                 var freelancerResult=_mapper.Map<FreelancerBusinessResult>(freelancer);
+                var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.FreelancerId == freelancer.Id);
+                var requestsResult = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
+                freelancerResult.ServiceRequestResults = requestsResult.ToList();
+                return freelancerResult;
             }
 
             return null;
@@ -102,10 +106,15 @@ namespace Connect.Application.Services
                     return null;
                 }
 
-                var result = _mapper.Map<FreelancerBusinessResult>(profile);
+                //var result = _mapper.Map<FreelancerBusinessResult>(profile);
+                var freelancerResult = _mapper.Map<FreelancerBusinessResult>(profile);
+                var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.FreelancerId == profile.Id);
+                var requestsResult = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
+                freelancerResult.ServiceRequestResults = requestsResult.ToList();
 
                 _logger.LogInformation("Successfully retrieved freelancer profile for ID: {FreelancerId}", id);
-                return result;
+                return freelancerResult;
+                //return result;
             }
             catch (Exception ex)
             {

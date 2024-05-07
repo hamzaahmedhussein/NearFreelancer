@@ -1,13 +1,8 @@
-﻿    using AutoMapper;
+﻿using AutoMapper;
 using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect.Application.Helpers
 {
@@ -23,6 +18,8 @@ namespace Connect.Application.Helpers
             CreateMap<ServiceRequest, ServiceRequestResult>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Freelancer.Name));
 
+            
+
             CreateMap<AddFreelancerBusinessDto, Freelancer>()
             .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
           
@@ -36,7 +33,7 @@ namespace Connect.Application.Helpers
 
             CreateMap<ReservationProvider, ReservationBusinessResult>();
 
-            CreateMap<Customer, CustomerProfileResult>();
+            CreateMap<Customer, CustomerProfileResult>().ReverseMap();
 
             CreateMap<AddOfferedServiceDto, OfferedService>()//remove date of join when update
           .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));

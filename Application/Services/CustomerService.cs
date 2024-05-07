@@ -225,14 +225,19 @@ namespace Connect.Application.Services
         #region GetCurrentProfile
         public async Task<CustomerProfileResult> GetCurrentProfileAsync()
         {
-            var user = await _userHelpers.GetCurrentUserAsync();
+            var currentUser = await _userHelpers.GetCurrentUserAsync();
 
-            if (user == null)
+            if (currentUser == null)
             {
                 throw new KeyNotFoundException("User not found");
             }
 
-            return _mapper.Map<CustomerProfileResult>(user);
+
+             var user=_mapper.Map<CustomerProfileResult>(currentUser);
+            var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.CustomerId == currentUser.Id);
+            var requestsResult = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
+            user.Requests = requestsResult.ToList();
+            return user;
         }
         #endregion
 
@@ -252,7 +257,9 @@ namespace Connect.Application.Services
                 }
 
                 var result = _mapper.Map<CustomerProfileResult>(profile);
-
+                var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.CustomerId == id);
+                var requestsResult = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
+                result.Requests = requestsResult.ToList();
                 _logger.LogInformation("Successfully retrieved customer profile for ID: {customerId}", id);
                 return result;
             }

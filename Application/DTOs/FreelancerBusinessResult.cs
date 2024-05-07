@@ -18,7 +18,7 @@ namespace Connect.Application.DTOs
         public string Location { get; set; }
         public List<string> Skills { get; set; }
         public List<OfferedServiceResult> OfferedServices { get; set; }
-
+        public List<ServiceRequestResult> ServiceRequestResults { get; set; }
         public bool Availability { get; set; }
     }
 }
