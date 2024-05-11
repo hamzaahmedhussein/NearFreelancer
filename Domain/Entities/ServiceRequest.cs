@@ -11,9 +11,9 @@ namespace Connect.Core.Models
         public RequisStatus? Status { get; set; }
         public decimal Price { get; set; }
         public string? FreelancerId { get; set; }
-        public virtual Freelancer Freelancer { get; set; }
+        public  Freelancer Freelancer { get; set; }
         public string? CustomerId { get; set; }
-        public virtual Customer Customer { get; set; }
+        public  Customer Customer { get; set; }
        
 
     }

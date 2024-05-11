@@ -8,18 +8,19 @@ namespace Connect.Application.Services
         Task<bool> AddFreelancerBusiness(AddFreelancerBusinessDto freelancerDto);
         Task<bool> UpdateFreelancerBusiness(AddFreelancerBusinessDto freelancerDto);
         Task<bool> DeleteFreelancerBusinessAsync();
-        Task<FreelancerBusinessResult> GetFreelancerProfile();
-        Task<FreelancerBusinessResult> GetFreelancerById(string id);
+        Task<FreelancerProfileResult> GetFreelancerProfile();
+        Task<FreelancerProfileResult> GetFreelancerById(string id);
         Task<bool> AddOfferedService(AddOfferedServiceDto serviceDto);
         Task<bool> UpdateOfferedService(string id, AddOfferedServiceDto serviceDto);
 
 
         Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto);
-        Task<IEnumerable<ServiceRequestResult>> GetFreelancerRequests();
+        Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(string freelancerId, int pageIndex, int pageSize);
+
+
         Task<bool> AcceptServiceRequest(string requestId);
         Task<bool> RefuseServiceRequest(string requestId);
-        Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId);
-
+        Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageSize, int pageIndex);
         Task<bool> AddFreelancerPictureAsync(IFormFile file);
         Task<bool> UpdateFreelancerPictureAsync(IFormFile? file);
         Task<bool> DeleteFreelancerPictureAsync();

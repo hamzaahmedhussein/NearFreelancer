@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using Connect.Application.Specifications;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Connect.Application.Services
 {
@@ -73,26 +75,27 @@ namespace Connect.Application.Services
         }
 
 
-        public async Task<FreelancerBusinessResult> GetFreelancerProfile()
+        public async Task<FreelancerProfileResult> GetFreelancerProfile()
         {
             var currentUser = await _userHelpers.GetCurrentUserAsync();
             if (currentUser == null)
                 return null;
 
-            var freelancer = currentUser?.Freelancer;
-            if (freelancer != null)
+            var spec = new CustomerWithFreelancerSpec(currentUser.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
+
+            if (customer != null && customer.Freelancer != null)
             {
-                 var freelancerResult=_mapper.Map<FreelancerBusinessResult>(freelancer);
-                var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.FreelancerId == freelancer.Id);
-                var requestsResult = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
-                freelancerResult.ServiceRequestResults = requestsResult.ToList();
+                var freelancerResult = _mapper.Map<FreelancerProfileResult>(customer.Freelancer);
                 return freelancerResult;
             }
 
             return null;
         }
+
+
         #region GetFreelancerById
-        public async Task<FreelancerBusinessResult> GetFreelancerById(string id)
+        public async Task<FreelancerProfileResult> GetFreelancerById(string id)
         {
             try
             {
@@ -106,15 +109,10 @@ namespace Connect.Application.Services
                     return null;
                 }
 
-                //var result = _mapper.Map<FreelancerBusinessResult>(profile);
-                var freelancerResult = _mapper.Map<FreelancerBusinessResult>(profile);
-                var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.FreelancerId == profile.Id);
-                var requestsResult = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
-                freelancerResult.ServiceRequestResults = requestsResult.ToList();
-
+                var freelancerResult = _mapper.Map<FreelancerProfileResult>(profile);
+               
                 _logger.LogInformation("Successfully retrieved freelancer profile for ID: {FreelancerId}", id);
                 return freelancerResult;
-                //return result;
             }
             catch (Exception ex)
             {
@@ -125,14 +123,17 @@ namespace Connect.Application.Services
         #endregion
 
 
+
         public async Task<bool> AddOfferedService(AddOfferedServiceDto serviceDto)
         {
             var currentUser = await _userHelpers.GetCurrentUserAsync();
             if (currentUser == null)
                 return false;
 
-            var freelancer = currentUser.Freelancer;
-
+            var spec = new CustomerWithFreelancerSpec(currentUser.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
+            var freelancer = customer.Freelancer;
+           
             _unitOfWork.CreateTransaction();
 
             var image = await _userHelpers.AddImage(serviceDto.Image, Consts.Consts.Freelancer);
@@ -231,25 +232,6 @@ namespace Connect.Application.Services
             return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(query);
         }
 
-        public async Task<IEnumerable<ServiceRequestResult>> GetFreelancerRequests()
-        {
-            var customer = await _userHelpers.GetCurrentUserAsync();
-            var freelancer = customer.Freelancer;
-            if (customer == null)
-                throw new Exception("User not found");
-
-            if (await _userManager.IsInRoleAsync(customer, "Freelancer") == false)
-                throw new Exception("User not freelancer");
-
-            System.Console.WriteLine(freelancer.Id);
-            var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.FreelancerId == freelancer.Id);
-
-            if (requests == null)
-                throw new Exception("No requests");
-
-            var requestResultDto = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
-            return requestResultDto;
-        }
 
         public async Task<bool> AcceptServiceRequest(string requestId)
         {
@@ -298,7 +280,7 @@ namespace Connect.Application.Services
             }
         }
 
-            public async Task<bool> DeleteFreelancerBusinessAsync()
+        public async Task<bool> DeleteFreelancerBusinessAsync()
             {
                 try
                 {
@@ -333,11 +315,29 @@ namespace Connect.Application.Services
             }
 
 
-        public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId)
+        public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageIndex ,int pageSize)
         {
-           
-            var offeredServices = await _unitOfWork.OfferedService.FindAsync(s => s.FreelancerId == freelancerId);
-            return _mapper.Map<List<OfferedServiceResult>>(offeredServices);
+            // Create the specification instance to apply paging for the offered services
+            var spec = new PaginatedOfferedServicesSpec(freelancerId, pageIndex, pageSize);
+
+            // Get the offered services with the applied specification
+            var offeredServices = await _unitOfWork.OfferedService.GetAllWithSpecAsync(spec);
+
+            // Map the fetched offered services to DTOs
+            var offeredServiceResults = _mapper.Map<List<OfferedServiceResult>>(offeredServices);
+
+            return offeredServiceResults;
+        }
+           public async Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(string freelancerId, int pageIndex ,int pageSize)
+        {
+            var spec = new PaginatedFreelancerRequestsSpec(freelancerId, pageIndex, pageSize);
+
+            var request = await _unitOfWork.ServiceRequest.GetAllWithSpecAsync(spec);
+
+            // Map the fetched offered services to DTOs
+            var offeredServiceResults = _mapper.Map<List<FreelancerServiceRequistResult>>(request);
+
+            return offeredServiceResults;
         }
 
 

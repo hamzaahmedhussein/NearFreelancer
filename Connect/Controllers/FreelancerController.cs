@@ -1,5 +1,6 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Application.Services;
+using Connect.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -139,11 +140,11 @@ namespace Connect.API.Controllers
         }
 
         [HttpGet("get-freelancer-requests")]
-        public async Task<IActionResult> GetFreelancerRequests()
+        public async Task<IActionResult> GetFreelancerRequests(string freelancerId, int pageIndex, int pageSize = 4)
         {
             try
             {
-                var requests = await _freelancerService.GetFreelancerRequests();
+                var requests = await _freelancerService.GetFreelancerRequests(freelancerId, pageIndex, pageSize); 
                 return Ok(requests);
             }
             catch (Exception ex)
@@ -185,14 +186,14 @@ namespace Connect.API.Controllers
         }
         [Authorize]
         [HttpGet("get-offered-services/{freelancerId}")]
-        public async Task<IActionResult> GetOfferedServices(string freelancerId)
+        public async Task<IActionResult> GetOfferedService(string freelancerId, int pageIndex, int pageSize=4)
         {
             if (string.IsNullOrWhiteSpace(freelancerId))
             {
                 return BadRequest("Freelancer ID must be provided.");
             }
 
-            var offeredServiceResults = await _freelancerService.GetOfferedServicesAsync(freelancerId);
+            var offeredServiceResults = await _freelancerService.GetOfferedServicesAsync(freelancerId, pageIndex, pageSize);
             return Ok(offeredServiceResults);
         }
 

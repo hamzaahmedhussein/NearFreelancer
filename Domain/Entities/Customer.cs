@@ -1,4 +1,4 @@
-﻿using Connect.Core.Models;
+﻿ using Connect.Core.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Connect.Core.Entities
@@ -7,7 +7,6 @@ namespace Connect.Core.Entities
     {
         public string? Name { get; set; }
         public string? Image { get; set; }
-        public string? BackgroundImage { get; set; }
         public string? Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
@@ -16,9 +15,10 @@ namespace Connect.Core.Entities
         public DateTime? DOB { get; set; }
       
 
-        public virtual  Freelancer Freelancer { get; set; }
+        public   Freelancer Freelancer { get; set; }
+        public   List<ServiceRequest> Requests { get; set; }
 
-        public virtual ReservationProvider ReservationProvider { get; set; }
+       // public virtual ReservationProvider ReservationProvider { get; set; }
     }
 
     public enum Gender

@@ -9,9 +9,7 @@ namespace Connect.Application.DTOs
         public string City { get; set; }
         public string State { get; set; }
         public string Image { get; set; }
-        public List<ServiceRequestResult> Requests { get; set; }
 
-       // public List<ReservationAppointment> Reservations { get; set; }
 
     }
 }

@@ -34,7 +34,6 @@ namespace Connect.Infrastructure.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -178,7 +177,6 @@ namespace Connect.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -194,36 +192,6 @@ namespace Connect.Infrastructure.Migrations
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ReservationProviders",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EmployeesId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DOJ = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FeatureList = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Availability = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReservationProviders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ReservationProviders_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -277,66 +245,14 @@ namespace Connect.Infrastructure.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Rooms",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BackgroundImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CostPerNight = table.Column<double>(type: "float", nullable: false),
-                    ProviderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    BedsNumber = table.Column<int>(type: "int", nullable: false),
-                    FeatureList = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rooms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Rooms_ReservationProviders_ProviderId",
-                        column: x => x.ProviderId,
-                        principalTable: "ReservationProviders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reservations",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    from = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    to = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAvialable = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reservations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reservations_AspNetUsers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Rooms_RoomID",
-                        column: x => x.RoomID,
-                        principalTable: "Rooms",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "04314c58-e539-4e97-bb5d-b51807b01c24", "bcbb791b-2668-4d54-a9f2-526fe5289781", "ReservationProvider", "RESERVATIONPROVIDER" },
-                    { "129f483a-1e80-421f-bbce-c9d836585959", "10625529-e825-4488-9b63-f19af1c13e73", "Customer", "CUSTOMER" },
-                    { "37884a62-cff6-4cc7-9703-57b8a52f07ee", "ccb904ea-c68f-420d-ac75-88f9d667da95", "Freelancer", "FREELANCER" }
+                    { "0051e6ef-1b1e-4f8a-8391-2c1b25b96bd5", "a519f8ba-f308-461c-a339-19bc828f4eaa", "ReservationProvider", "RESERVATIONPROVIDER" },
+                    { "400e0f51-650c-483a-a4c2-7d4626deb13c", "26092a56-9b0d-409f-8fed-b6d0fa1d3490", "Customer", "CUSTOMER" },
+                    { "cf769c4b-6ac3-439f-a6c8-91eabf661d06", "982a9f99-ac2a-47c6-96dd-70a9cd4f98ab", "Freelancer", "FREELANCER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -391,27 +307,6 @@ namespace Connect.Infrastructure.Migrations
                 column: "FreelancerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReservationProviders_OwnerId",
-                table: "ReservationProviders",
-                column: "OwnerId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_CustomerId",
-                table: "Reservations",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_RoomID",
-                table: "Reservations",
-                column: "RoomID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Rooms_ProviderId",
-                table: "Rooms",
-                column: "ProviderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ServiceRequests_CustomerId",
                 table: "ServiceRequests",
                 column: "CustomerId");
@@ -444,22 +339,13 @@ namespace Connect.Infrastructure.Migrations
                 name: "OfferedServices");
 
             migrationBuilder.DropTable(
-                name: "Reservations");
-
-            migrationBuilder.DropTable(
                 name: "ServiceRequests");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Rooms");
-
-            migrationBuilder.DropTable(
                 name: "Freelancers");
-
-            migrationBuilder.DropTable(
-                name: "ReservationProviders");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

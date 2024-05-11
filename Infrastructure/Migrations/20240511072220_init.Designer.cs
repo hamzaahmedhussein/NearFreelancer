@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240507043615_init")]
+    [Migration("20240511072220_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -21,9 +21,6 @@ namespace Connect.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.2")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -35,9 +32,6 @@ namespace Connect.Infrastructure.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("BackgroundImage")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -157,64 +151,6 @@ namespace Connect.Infrastructure.Migrations
                     b.ToTable("OfferedServices");
                 });
 
-            modelBuilder.Entity("Connect.Core.Entities.ReservationProvider", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool?>("Availability")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("BackgroundImage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DOJ")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeesId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FeatureList")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId")
-                        .IsUnique();
-
-                    b.ToTable("ReservationProviders");
-                });
-
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
                 {
                     b.Property<string>("Id")
@@ -222,9 +158,6 @@ namespace Connect.Infrastructure.Migrations
 
                     b.Property<bool?>("Availability")
                         .HasColumnType("bit");
-
-                    b.Property<string>("BackgroundImage")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -269,77 +202,6 @@ namespace Connect.Infrastructure.Migrations
                         .HasFilter("[OwnerId] IS NOT NULL");
 
                     b.ToTable("Freelancers");
-                });
-
-            modelBuilder.Entity("Connect.Core.Models.ReservationAppointment", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsAvialable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("RoomID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("from")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("to")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("RoomID");
-
-                    b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("Connect.Core.Models.Room", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("BackgroundImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("BedsNumber")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CostPerNight")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FeatureList")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ProviderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProviderId");
-
-                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("Connect.Core.Models.ServiceRequest", b =>
@@ -406,22 +268,22 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "129f483a-1e80-421f-bbce-c9d836585959",
-                            ConcurrencyStamp = "10625529-e825-4488-9b63-f19af1c13e73",
+                            Id = "400e0f51-650c-483a-a4c2-7d4626deb13c",
+                            ConcurrencyStamp = "26092a56-9b0d-409f-8fed-b6d0fa1d3490",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "37884a62-cff6-4cc7-9703-57b8a52f07ee",
-                            ConcurrencyStamp = "ccb904ea-c68f-420d-ac75-88f9d667da95",
+                            Id = "cf769c4b-6ac3-439f-a6c8-91eabf661d06",
+                            ConcurrencyStamp = "982a9f99-ac2a-47c6-96dd-70a9cd4f98ab",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         },
                         new
                         {
-                            Id = "04314c58-e539-4e97-bb5d-b51807b01c24",
-                            ConcurrencyStamp = "bcbb791b-2668-4d54-a9f2-526fe5289781",
+                            Id = "0051e6ef-1b1e-4f8a-8391-2c1b25b96bd5",
+                            ConcurrencyStamp = "a519f8ba-f308-461c-a339-19bc828f4eaa",
                             Name = "ReservationProvider",
                             NormalizedName = "RESERVATIONPROVIDER"
                         });
@@ -542,17 +404,6 @@ namespace Connect.Infrastructure.Migrations
                     b.Navigation("Freelancer");
                 });
 
-            modelBuilder.Entity("Connect.Core.Entities.ReservationProvider", b =>
-                {
-                    b.HasOne("Connect.Core.Entities.Customer", "Owner")
-                        .WithOne("ReservationProvider")
-                        .HasForeignKey("Connect.Core.Entities.ReservationProvider", "OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
                 {
                     b.HasOne("Connect.Core.Entities.Customer", "Owner")
@@ -562,34 +413,6 @@ namespace Connect.Infrastructure.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("Connect.Core.Models.ReservationAppointment", b =>
-                {
-                    b.HasOne("Connect.Core.Entities.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Connect.Core.Models.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomID");
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Room");
-                });
-
-            modelBuilder.Entity("Connect.Core.Models.Room", b =>
-                {
-                    b.HasOne("Connect.Core.Entities.ReservationProvider", "Provider")
-                        .WithMany()
-                        .HasForeignKey("ProviderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Provider");
-                });
-
             modelBuilder.Entity("Connect.Core.Models.ServiceRequest", b =>
                 {
                     b.HasOne("Connect.Core.Entities.Customer", "Customer")
@@ -597,7 +420,7 @@ namespace Connect.Infrastructure.Migrations
                         .HasForeignKey("CustomerId");
 
                     b.HasOne("Connect.Core.Models.Freelancer", "Freelancer")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("FreelancerId");
 
                     b.Navigation("Customer");
@@ -660,14 +483,13 @@ namespace Connect.Infrastructure.Migrations
                 {
                     b.Navigation("Freelancer")
                         .IsRequired();
-
-                    b.Navigation("ReservationProvider")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
                 {
                     b.Navigation("OfferedServices");
+
+                    b.Navigation("Requests");
                 });
 #pragma warning restore 612, 618
         }

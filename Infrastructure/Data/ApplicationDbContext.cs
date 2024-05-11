@@ -3,7 +3,6 @@ using Connect.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Proxies;
 namespace Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext<Customer>
@@ -15,11 +14,11 @@ namespace Infrastructure.Data
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<OfferedService> OfferedServices { get; set; }
-        public DbSet<ReservationProvider> ReservationProviders { get; set; } 
-        public DbSet<ReservationAppointment> Reservations { get; set; }
+      //  public DbSet<ReservationProvider> ReservationProviders { get; set; } 
+      //  public DbSet<ReservationAppointment> Reservations { get; set; }
         public DbSet<Freelancer> Freelancers { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; } 
-        public DbSet<Room> Rooms { get; set; }
+    //    public DbSet<Room> Rooms { get; set; }
        // public DbSet<Message> Messages { get; set; }
 
 
@@ -31,7 +30,6 @@ namespace Infrastructure.Data
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLazyLoadingProxies();
             base.OnConfiguring(optionsBuilder);
         }
         private void SeedRoles(ModelBuilder builder)

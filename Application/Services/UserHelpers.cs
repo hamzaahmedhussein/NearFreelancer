@@ -1,5 +1,4 @@
 ﻿#region imports
-using Castle.Core.Logging;
 using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Infrastructure.Data;

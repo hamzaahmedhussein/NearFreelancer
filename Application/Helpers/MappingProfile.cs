@@ -1,8 +1,13 @@
-﻿using AutoMapper;
+﻿    using AutoMapper;
 using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Connect.Application.Helpers
 {
@@ -15,16 +20,13 @@ namespace Connect.Application.Helpers
                .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
             CreateMap<UpdateCustomerInfoDto, Customer>();
-            CreateMap<ServiceRequest, ServiceRequestResult>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Freelancer.Name));
 
-            
 
             CreateMap<AddFreelancerBusinessDto, Freelancer>()
             .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
           
 
-            CreateMap<Freelancer, FreelancerBusinessResult>();
+            CreateMap<Freelancer, FreelancerProfileResult>();
 
             CreateMap<Freelancer, FreelancerFilterResultDto>();
             
@@ -33,31 +35,34 @@ namespace Connect.Application.Helpers
 
             CreateMap<ReservationProvider, ReservationBusinessResult>();
 
-            CreateMap<Customer, CustomerProfileResult>().ReverseMap();
+            CreateMap<Customer, CustomerProfileResult>();
 
             CreateMap<AddOfferedServiceDto, OfferedService>()//remove date of join when update
           .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
 
             CreateMap<OfferedService, OfferedServiceResult>();
-            CreateMap<Freelancer,RequestedFreelancerDto>().ReverseMap();
 
 
             CreateMap<SendServiceRequestDto, ServiceRequest>()
               .ForMember(dest => dest.DateTime, opt => opt.MapFrom(_ => DateTime.Now))
              .ForMember(dest => dest.Status, opt => opt.MapFrom(src => RequisStatus.Pending));
 
-            CreateMap<ServiceRequest, GetCustomerRequestsDto>()
-           .ForMember(dest => dest.RequestName, opt => opt.MapFrom(src => src.Name))
-           .ForMember(dest => dest.FreelancerName, opt => opt.MapFrom(src => src.Freelancer.Name)) 
-           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString())); 
+            CreateMap<ServiceRequest, CustomerServiceRequestResult>()
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+            CreateMap<ServiceRequest, FreelancerServiceRequistResult>()
+         .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+
+
+            CreateMap<RequestedCustomerDto, Customer>();
+            CreateMap<RequestedFreelancerDto, Freelancer>();
 
 
 
 
-
-
-
+             
         }
     }
 }

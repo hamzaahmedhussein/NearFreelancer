@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Connect.Core.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 
 namespace Connect.Application.Services
 {
@@ -234,9 +235,9 @@ namespace Connect.Application.Services
 
 
              var user=_mapper.Map<CustomerProfileResult>(currentUser);
-            var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.CustomerId == currentUser.Id);
-            var requestsResult = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
-            user.Requests = requestsResult.ToList();
+            //var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.CustomerId == currentUser.Id);
+            //var requestsResult = _mapper.Map< IEnumerable < CustomerServiceRequestResult >> (requests);
+            //user.Requests = requestsResult.ToList();
             return user;
         }
         #endregion
@@ -257,9 +258,9 @@ namespace Connect.Application.Services
                 }
 
                 var result = _mapper.Map<CustomerProfileResult>(profile);
-                var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.CustomerId == id);
-                var requestsResult = requests.Select(request => _mapper.Map<ServiceRequestResult>(request));
-                result.Requests = requestsResult.ToList();
+                //var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.CustomerId == id);
+                //var requestsResult = requests.Select(request => _mapper.Map<CustomerServiceRequestResult>(request));
+                //result.Requests = requestsResult.ToList();
                 _logger.LogInformation("Successfully retrieved customer profile for ID: {customerId}", id);
                 return result;
             }
@@ -293,7 +294,7 @@ namespace Connect.Application.Services
         #endregion
 
         #region GetMyRequests
-        public async Task<IEnumerable<GetCustomerRequestsDto>> GetMyRequests()
+        public async Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests()
         {
             var customer = await _userHelpers.GetCurrentUserAsync();
             if (customer == null)
@@ -303,7 +304,7 @@ namespace Connect.Application.Services
 
             if (requests == null)
                 throw new Exception("No requests");
-            var requestResultDto = requests.Select(request => _mapper.Map<GetCustomerRequestsDto>(request));
+            var requestResultDto = requests.Select(request => _mapper.Map<CustomerServiceRequestResult>(request));
             return requestResultDto;
         }
         #endregion
