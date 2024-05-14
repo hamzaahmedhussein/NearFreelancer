@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Connect.Application.Specifications;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Connect.Application.Services
 {
@@ -317,27 +316,29 @@ namespace Connect.Application.Services
 
         public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageIndex ,int pageSize)
         {
-            // Create the specification instance to apply paging for the offered services
             var spec = new PaginatedOfferedServicesSpec(freelancerId, pageIndex, pageSize);
 
-            // Get the offered services with the applied specification
             var offeredServices = await _unitOfWork.OfferedService.GetAllWithSpecAsync(spec);
 
-            // Map the fetched offered services to DTOs
             var offeredServiceResults = _mapper.Map<List<OfferedServiceResult>>(offeredServices);
 
             return offeredServiceResults;
         }
-           public async Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(string freelancerId, int pageIndex ,int pageSize)
+           public async Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests( int pageIndex ,int pageSize)
         {
-            var spec = new PaginatedFreelancerRequestsSpec(freelancerId, pageIndex, pageSize);
+            var currentUser = await _userHelpers.GetCurrentUserAsync();
+            if (currentUser == null)
+                return null;
 
-            var request = await _unitOfWork.ServiceRequest.GetAllWithSpecAsync(spec);
+            var customerWithFreelancerSpec = new CustomerWithFreelancerSpec(currentUser.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(customerWithFreelancerSpec);
+            var paginatedFreelancerRequestsSpec = new PaginatedFreelancerRequestsSpec(customer.Freelancer.Id, pageIndex, pageSize);
 
-            // Map the fetched offered services to DTOs
-            var offeredServiceResults = _mapper.Map<List<FreelancerServiceRequistResult>>(request);
+            var request = await _unitOfWork.ServiceRequest.GetAllWithSpecAsync(paginatedFreelancerRequestsSpec);
 
-            return offeredServiceResults;
+            var requestResults = _mapper.Map<List<FreelancerServiceRequistResult>>(request);
+
+            return requestResults;   
         }
 
 

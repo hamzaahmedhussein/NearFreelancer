@@ -1,10 +1,7 @@
-﻿    using AutoMapper;
+﻿using AutoMapper;
 using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,27 +35,27 @@ namespace Connect.Application.Helpers
             CreateMap<Customer, CustomerProfileResult>();
 
             CreateMap<AddOfferedServiceDto, OfferedService>()//remove date of join when update
-          .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
+            .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
 
             CreateMap<OfferedService, OfferedServiceResult>();
 
 
             CreateMap<SendServiceRequestDto, ServiceRequest>()
-              .ForMember(dest => dest.DateTime, opt => opt.MapFrom(_ => DateTime.Now))
+             .ForMember(dest => dest.DateTime, opt => opt.MapFrom(_ => DateTime.Now))
              .ForMember(dest => dest.Status, opt => opt.MapFrom(src => RequisStatus.Pending));
 
             CreateMap<ServiceRequest, CustomerServiceRequestResult>()
-           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+           .ForMember(dest => dest.FreelancerName, opt => opt.MapFrom(src => src.Freelancer.Name));
 
             CreateMap<ServiceRequest, FreelancerServiceRequistResult>()
-         .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+           .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.Name))
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
 
 
 
-            CreateMap<RequestedCustomerDto, Customer>();
-            CreateMap<RequestedFreelancerDto, Freelancer>();
-
+         
 
 
 

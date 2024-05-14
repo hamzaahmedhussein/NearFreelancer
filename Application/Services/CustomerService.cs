@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Connect.Core.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using Connect.Application.Specifications;
 
 namespace Connect.Application.Services
 {
@@ -294,18 +295,19 @@ namespace Connect.Application.Services
         #endregion
 
         #region GetMyRequests
-        public async Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests()
+        public async Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests(int pageIndex, int pageSize)
         {
             var customer = await _userHelpers.GetCurrentUserAsync();
             if (customer == null)
                 throw new Exception("User not found");
 
-            var requests = await _unitOfWork.ServiceRequest.FindAsync(c => c.CustomerId == customer.Id);
+            var paginatedCustomerRequestsSpec = new PaginatedCustomerRequestsSpec(customer.Id, pageIndex, pageSize);
 
-            if (requests == null)
-                throw new Exception("No requests");
-            var requestResultDto = requests.Select(request => _mapper.Map<CustomerServiceRequestResult>(request));
-            return requestResultDto;
+            var request = await _unitOfWork.ServiceRequest.GetAllWithSpecAsync(paginatedCustomerRequestsSpec);
+
+            var requestResults = _mapper.Map<List<CustomerServiceRequestResult>>(request);
+
+            return requestResults;
         }
         #endregion
 

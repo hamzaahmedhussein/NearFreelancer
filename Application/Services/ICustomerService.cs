@@ -20,7 +20,7 @@ namespace Connect.Application.Services
         Task<IdentityResult> ResetPassword(ResetPasswordDto resetPasswordDto);
         Task<CustomerProfileResult> GetCurrentProfileAsync();
         Task<CustomerProfileResult> GetCustomerById(string id);
-        Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests();
+        Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests(int pageIndex, int pageSize);
         Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request);
         Task<bool> DeletePendingRequestAsync(string id);
        

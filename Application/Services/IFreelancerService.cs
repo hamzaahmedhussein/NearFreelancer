@@ -15,8 +15,7 @@ namespace Connect.Application.Services
 
 
         Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto);
-        Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(string freelancerId, int pageIndex, int pageSize);
-
+        Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(int pageIndex, int pageSize);
 
         Task<bool> AcceptServiceRequest(string requestId);
         Task<bool> RefuseServiceRequest(string requestId);

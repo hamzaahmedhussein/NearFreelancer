@@ -108,7 +108,7 @@ namespace Connect.API.Controllers
         {
             var success = await _customerService.ConfirmEmail(email, token);
             if (success)
-                return Ok("Email confirmed successfully.");
+                return RedirectToAction("Login");
 
             return BadRequest("Failed to confirm email.");
         }
@@ -262,11 +262,11 @@ namespace Connect.API.Controllers
         }
 
         [HttpGet("get-requests")]
-        public async Task<IActionResult> GetMyRequests()
+        public async Task<IActionResult> GetMyRequests(int pageIndex, int pageSize)
         {
             try
             {
-                var requests = await _customerService.GetMyRequests();
+                var requests = await _customerService.GetMyRequests(  pageIndex , pageSize);
                 return Ok(requests);
             }
             catch (Exception ex)
