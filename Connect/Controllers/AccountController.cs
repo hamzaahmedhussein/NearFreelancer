@@ -82,22 +82,21 @@ namespace Connect.API.Controllers
                     return Ok(result);
                 }
 
-                string errorMessage = result.ErrorType switch
+                (string errorMessage, int statusCode) = result.ErrorType switch
                 {
-                    LoginErrorType.UserNotFound => "User not found.",
-                    LoginErrorType.InvalidPassword => "Incorrect password.",
-                    LoginErrorType.EmailNotConfirmed => "Email not confirmed.",
-                    _ => "Invalid login attempt."
+                    LoginErrorType.UserNotFound => ("User not found.", 404),
+                    LoginErrorType.InvalidPassword => ("Incorrect password.", 401),
+                    LoginErrorType.EmailNotConfirmed => ("Email not confirmed.", 403),
+                    _ => ("Invalid login attempt.", 400)
                 };
 
                 Log.Warning("Login failed for email: {Email}. Error: {Error}", userDto.Email, errorMessage);
 
-                return Unauthorized(new { message = errorMessage });
+                return StatusCode(statusCode, new { message = errorMessage });
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "An error occurred while processing the login request for email: {Email}", userDto.Email);
-
                 return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
             }
         }
