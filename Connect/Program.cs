@@ -13,17 +13,16 @@ using Connect.Infrastructure.Repsitory_UOW;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Serilog;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Serilog
 var logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(new ConfigurationBuilder()
-    .AddJsonFile("seri-log.config.json")
-    .Build())
+    .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .CreateLogger();
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -34,70 +33,58 @@ builder.Services.AddIdentity<Customer, IdentityRole>()
     .AddDefaultTokenProviders();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromHours(10));
 
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-}
-    ).AddJwtBearer(o =>
+})
+.AddJwtBearer(o =>
+{
+    o.IncludeErrorDetails = true;
+    o.RequireHttpsMetadata = false;
+    o.SaveToken = false;
+    o.TokenValidationParameters = new TokenValidationParameters
     {
-        o.IncludeErrorDetails = true;
-        o.RequireHttpsMetadata = false;
-        o.SaveToken = false;
-        o.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            ValidateAudience = true,
-            ValidateIssuer = true,
-            ValidateLifetime = true,
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-        };
-    });
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = true,
+        ValidateIssuer = true,
+        ValidateLifetime = true,
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo", Version = "v1" });
-});
-builder.Services.AddSwaggerGen(swagger =>
-{
-    //This?is?to?generate?the?Default?UI?of?Swagger?Documentation????
-    swagger.SwaggerDoc("v2", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "ASP.NET?5?Web?API",
-        Description = " ITI Projrcy"
-    });
 
-    //?To?Enable?authorization?using?Swagger?(JWT)????
-    swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    // Enable authorization using Swagger (JWT)
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter?'Bearer'?[space]?and?then?your?valid?token?in?the?text?input?below.\r\n\r\nExample:?\"Bearer?eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+        Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
     });
-    swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
                 {
-                    {
-                    new OpenApiSecurityScheme
-                    {
-                    Reference = new OpenApiReference
-                    {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
-                    }
-                    },
-                    new string[] {}
-                    }
-                });
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -117,22 +104,24 @@ builder.Services.AddCors(options =>
         builder.AllowAnyOrigin()
                .AllowAnyMethod()
                .AllowAnyHeader();
-
     });
 });
+
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Demo v1"));
+//}
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+//app.UseCors("CorsPolicy");
+
 app.MapControllers();
-app.UseCors("CorsPolicy");
+
 app.Run();
