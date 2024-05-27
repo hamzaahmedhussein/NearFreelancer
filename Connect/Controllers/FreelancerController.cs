@@ -140,11 +140,11 @@ namespace Connect.API.Controllers
         }
 
         [HttpGet("get-freelancer-requests")]
-        public async Task<IActionResult> GetFreelancerRequests(string freelancerId, int pageIndex, int pageSize = 4)
+        public async Task<IActionResult> GetFreelancerRequests( int pageIndex, int pageSize = 4)
         {
             try
             {
-                var requests = await _freelancerService.GetFreelancerRequests(freelancerId, pageIndex, pageSize); 
+                var requests = await _freelancerService.GetFreelancerRequests( pageIndex, pageSize); 
                 return Ok(requests);
             }
             catch (Exception ex)

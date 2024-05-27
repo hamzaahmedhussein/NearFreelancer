@@ -6,7 +6,8 @@ namespace Connect.Application.DTOs
     {
         public string Name { get; set; }
         public RequisStatus Status { get; set; }
-        public  RequestedFreelancerDto Freelancer { get; set; }
+        public  string FreelancerId { get; set; }
+        public  string FreelancerName { get; set; }
 
     }
 }

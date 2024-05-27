@@ -11,6 +11,8 @@ namespace Connect.Application.DTOs
     {
         public string Name { get; set; }
         public RequisStatus Status { get; set; }
-        public RequestedCustomerDto Customer { get; set; }
+
+        public string CustomerId { get; set; }
+        public string CustomerName { get; set; }
     }
 }

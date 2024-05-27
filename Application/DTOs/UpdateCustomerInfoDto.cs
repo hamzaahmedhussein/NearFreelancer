@@ -15,7 +15,7 @@ namespace Connect.Application.DTOs
          
         public string City { get; set; }
         public string State { get; set; }
-        public Gender Gender { get; set; }
-        public DateTime DOB { get; set; }
+       // public Gender Gender { get; set; }
+       // public DateTime DOB { get; set; }
     }
 }

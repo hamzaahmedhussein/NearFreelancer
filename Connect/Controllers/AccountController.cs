@@ -82,22 +82,21 @@ namespace Connect.API.Controllers
                     return Ok(result);
                 }
 
-                string errorMessage = result.ErrorType switch
+                (string errorMessage, int statusCode) = result.ErrorType switch
                 {
-                    LoginErrorType.UserNotFound => "User not found.",
-                    LoginErrorType.InvalidPassword => "Incorrect password.",
-                    LoginErrorType.EmailNotConfirmed => "Email not confirmed.",
-                    _ => "Invalid login attempt."
+                    LoginErrorType.UserNotFound => ("User not found.", 404),
+                    LoginErrorType.InvalidPassword => ("Incorrect password.", 401),
+                    LoginErrorType.EmailNotConfirmed => ("Email not confirmed.", 403),
+                    _ => ("Invalid login attempt.", 400)
                 };
 
                 Log.Warning("Login failed for email: {Email}. Error: {Error}", userDto.Email, errorMessage);
 
-                return Unauthorized(new { message = errorMessage });
+                return StatusCode(statusCode, new { message = errorMessage });
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "An error occurred while processing the login request for email: {Email}", userDto.Email);
-
                 return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
             }
         }
@@ -108,7 +107,7 @@ namespace Connect.API.Controllers
         {
             var success = await _customerService.ConfirmEmail(email, token);
             if (success)
-                return Ok("Email confirmed successfully.");
+                return RedirectToAction("Login");
 
             return BadRequest("Failed to confirm email.");
         }
@@ -262,11 +261,11 @@ namespace Connect.API.Controllers
         }
 
         [HttpGet("get-requests")]
-        public async Task<IActionResult> GetMyRequests()
+        public async Task<IActionResult> GetMyRequests(int pageIndex, int pageSize)
         {
             try
             {
-                var requests = await _customerService.GetMyRequests();
+                var requests = await _customerService.GetMyRequests(  pageIndex , pageSize);
                 return Ok(requests);
             }
             catch (Exception ex)
