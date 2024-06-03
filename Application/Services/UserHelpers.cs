@@ -140,10 +140,10 @@ namespace Connect.Application.Services
                 await file.CopyToAsync(fileStream);
             }
 
-            return filePath;
+            return $"/Images/{userName}/{profileType}/{fileName}";
         }
 
-        
+
         public async Task<bool> DeleteImageAsync(string imagePath, string profileType)
         {
             if (string.IsNullOrEmpty(imagePath))

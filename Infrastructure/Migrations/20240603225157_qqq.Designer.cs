@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240511072220_init")]
-    partial class init
+    [Migration("20240603225157_qqq")]
+    partial class qqq
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,29 +264,6 @@ namespace Connect.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "400e0f51-650c-483a-a4c2-7d4626deb13c",
-                            ConcurrencyStamp = "26092a56-9b0d-409f-8fed-b6d0fa1d3490",
-                            Name = "Customer",
-                            NormalizedName = "CUSTOMER"
-                        },
-                        new
-                        {
-                            Id = "cf769c4b-6ac3-439f-a6c8-91eabf661d06",
-                            ConcurrencyStamp = "982a9f99-ac2a-47c6-96dd-70a9cd4f98ab",
-                            Name = "Freelancer",
-                            NormalizedName = "FREELANCER"
-                        },
-                        new
-                        {
-                            Id = "0051e6ef-1b1e-4f8a-8391-2c1b25b96bd5",
-                            ConcurrencyStamp = "a519f8ba-f308-461c-a339-19bc828f4eaa",
-                            Name = "ReservationProvider",
-                            NormalizedName = "RESERVATIONPROVIDER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -416,7 +393,7 @@ namespace Connect.Infrastructure.Migrations
             modelBuilder.Entity("Connect.Core.Models.ServiceRequest", b =>
                 {
                     b.HasOne("Connect.Core.Entities.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("CustomerId");
 
                     b.HasOne("Connect.Core.Models.Freelancer", "Freelancer")
@@ -483,6 +460,8 @@ namespace Connect.Infrastructure.Migrations
                 {
                     b.Navigation("Freelancer")
                         .IsRequired();
+
+                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("Connect.Core.Models.Freelancer", b =>
