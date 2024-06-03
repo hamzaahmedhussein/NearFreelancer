@@ -140,7 +140,7 @@ namespace Connect.Application.Services
                 await file.CopyToAsync(fileStream);
             }
 
-            return $"/Images/{userName}/{profileType}/{fileName}";
+            return filePath;
         }
 
         
@@ -171,7 +171,7 @@ namespace Connect.Application.Services
             {
                 throw new FileNotFoundException("File not found.", filePath);
             }
-        }
+        } 
 
         public async Task<string> UpdateImageAsync(IFormFile? file, string oldImagePath, string folderName)
         {

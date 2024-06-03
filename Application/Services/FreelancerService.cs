@@ -347,8 +347,13 @@ namespace Connect.Application.Services
         #region file handlling
         public async Task<bool> AddFreelancerPictureAsync(IFormFile file)
         {
-            var user = await _userHelpers.GetCurrentUserAsync();
-            var freelancer = user.Freelancer;
+            var currentUser = await _userHelpers.GetCurrentUserAsync();
+            if (currentUser == null)
+                return false;
+
+            var spec = new CustomerWithFreelancerSpec(currentUser.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
+            var freelancer = customer.Freelancer;
             if (freelancer == null) return false;
             var picture = await _userHelpers.AddImage(file, Consts.Consts.Freelancer);
             if (picture != null)
