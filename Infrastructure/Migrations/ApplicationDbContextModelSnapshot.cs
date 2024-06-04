@@ -261,6 +261,29 @@ namespace Connect.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "23ae4357-a8db-4668-8458-903d6d0a30ba",
+                            ConcurrencyStamp = "3d3f73d3-07fb-48af-a459-88b2a2ce1130",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = "5c04c799-1e10-499d-937a-8c043e602acc",
+                            ConcurrencyStamp = "51e6ed41-adf4-4cd6-851a-4295b5f6d4ff",
+                            Name = "Freelancer",
+                            NormalizedName = "FREELANCER"
+                        },
+                        new
+                        {
+                            Id = "9807301c-4406-458e-aac3-b79609e95ac7",
+                            ConcurrencyStamp = "ffe77079-8890-41db-ac8a-70d8dec3075e",
+                            Name = "ReservationProvider",
+                            NormalizedName = "RESERVATIONPROVIDER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

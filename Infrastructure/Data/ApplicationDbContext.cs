@@ -23,12 +23,8 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
-            // Check if the AspNetRoles table exists in the model
-            if (!builder.Model.GetEntityTypes().Any(t => t.ClrType == typeof(IdentityRole)))
-            {
-                // If the AspNetRoles table doesn't exist, seed roles
+            
                 SeedRoles(builder);
-            }
         }
 
         private void SeedRoles(ModelBuilder builder)
