@@ -42,17 +42,17 @@ namespace Infrastructure.Data
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = "1",
                     Name = "Customer",
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
-                    NormalizedName = "CUSTOMER"
+                    NormalizedName = "Customer"
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = "2",
                     Name = "Freelancer",
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
-                    NormalizedName = "FREELANCER"
+                    NormalizedName = "Freelancer"
                 }
                
             );

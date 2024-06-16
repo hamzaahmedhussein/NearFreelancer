@@ -385,8 +385,9 @@ namespace Connect.Application.Services
         {
             var user = await _userHelpers.GetCurrentUserAsync();
             if (user == null) return false;
+            if (user.Image == "/Images/default/avatar") return true;
             var oldPicture = user.Image;
-            user.Image = null;
+            user.Image = "/Images/default/avatar";
             _unitOfWork.Customer.Update(user);
             if (_unitOfWork.Save() > 0)
                 return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Customer);
@@ -403,7 +404,9 @@ namespace Connect.Application.Services
             _unitOfWork.Customer.Update(user);
             if (_unitOfWork.Save() > 0 && !oldPicture.IsNullOrEmpty())
             {
-                return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Customer);
+                if(oldPicture != "/Images/default/avatar")
+                    return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Customer);
+                return true;
             }
             await _userHelpers.DeleteImageAsync(newPicture, Consts.Consts.Customer);
             return false;

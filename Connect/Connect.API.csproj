@@ -38,7 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwRoot\" />
+	  <Folder Include="wwwRoot\Images\" />
 	</ItemGroup>
 
 </Project>

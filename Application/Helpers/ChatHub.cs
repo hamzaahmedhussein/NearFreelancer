@@ -1,5 +1,4 @@
 ﻿using Connect.Application.Services;
-using Connect.Core.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 namespace Connect.Application.Helpers

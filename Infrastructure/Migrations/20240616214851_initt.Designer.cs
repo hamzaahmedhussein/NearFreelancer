@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240616214851_initt")]
+    partial class initt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,16 +275,16 @@ namespace Connect.Infrastructure.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "902d6b48-91a1-4f91-917d-2a2e09188c92",
+                            ConcurrencyStamp = "0523dd06-4e40-4231-bcff-efd482cd67b6",
                             Name = "Customer",
-                            NormalizedName = "Customer"
+                            NormalizedName = "CUSTOMER"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "7750258e-44f4-4e8a-8c11-8f99b1bd946b",
+                            ConcurrencyStamp = "015f52bc-c211-4ecc-a0ce-f1f810c11e38",
                             Name = "Freelancer",
-                            NormalizedName = "Freelancer"
+                            NormalizedName = "FREELANCER"
                         });
                 });
 

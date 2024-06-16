@@ -10,8 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Connect.Application.Specifications;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Connect.Application.Services
 {
@@ -36,7 +34,6 @@ namespace Connect.Application.Services
             _userHelpers = userHelpers;
             _userManager = userManager;
             _logger = logger;
-
         }
         #endregion
 
@@ -66,7 +63,7 @@ namespace Connect.Application.Services
                 _unitOfWork.FreelancerBusiness.Add(freelancer);
                 user.Freelancer = freelancer;
                 _unitOfWork.Save();
-                _unitOfWork.Commit(); 
+                _unitOfWork.Commit();
             }
             catch
             {
@@ -105,7 +102,7 @@ namespace Connect.Application.Services
                 _logger.LogInformation("Getting freelancer profile for ID: {FreelancerId} with offered services", id);
 
 
-                var profile =  _unitOfWork.FreelancerBusiness.GetById(id);
+                var profile = _unitOfWork.FreelancerBusiness.GetById(id);
                 if (profile == null)
                 {
                     _logger.LogWarning("Freelancer with ID: {FreelancerId} not found", id);
@@ -113,7 +110,7 @@ namespace Connect.Application.Services
                 }
 
                 var freelancerResult = _mapper.Map<FreelancerProfileResult>(profile);
-               
+
                 _logger.LogInformation("Successfully retrieved freelancer profile for ID: {FreelancerId}", id);
                 return freelancerResult;
             }
@@ -136,21 +133,21 @@ namespace Connect.Application.Services
             var spec = new CustomerWithFreelancerSpec(currentUser.Id);
             var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(spec);
             var freelancer = customer.Freelancer;
-           
+
             _unitOfWork.CreateTransaction();
 
             var image = await _userHelpers.AddImage(serviceDto.Image, Consts.Consts.Freelancer);
             var offeredService = _mapper.Map<OfferedService>(serviceDto);
             offeredService.Image = image;
-           
+
 
 
             try
             {
                 if (freelancer != null)
-                { 
-                    offeredService.FreelancerId=freelancer.Id;
-                     offeredService.Freelancer=freelancer;
+                {
+                    offeredService.FreelancerId = freelancer.Id;
+                    offeredService.Freelancer = freelancer;
                     _unitOfWork.OfferedService.Add(offeredService);
                     _unitOfWork.Save();
                 }
@@ -170,23 +167,23 @@ namespace Connect.Application.Services
             var offeredService = _unitOfWork.OfferedService.GetById(id);
             var currentUser = await _userHelpers.GetCurrentUserAsync();
 
-            if  (currentUser.Freelancer != null)
+            if (currentUser.Freelancer != null)
             {
-                    _unitOfWork.CreateTransaction();
+                _unitOfWork.CreateTransaction();
                 try
                 {
-                    string newImagePath = await _userHelpers.AddImage(serviceDto.Image,Consts.Consts.Freelancer);
-                    var oldImagePath=offeredService.Image;
+                    string newImagePath = await _userHelpers.AddImage(serviceDto.Image, Consts.Consts.Freelancer);
+                    var oldImagePath = offeredService.Image;
                     offeredService = _mapper.Map(serviceDto, offeredService);
                     offeredService.Image = newImagePath;
                     _unitOfWork.OfferedService.Update(offeredService);
                     var saved = _unitOfWork.Save();
                     _unitOfWork.Commit();
-                    if( saved > 0)
-                        if(oldImagePath != null)
+                    if (saved > 0)
+                        if (oldImagePath != null)
                             await _userHelpers.DeleteImageAsync(oldImagePath, Consts.Consts.Freelancer);
-                    else
-                        await _userHelpers.DeleteImageAsync(newImagePath, Consts.Consts.Freelancer);
+                        else
+                            await _userHelpers.DeleteImageAsync(newImagePath, Consts.Consts.Freelancer);
                     return true;
                 }
                 catch
@@ -200,9 +197,9 @@ namespace Connect.Application.Services
 
         public async Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(string search, int pageIndex, int pageSize)
         {
-           
 
-            var spec = new PaginatedFilteredFreelancers(search , pageIndex ,pageSize);
+
+            var spec = new PaginatedFilteredFreelancers(search, pageIndex, pageSize);
 
             var results = await _unitOfWork.FreelancerBusiness.GetAllWithSpecAsync(spec);
 
@@ -257,41 +254,32 @@ namespace Connect.Application.Services
         }
 
         public async Task<bool> DeleteFreelancerBusinessAsync()
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            if (user == null)
+                return false;
+
+            var customerWithFreelancerSpec = new CustomerWithFreelancerSpec(user.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(customerWithFreelancerSpec);
+            var freelancer = customer.Freelancer;
+
+            if (freelancer != null)
             {
-                try
+                _unitOfWork.FreelancerBusiness.Remove(freelancer);
+
+                if (_unitOfWork.Save() > 0)
                 {
-                    var user = await _userHelpers.GetCurrentUserAsync();
-                    if (user == null)
-                        return false;
-
-                    var removeRoleResult = await _userManager.RemoveFromRoleAsync(user, "Freelancer");
-                    if (!removeRoleResult.Succeeded)
-                    {
-                        return false;
-                    }
-
-                    var freelancer = user.Freelancer;
-                    if (freelancer != null)
-                    {
-                        _unitOfWork.FreelancerBusiness.Remove(freelancer);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-
-                    _unitOfWork.Save();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                
-                    return false;
+                    var result = await _userManager.RemoveFromRoleAsync(user, "Freelancer");
+                    return result.Succeeded;
                 }
             }
 
+            return false;
+        }
 
-        public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageIndex ,int pageSize)
+
+
+        public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageIndex, int pageSize)
         {
             var spec = new PaginatedOfferedServicesSpec(freelancerId, pageIndex, pageSize);
 
@@ -301,7 +289,7 @@ namespace Connect.Application.Services
 
             return offeredServiceResults;
         }
-           public async Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests( int pageIndex ,int pageSize)
+        public async Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(int pageIndex, int pageSize)
         {
             var currentUser = await _userHelpers.GetCurrentUserAsync();
             if (currentUser == null)
@@ -315,7 +303,7 @@ namespace Connect.Application.Services
 
             var requestResults = _mapper.Map<List<FreelancerServiceRequistResult>>(request);
 
-            return requestResults;   
+            return requestResults;
         }
 
 
@@ -342,11 +330,17 @@ namespace Connect.Application.Services
 
         public async Task<bool> DeleteFreelancerPictureAsync()
         {
-            var user = await _userHelpers.GetCurrentUserAsync();
-            var freelancer = user.Freelancer;
+            var currentUser = await _userHelpers.GetCurrentUserAsync();
+            if (currentUser == null)
+                return false;
+
+            var customerWithFreelancerSpec = new CustomerWithFreelancerSpec(currentUser.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(customerWithFreelancerSpec);
+            var freelancer = customer.Freelancer;
+
             if (freelancer == null) return false;
             var oldPicture = freelancer.Image;
-            freelancer.Image = null;
+            freelancer.Image = "/Images/default/avatar";
             _unitOfWork.FreelancerBusiness.Update(freelancer);
             if (_unitOfWork.Save() > 0)
                 return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Freelancer);
@@ -356,7 +350,11 @@ namespace Connect.Application.Services
         public async Task<bool> UpdateFreelancerPictureAsync(IFormFile? file)
         {
             var user = await _userHelpers.GetCurrentUserAsync();
-            var freelancer = user.Freelancer;
+
+            var customerWithFreelancerSpec = new CustomerWithFreelancerSpec(user.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(customerWithFreelancerSpec);
+            var freelancer = customer.Freelancer;
+
             if (freelancer == null) return false;
             var newPicture = await _userHelpers.AddImage(file, Consts.Consts.Freelancer);
             var oldPicture = freelancer.Image;
@@ -364,7 +362,9 @@ namespace Connect.Application.Services
             _unitOfWork.FreelancerBusiness.Update(freelancer);
             if (_unitOfWork.Save() > 0 && !oldPicture.IsNullOrEmpty())
             {
-                return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Freelancer);
+                if (oldPicture != "/Images/default/avatar")
+                    return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Freelancer);
+                return true;
             }
             await _userHelpers.DeleteImageAsync(newPicture, Consts.Consts.Freelancer);
             return false;
@@ -373,17 +373,21 @@ namespace Connect.Application.Services
         public async Task<string> GetFreelancerPictureAsync()
         {
             var user = await _userHelpers.GetCurrentUserAsync();
-            var freelancer = user.Freelancer;
+            var customerWithFreelancerSpec = new CustomerWithFreelancerSpec(user.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(customerWithFreelancerSpec);
+            var freelancer = customer.Freelancer;
             if (freelancer == null)
                 throw new Exception("freelancer not found");
             else if (freelancer.Image.IsNullOrEmpty())
                 throw new Exception("freelancer dont have profile image");
             return freelancer.Image;
         }
+
         #endregion
+        
 
 
     }
-} 
+}
 
 
