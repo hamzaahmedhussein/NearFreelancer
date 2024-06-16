@@ -126,11 +126,11 @@ namespace Connect.API.Controllers
 
 
         [HttpPost("filter-freelancers")]
-        public async Task<IActionResult> FilterFreelancers([FromBody] FilterFreelancersDto filterDto)
+        public async Task<IActionResult> FilterFreelancers(string? search, int pageIndex, int pageSize=9)
         {
             try
             {
-                var result = await _freelancerService.FilterFreelancers(filterDto);
+                var result = await _freelancerService.FilterFreelancers(search,pageIndex,pageSize);
                 return Ok(result);
             }
             catch (Exception ex)

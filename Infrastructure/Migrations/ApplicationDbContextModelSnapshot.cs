@@ -55,7 +55,10 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("/Images/default/avatar");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -167,7 +170,10 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("/Images/default/avatar");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -265,24 +271,17 @@ namespace Connect.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "23ae4357-a8db-4668-8458-903d6d0a30ba",
-                            ConcurrencyStamp = "3d3f73d3-07fb-48af-a459-88b2a2ce1130",
+                            Id = "81838bce-f069-4b33-8dd8-c50f2fbda6a8",
+                            ConcurrencyStamp = "3b3a59d7-4aee-40bc-8a20-d134b7beefd9",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "5c04c799-1e10-499d-937a-8c043e602acc",
-                            ConcurrencyStamp = "51e6ed41-adf4-4cd6-851a-4295b5f6d4ff",
+                            Id = "10673ff3-fdfe-4256-866f-e6d8460dba19",
+                            ConcurrencyStamp = "4d3b2a1b-f094-40fb-b441-7e19022c340d",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
-                        },
-                        new
-                        {
-                            Id = "9807301c-4406-458e-aac3-b79609e95ac7",
-                            ConcurrencyStamp = "ffe77079-8890-41db-ac8a-70d8dec3075e",
-                            Name = "ReservationProvider",
-                            NormalizedName = "RESERVATIONPROVIDER"
                         });
                 });
 

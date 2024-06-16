@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Connect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class inin : Migration
+    public partial class ss : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,7 +33,7 @@ namespace Connect.Infrastructure.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "/Images/default/avatar"),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -176,7 +176,7 @@ namespace Connect.Infrastructure.Migrations
                     Profession = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "/Images/default/avatar"),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -250,9 +250,8 @@ namespace Connect.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "23ae4357-a8db-4668-8458-903d6d0a30ba", "3d3f73d3-07fb-48af-a459-88b2a2ce1130", "Customer", "CUSTOMER" },
-                    { "5c04c799-1e10-499d-937a-8c043e602acc", "51e6ed41-adf4-4cd6-851a-4295b5f6d4ff", "Freelancer", "FREELANCER" },
-                    { "9807301c-4406-458e-aac3-b79609e95ac7", "ffe77079-8890-41db-ac8a-70d8dec3075e", "ReservationProvider", "RESERVATIONPROVIDER" }
+                    { "10673ff3-fdfe-4256-866f-e6d8460dba19", "4d3b2a1b-f094-40fb-b441-7e19022c340d", "Freelancer", "FREELANCER" },
+                    { "81838bce-f069-4b33-8dd8-c50f2fbda6a8", "3b3a59d7-4aee-40bc-8a20-d134b7beefd9", "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.CreateIndex(

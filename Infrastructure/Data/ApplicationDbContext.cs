@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Reflection.Emit;
 
 namespace Infrastructure.Data
 {
@@ -23,8 +24,17 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Customer>()
+               .Property(s => s.Image)
+               .HasDefaultValue("/Images/default/avatar")
+               .IsRequired(); 
             
-                SeedRoles(builder);
+            builder.Entity<Freelancer>()
+               .Property(s => s.Image)
+               .HasDefaultValue("/Images/default/avatar")
+               .IsRequired();
+
+            SeedRoles(builder);
         }
 
         private void SeedRoles(ModelBuilder builder)
@@ -43,14 +53,8 @@ namespace Infrastructure.Data
                     Name = "Freelancer",
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
                     NormalizedName = "FREELANCER"
-                },
-                new IdentityRole
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "ReservationProvider",
-                    ConcurrencyStamp = Guid.NewGuid().ToString(),
-                    NormalizedName = "RESERVATIONPROVIDER"
                 }
+               
             );
         }
     }

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Connect.Application.Specifications;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Connect.Application.Services
 {
@@ -50,25 +52,27 @@ namespace Connect.Application.Services
 
             if (await _userManager.IsInRoleAsync(user, "Freelancer"))
                 throw new InvalidOperationException("User already has a freelancer profile.");
-                _unitOfWork.CreateTransaction();
+
+            _unitOfWork.CreateTransaction();
+
             try
             {
                 var result = await _userManager.AddToRoleAsync(user, "Freelancer");
                 if (!result.Succeeded)
                     throw new InvalidOperationException("Failed to assign Freelancer role to the user.");
+
                 var freelancer = _mapper.Map<Freelancer>(freelancerDto);
                 freelancer.Owner = user;
                 _unitOfWork.FreelancerBusiness.Add(freelancer);
                 user.Freelancer = freelancer;
                 _unitOfWork.Save();
-                _unitOfWork.Commit();
+                _unitOfWork.Commit(); 
             }
             catch
             {
                 _unitOfWork.Rollback();
                 return false;
             }
-
 
             return true;
         }
@@ -194,43 +198,16 @@ namespace Connect.Application.Services
             return false;
         }
 
-        public async Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(FilterFreelancersDto filterDto)
+        public async Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(string search, int pageIndex, int pageSize)
         {
-            var query = await _unitOfWork.FreelancerBusiness.GetAllAsync();
+           
 
-            if (!string.IsNullOrWhiteSpace(filterDto.Name))
-            {
-                query = query.Where(e => e.Name.Contains(filterDto.Name));
-            }
+            var spec = new PaginatedFilteredFreelancers(search , pageIndex ,pageSize);
 
-            if (!string.IsNullOrWhiteSpace(filterDto.Profession))
-            {
-                query = query.Where(e => e.Profession.Contains(filterDto.Profession));
-            }
+            var results = await _unitOfWork.FreelancerBusiness.GetAllWithSpecAsync(spec);
 
-            if (!string.IsNullOrWhiteSpace(filterDto.City))
-            {
-                query = query.Where(e => e.City == filterDto.City);
-            }
-
-            if (!string.IsNullOrWhiteSpace(filterDto.Street))
-            {
-                query = query.Where(e => e.Street == filterDto.Street);
-            }
-
-            if (filterDto.Skills != null && filterDto.Skills.Any())
-            {
-                foreach (var skill in filterDto.Skills)
-                {
-                    query = query.Where(e => e.Skills.Contains(skill));
-                }
-            }
-
-            query = query.Where(e => e.Availability == filterDto.Availability);
-
-            return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(query);
+            return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(results);
         }
-
 
         public async Task<bool> AcceptServiceRequest(string requestId)
         {
