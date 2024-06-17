@@ -1,6 +1,6 @@
 ﻿using Connect.Application.DTOs;
 using Connect.Core.Entities;
-using Connect.Application.MailSettings;
+using Connect.Application.Settings;
 using Connect.Core.Interfaces;
 using Connect.Application.Settings;
 using AutoMapper;

@@ -14,14 +14,16 @@ namespace Connect.API.Controllers
     {
         #region Constructor
         private readonly ICustomerService _customerService;
+        private readonly IAdminService _adminService;
         private readonly IMailingService _mailingService;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(ICustomerService customerService,IMailingService mailingService, ILogger<AccountController> logger)
+        public AccountController(ICustomerService customerService,IMailingService mailingService, ILogger<AccountController> logger, IAdminService adminService)
         {
             _customerService = customerService;
             _mailingService = mailingService;
             _logger = logger;
+            _adminService = adminService;
         }
         #endregion
 
@@ -357,6 +359,15 @@ namespace Connect.API.Controllers
             return result ? Ok("picture has been deleted successfully.") : BadRequest("failed to delete picture");
         }
         #endregion
+
+
+
+        [HttpGet("last-month")] 
+        public async Task<IActionResult> GetLastMonthStatisticsAsync()
+        {
+            var statistics = await _adminService.GetLastMonthStatisticsAsync();
+            return Ok(statistics); 
+        }
     }
 
 }

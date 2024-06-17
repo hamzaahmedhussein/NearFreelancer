@@ -1,4 +1,4 @@
-﻿using Connect.Application.MailSettings;
+﻿using Connect.Application.Settings;
 using Microsoft.AspNetCore.Http;
 
 namespace Connect.Application.Settings

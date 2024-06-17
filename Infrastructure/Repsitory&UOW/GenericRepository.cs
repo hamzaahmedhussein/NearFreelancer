@@ -69,5 +69,19 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         return SpecificationEvaluator<T>.GetQuery(context.Set<T>().AsQueryable(), specification);
     }
+    public async Task<int> CountAsync()
+    {
+        return await context.Set<T>().CountAsync();
+    }
+
+    public async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await context.Set<T>().CountAsync(predicate);
+    }
+
+    public async Task<decimal> SumAsync(Expression<Func<T, decimal>> selector)
+    {
+        return await context.Set<T>().SumAsync(selector);
+    }
 
 }

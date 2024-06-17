@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Connect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ss : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -195,6 +195,30 @@ namespace Connect.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RefreshToken",
+                columns: table => new
+                {
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpireOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsExpired = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RevokedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshToken", x => new { x.CustomerId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_RefreshToken_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OfferedServices",
                 columns: table => new
                 {
@@ -250,8 +274,8 @@ namespace Connect.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "10673ff3-fdfe-4256-866f-e6d8460dba19", "4d3b2a1b-f094-40fb-b441-7e19022c340d", "Freelancer", "FREELANCER" },
-                    { "81838bce-f069-4b33-8dd8-c50f2fbda6a8", "3b3a59d7-4aee-40bc-8a20-d134b7beefd9", "Customer", "CUSTOMER" }
+                    { "1", "543e1568-a272-43d6-af3f-f90cc81092ed", "Customer", "Customer" },
+                    { "2", "0c37f3f6-b136-4a87-859c-673000720f9d", "Freelancer", "Freelancer" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -336,6 +360,9 @@ namespace Connect.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "OfferedServices");
+
+            migrationBuilder.DropTable(
+                name: "RefreshToken");
 
             migrationBuilder.DropTable(
                 name: "ServiceRequests");

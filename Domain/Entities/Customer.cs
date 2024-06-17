@@ -17,8 +17,9 @@ namespace Connect.Core.Entities
 
         public   Freelancer Freelancer { get; set; }
         public   List<ServiceRequest> Requests { get; set; }
+        public List<RefreshToken>? RefreshTokens { get; set; }
+        
 
-       // public virtual ReservationProvider ReservationProvider { get; set; }
     }
 
     public enum Gender

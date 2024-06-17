@@ -15,4 +15,7 @@ public interface IGenericRepository<T> where T : class
     Task<T> GetByIdWithSpecAsync(ISpecification<T> spec);
     Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecification<T> spec);
     IQueryable<T> ApplySpecification(ISpecification<T> specification);
+    Task<int> CountAsync();
+    Task<int> CountAsync(Expression<Func<T, bool>> predicate);
+    Task<decimal> SumAsync(Expression<Func<T, decimal>> selector);
 }

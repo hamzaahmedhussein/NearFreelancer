@@ -1,4 +1,4 @@
-﻿using Connect.Application.MailSettings;
+﻿using Connect.Application.Settings;
 using MimeKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;

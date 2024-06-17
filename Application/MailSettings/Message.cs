@@ -1,6 +1,5 @@
 ﻿using MimeKit;
-
-namespace Connect.Application.MailSettings
+namespace Connect.Application.Settings
 {
     public class MailMessage
     {

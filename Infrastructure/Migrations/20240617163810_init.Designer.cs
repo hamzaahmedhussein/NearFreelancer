@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240616215146_initttt")]
-    partial class initttt
+    [Migration("20240617163810_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,7 +58,10 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("/Images/default/avatar");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -170,7 +173,10 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("/Images/default/avatar");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -269,16 +275,16 @@ namespace Connect.Infrastructure.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "edb084ed-6efc-41d7-b993-08d11665bf0d",
+                            ConcurrencyStamp = "543e1568-a272-43d6-af3f-f90cc81092ed",
                             Name = "Customer",
-                            NormalizedName = "CUSTOMER"
+                            NormalizedName = "Customer"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "383b5cd1-0e62-4fd1-9e91-676d84ec2b68",
+                            ConcurrencyStamp = "0c37f3f6-b136-4a87-859c-673000720f9d",
                             Name = "Freelancer",
-                            NormalizedName = "FREELANCER"
+                            NormalizedName = "Freelancer"
                         });
                 });
 
@@ -386,6 +392,46 @@ namespace Connect.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Connect.Core.Entities.Customer", b =>
+                {
+                    b.OwnsMany("Connect.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
+                        {
+                            b1.Property<string>("CustomerId")
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTime>("CreatedOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("ExpireOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<bool>("IsExpired")
+                                .HasColumnType("bit");
+
+                            b1.Property<DateTime>("RevokedOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("Token")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("CustomerId", "Id");
+
+                            b1.ToTable("RefreshToken");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CustomerId");
+                        });
+
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("Connect.Core.Entities.OfferedService", b =>
