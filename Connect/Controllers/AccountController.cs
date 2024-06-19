@@ -115,22 +115,31 @@ namespace Connect.API.Controllers
         }
        
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        [HttpPost("LogOut")]
+        [Authorize]
+        public async Task<IActionResult> LogOut()
         {
             var result = await _customerService.LogoutAsync();
+            if (result == "Logged Out Successfully")
+                return Ok(result);
+            return BadRequest(result);
+        }
+        #endregion
 
-            if (result.Success)
+        [HttpGet("user-roles")]
+        public async Task<IActionResult> GetUserRoles()
+        {
+            var roles = await _customerService.GetUserRolesAsync();
+            if (roles != null)
             {
-                return Ok(new { message = result.Message });
+                return Ok(roles);
             }
             else
             {
-                return BadRequest(new { error = result.Message });
+                _logger.LogError("Failed to retrieve roles for the current user.");
+                return StatusCode(500, "Failed to retrieve roles for the current user.");
             }
         }
-
-        #endregion 
 
 
         [Authorize]
@@ -179,55 +188,80 @@ namespace Connect.API.Controllers
         //}
 
 
-        [HttpPost("forget-password")]
-        public async Task<IActionResult> ForgetPassword(string email)
+        #region Forgot Password
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(string Email)
+        {
+            var result = await _customerService.ForgotPasswordAsync(Email);
+            if (result == "OTP Sent Successfully")
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPost("VerifyOTP")]
+        public async Task<IActionResult> VerifyOTP([FromBody] VerifyOTPDto Model)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-
-            var isSent = await _customerService.ForgetPassword(email);
-            if (isSent)
-            {
-                return Ok("Reset password email sent successfully.");
-            }
-            else
-            {
-                return NotFound("User with provided email not found.");
-            }
+            var result = await _customerService.VerifyOTPAsync(Model);
+            if (result != "Invalid OTP")
+                return Ok(result);
+            return BadRequest(result);
         }
 
-        [HttpGet("reset-password")]
-        public async Task<IActionResult> ResetPassword(string token,string email)
-        {
-            var model = new ResetPasswordDto { Token = token, Email = email };
-
-            return Ok(new { model });
-        }
-            
-            
-            
-            [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+    
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto Model)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-
-            var resetPasswordResult = await _customerService.ResetPassword(resetPasswordDto);
-            if (!resetPasswordResult.Succeeded)
-            {
-                foreach (var error in resetPasswordResult.Errors)
-                   ModelState.AddModelError(error.Code,error.Description);
-
-                return BadRequest(ModelState);
-            }
-
-            return Ok("Password reset successfully");
-
+            var result = await _customerService.ResetPasswordAsync(Model);
+            if (result == "Password Reset Successfully")
+                return Ok(result);
+            return BadRequest(result);
         }
+        #endregion
+
+
+        #region Refresh Token
+        [HttpGet("refresh-token")]
+        public async Task<IActionResult> RefreshTokenAsync()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return BadRequest("Invalid Token");
+            }
+            var result = await _customerService.RefreshTokenAsync();
+            if (!result.IsAuthenticated)
+            {
+                return BadRequest(result);
+            }
+            _customerService.SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+            return Ok(result);
+        }
+
+        [HttpPost("revoke-token")]
+        public async Task<IActionResult> RevokeTokenAsync([FromBody] string Token)
+        {
+            Token = Token ?? Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(Token))
+            {
+                return BadRequest("Token is Required");
+            }
+            var result = await _customerService.RevokeTokenAsync(Token);
+            if (result)
+            {
+                return Ok("Token Revoked Successfully");
+            }
+            return BadRequest("Token Not Revoked");
+        }
+
+
+
+        #endregion
+
+
         [Authorize]
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
@@ -337,13 +371,13 @@ namespace Connect.API.Controllers
             var result = await _customerService.GetCustomerPictureAsync();
             return result != string.Empty ? Ok(result) : BadRequest("there is not picture.");
         }
-        [Authorize]
-        [HttpPost("add-customer-picture")]
-        public async Task<IActionResult> AddCustomerPictureAsync(IFormFile? file)
-        {
-            var result = await _customerService.AddCustomerPictureAsync(file);
-            return result ? Ok("picture has been added successfully.") : BadRequest("failed to add picture");
-        }
+        //[Authorize]
+        //[HttpPost("add-customer-picture")]
+        //public async Task<IActionResult> AddCustomerPictureAsync(IFormFile? file)
+        //{
+        //    var result = await _customerService.AddCustomerPictureAsync(file);
+        //    return result ? Ok("picture has been added successfully.") : BadRequest("failed to add picture");
+        //}
         [Authorize]
         [HttpPut("Update-customer-picture")]
         public async Task<IActionResult> UpdateCustomerPictureAsync(IFormFile? file)
@@ -362,7 +396,7 @@ namespace Connect.API.Controllers
 
 
 
-        [HttpGet("last-month")] 
+        [HttpGet("last-month-statistics")] 
         public async Task<IActionResult> GetLastMonthStatisticsAsync()
         {
             var statistics = await _adminService.GetLastMonthStatisticsAsync();

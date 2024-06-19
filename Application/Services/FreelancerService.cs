@@ -237,7 +237,13 @@ namespace Connect.Application.Services
         public async Task<bool> UpdateFreelancerBusiness(AddFreelancerBusinessDto freelancerDto)
         {
             var user = await _userHelpers.GetCurrentUserAsync();
-            var oldFreelancerBusiness = user.Freelancer;
+            if (user == null)
+                return false;
+
+            var customerWithFreelancerSpec = new CustomerWithFreelancerSpec(user.Id);
+            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(customerWithFreelancerSpec);
+            var oldFreelancerBusiness = customer.Freelancer;
+
 
             try
             {
@@ -259,22 +265,32 @@ namespace Connect.Application.Services
             if (user == null)
                 return false;
 
-            var customerWithFreelancerSpec = new CustomerWithFreelancerSpec(user.Id);
-            var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(customerWithFreelancerSpec);
-            var freelancer = customer.Freelancer;
-
-            if (freelancer != null)
+            try
             {
-                _unitOfWork.FreelancerBusiness.Remove(freelancer);
+                var customerWithFreelancerSpec = new CustomerWithFreelancerSpec(user.Id);
+                var customer = await _unitOfWork.Customer.GetByIdWithSpecAsync(customerWithFreelancerSpec);
+                var freelancer = customer.Freelancer;
 
-                if (_unitOfWork.Save() > 0)
+                if (freelancer != null)
                 {
                     var result = await _userManager.RemoveFromRoleAsync(user, "Freelancer");
+
+                    _unitOfWork.FreelancerBusiness.Remove(freelancer);
+
+                     _unitOfWork.Save(); 
+
                     return result.Succeeded;
                 }
-            }
 
-            return false;
+                return false; 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while deleting freelancer business: {ex}");
+
+                // Rethrow the exception to propagate it to the caller
+                throw;
+            }
         }
 
 
@@ -339,6 +355,8 @@ namespace Connect.Application.Services
             var freelancer = customer.Freelancer;
 
             if (freelancer == null) return false;
+            if (freelancer.Image == "/Images/default/avatar") return true;
+
             var oldPicture = freelancer.Image;
             freelancer.Image = "/Images/default/avatar";
             _unitOfWork.FreelancerBusiness.Update(freelancer);

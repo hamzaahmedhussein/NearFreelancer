@@ -11,19 +11,23 @@ namespace Connect.Application.Services
         Task<IdentityResult> Register(RegisterUserDto userDto); 
         Task<IdentityResult> CreateUserAsync(RegisterUserDto userDto);
         Task<LoginResult> Login(LoginUserDto userDto);
-        Task<LogoutResult> LogoutAsync();
+        Task<string> LogoutAsync();
         Task<bool> DeleteAccountAsync();
+        Task<List<string>> GetUserRolesAsync();
         Task<bool> UpdateCustomerInfo(UpdateCustomerInfoDto updateDto);
         Task<bool> ConfirmEmail(string email, string token);
-        Task<bool> ForgetPassword(string email);
         Task<IdentityResult> ChangePassword(ChangePasswordDto changePasswordDto);
-        Task<IdentityResult> ResetPassword(ResetPasswordDto resetPasswordDto);
-        Task<CustomerProfileResult> GetCurrentProfileAsync();
+        public Task<string> ForgotPasswordAsync(string Email);
+        public Task<string> VerifyOTPAsync(VerifyOTPDto Model);
+        public Task<string> ResetPasswordAsync(ResetPasswordDto Model); Task<CustomerProfileResult> GetCurrentProfileAsync();
         Task<CustomerProfileResult> GetCustomerById(string id);
         Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests(int pageIndex, int pageSize);
         Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request);
         Task<bool> DeletePendingRequestAsync(string id);
-       
+        void  SetRefreshTokenInCookie(string token, DateTime expires);
+        Task<RefreshTokenResult> RefreshTokenAsync();
+        Task<bool> RevokeTokenAsync(string Token);
+
         // IEnumerable<HomePageFilterDto> GetFilteredProviders(HomePageFilterDto filterDto);
 
         Task<bool> AddCustomerPictureAsync(IFormFile file);

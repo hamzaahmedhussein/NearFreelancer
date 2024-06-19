@@ -206,13 +206,13 @@ namespace Connect.API.Controllers
             var result = await _freelancerService.GetFreelancerPictureAsync();
             return result != string.Empty ? Ok(result) : BadRequest("there is not picture.");
         }
-        [Authorize]
-        [HttpPost("add-freelancer-picture")]
-        public async Task<IActionResult> AddUserPictureAsync(IFormFile? file)
-        {
-            var result = await _freelancerService.AddFreelancerPictureAsync(file);
-            return result ? Ok("picture has been added successfully.") : BadRequest("failed to add picture");
-        }
+        //[Authorize]
+        //[HttpPost("add-freelancer-picture")]
+        //public async Task<IActionResult> AddUserPictureAsync(IFormFile? file)
+        //{
+        //    var result = await _freelancerService.AddFreelancerPictureAsync(file);
+        //    return result ? Ok("picture has been added successfully.") : BadRequest("failed to add picture");
+        //}
         [Authorize]
         [HttpPut("Update-freelancer-picture")]
         public async Task<IActionResult> UpdateUserPictureAsync(IFormFile? file)

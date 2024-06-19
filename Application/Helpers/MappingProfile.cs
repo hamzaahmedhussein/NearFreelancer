@@ -30,7 +30,6 @@ namespace Connect.Application.Helpers
              CreateMap<AddReservationBusinessDto, ReservationProvider>()
             .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
-            CreateMap<ReservationProvider, ReservationBusinessResult>();
 
             CreateMap<Customer, CustomerProfileResult>();
 

@@ -27,12 +27,14 @@ namespace Infrastructure.Data
             builder.Entity<Customer>()
                .Property(s => s.Image)
                .HasDefaultValue("/Images/default/avatar")
-               .IsRequired(); 
-            
+               .IsRequired();
+
             builder.Entity<Freelancer>()
                .Property(s => s.Image)
                .HasDefaultValue("/Images/default/avatar")
                .IsRequired();
+
+
 
             SeedRoles(builder);
         }
@@ -40,6 +42,14 @@ namespace Infrastructure.Data
         private void SeedRoles(ModelBuilder builder)
         {
             builder.Entity<IdentityRole>().HasData(
+                  new IdentityRole
+                 {
+                     Id = "0",
+                     Name = "Admin",
+                     ConcurrencyStamp = Guid.NewGuid().ToString(),
+                     NormalizedName = "Admin"
+                 }
+                ,
                 new IdentityRole
                 {
                     Id = "1",

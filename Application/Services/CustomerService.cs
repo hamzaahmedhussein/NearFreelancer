@@ -11,6 +11,8 @@ using Connect.Core.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using Connect.Application.Specifications;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 
 namespace Connect.Application.Services
 {
@@ -25,6 +27,8 @@ namespace Connect.Application.Services
         private readonly IUserHelpers _userHelpers;
         private readonly IMailingService _mailingService;
         private readonly SignInManager<Customer> _signInManager;
+        private static readonly Dictionary<string, (string OTP, DateTime Expiry)> _otpCache
+       = new Dictionary<string, (string OTP, DateTime Expiry)>();
 
         public CustomerService(
             IUnitOfWork unitOfWork,
@@ -117,28 +121,177 @@ namespace Connect.Application.Services
         #endregion
 
         #region ForgetPassword
-        public async Task<bool> ForgetPassword(string email)
+        public async Task<string> ForgotPasswordAsync(string email)
         {
-            var customer = await _userManager.FindByEmailAsync(email);
-            if (customer == null) return false;
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return "User Not Found";
+            }
 
-            var token = await _userManager.GeneratePasswordResetTokenAsync(customer);
-            var resetLink = $"{_contextAccessor.HttpContext.Request.Scheme}://{_contextAccessor.HttpContext.Request.Host}/api/Account/reset-password?email={Uri.EscapeDataString(customer.Email)}&token={Uri.EscapeDataString(token)}";
-            var message = new MailMessage(new string[] { customer.Email }, "reset email link", resetLink);
-            _mailingService.SendMail(message);
+            var otp = GenerateOTP(email);
+            try
+            {
+                var to = new List<string> { email }; // or just new[] { email } if you prefer arrays
+                var subject = "Password Reset";
+                var content = $"<h1>Reset Your Password</h1><br><p>Your OTP is {otp}</p>";
+
+                var message = new MailMessage(to, subject, content);
+
+                _mailingService.SendMail(message);
+
+                return "OTP Sent Successfully";
+            }
+            catch (Exception ex)
+            {
+                return $"An Error Occurred, {ex.Message}";
+            }
+        }
+
+        public string GenerateOTP(string email)
+        {
+            Random random = new Random();
+            string otp = random.Next(100000, 999999).ToString();
+            _otpCache[email] = (otp, DateTime.UtcNow.AddMinutes(5)); // OTP expires in 5 minutes
+            return otp;
+        }
+
+        public async Task<string> VerifyOTPAsync(VerifyOTPDto Model)
+        {
+            if (!VerifyOTP(Model.Email, Model.OTP))
+            {
+                return "Invalid OTP";
+            }
+            var user = await _userManager.FindByEmailAsync(Model.Email);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return token;
+        }
+
+        public bool VerifyOTP(string email, string otp)
+        {
+            if (_otpCache.ContainsKey(email) && _otpCache[email].OTP == otp && _otpCache[email].Expiry > DateTime.UtcNow)
+            {
+                _otpCache.Remove(email); 
+                return true; 
+            }
+            return false; 
+        }
+
+        public async Task<string> ResetPasswordAsync(ResetPasswordDto Model)
+        {
+            var user = await _userManager.FindByEmailAsync(Model.Email);
+            if (user == null)
+            {
+                return "User Not Found";
+            }
+            var token = Model.Token;
+            if (token == null)
+            {
+                return "Invalid Token";
+            }
+            if (Model.NewPassword != Model.ConfirmPassword)
+            {
+                return "Passwords Do Not Match";
+            }
+            var result = await _userManager.ResetPasswordAsync(user, token, Model.NewPassword);
+            return result.Succeeded ? "Password Reset Successfully" : $"Password Reset Failed{result.Errors.FirstOrDefault().Description}";
+        }
+
+
+        #endregion
+
+        #region Refresh Token
+        public async Task<RefreshTokenResult> RefreshTokenAsync()
+        {
+            try
+            {
+                var refreshToken = GetRefreshTokenFromCookie();
+                if (string.IsNullOrEmpty(refreshToken))
+                    return null;
+
+                var user = _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
+                if (user == null)
+                    return null;
+
+                var oldRefreshToken = user.RefreshTokens.Single(x => x.Token == refreshToken);
+                if (!oldRefreshToken.IsActive)
+                {
+                    return null;
+                }
+
+                oldRefreshToken.RevokedOn = DateTime.UtcNow;
+
+                var newRefreshToken = GenerateRefreshToken();
+                user.RefreshTokens.Add(newRefreshToken);
+                await _userManager.UpdateAsync(user);
+
+                // Set the new refresh token in the cookie
+                SetRefreshTokenInCookie(newRefreshToken.Token, newRefreshToken.ExpireOn);
+
+              
+                return new RefreshTokenResult
+                {
+                    RefreshToken = newRefreshToken.Token,
+                    RefreshTokenExpiration = newRefreshToken.ExpireOn,
+                    IsAuthenticated = true
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                return null;
+            }
+        }
+
+
+        private RefreshToken GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomNumber),
+                ExpireOn = DateTime.UtcNow.AddDays(7),
+                CreatedOn = DateTime.UtcNow,
+            };
+        }
+        public void SetRefreshTokenInCookie(string token, DateTime expires)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = expires,
+            };
+            _contextAccessor.HttpContext.Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+        private string GetRefreshTokenFromCookie()
+        {
+            return _contextAccessor.HttpContext.Request.Cookies["refreshToken"];
+        }
+
+        public async Task<bool> RevokeTokenAsync(string Token)
+        {
+            var user = _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == Token));
+            if (user == null)
+            {
+                return false;
+            }
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == Token);
+            if (!refreshToken.IsActive)
+            {
+                return false;
+            }
+            refreshToken.RevokedOn = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
             return true;
         }
 
-        public async Task<IdentityResult> ResetPassword(ResetPasswordDto resetPasswordDto)
-        {
-            var customer = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
-            if (customer == null)
-                return IdentityResult.Failed(new IdentityError { Description = "User not found" });
 
-            var result = await _userManager.ResetPasswordAsync(customer, resetPasswordDto.Token, resetPasswordDto.NewPassword);
-            return result;
-        }
-        #endregion
+
+
+
+        #endregion 
 
         #region ChangePassword
         public async Task<IdentityResult> ChangePassword(ChangePasswordDto changePasswordDto)
@@ -191,36 +344,41 @@ namespace Connect.Application.Services
         #endregion
 
         #region Logout
-        public async Task<LogoutResult> LogoutAsync()
+        public async Task<string> LogoutAsync()
         {
-            try
+            var refreshToken = _contextAccessor.HttpContext.Request.Cookies["refreshToken"];
+            var user = _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
+            if (user == null)
             {
-                var currentUser = await _userHelpers.GetCurrentUserAsync();
-                if (currentUser == null)
-                {
-                    return new LogoutResult
-                    {
-                        Success = false,
-                        Message = "User Not Found"
-                    };
-                }
+                return "Invalid token";
+            }
 
-                await _signInManager.SignOutAsync();
-                return new LogoutResult
-                {
-                    Success = true,
-                    Message = "User successfully logged out."
-                };
-            }
-            catch (Exception ex)
+            var oldRefreshToken = user.RefreshTokens.Single(x => x.Token == refreshToken);
+            if (!oldRefreshToken.IsActive)
             {
-                // Log the exception or handle it appropriately
-                return new LogoutResult
-                {
-                    Success = false,
-                    Message = "An error occurred while logging out."
-                };
+                return "Inactive token";
             }
+
+            oldRefreshToken.RevokedOn = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+
+            // Clear the refresh token cookie
+            _contextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
+
+            return "Logged out successfully";
+        }
+        #endregion
+
+        #region GetUserRoles 
+        public async Task<List<string>> GetUserRolesAsync()
+        {
+            var user = await _userHelpers.GetCurrentUserAsync();
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                return roles.ToList();
+            }
+            return null;
         }
         #endregion
 
