@@ -13,7 +13,5 @@ namespace Connect.Application.DTOs
         public string Name { get; set; }
         public string Profession { get; set; }
         public string? Image { get; set; }
-        public string? City { get; set; }
-        public string? Street { get; set; }
     }
 }
