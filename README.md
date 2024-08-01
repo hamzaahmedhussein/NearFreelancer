@@ -1,6 +1,6 @@
 # NearFreelancer API
 
-A RESTful API built using ASP.NET Core for connecting users with freelancers based on their profession, location, and availability. This API supports secure authentication and detailed logging.
+A RESTful API built using ASP.NET Core for connecting users with freelancers based on their profession, location, and availability.
 
 ## Features
 
