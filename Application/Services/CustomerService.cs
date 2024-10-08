@@ -1,17 +1,14 @@
-﻿using Connect.Application.DTOs;
+﻿using AutoMapper;
+using Connect.Application.DTOs;
+using Connect.Application.Settings;
+using Connect.Application.Specifications;
 using Connect.Core.Entities;
-using Connect.Application.Settings;
 using Connect.Core.Interfaces;
-using Connect.Application.Settings;
-using AutoMapper;
+using Connect.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Connect.Core.Models;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
-using Connect.Application.Specifications;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 
 namespace Connect.Application.Services
@@ -104,7 +101,7 @@ namespace Connect.Application.Services
 
             var message = new MailMessage(new[] { user.Email }, "Confirmation Email", confirmationLink);
 
-             _mailingService.SendMail(message);
+            _mailingService.SendMail(message);
         }
 
         public async Task<bool> ConfirmEmail(string email, string token)
@@ -132,7 +129,7 @@ namespace Connect.Application.Services
             var otp = GenerateOTP(email);
             try
             {
-                var to = new List<string> { email }; // or just new[] { email } if you prefer arrays
+                var to = new List<string> { email };
                 var subject = "Password Reset";
                 var content = $"<h1>Reset Your Password</h1><br><p>Your OTP is {otp}</p>";
 
@@ -171,10 +168,10 @@ namespace Connect.Application.Services
         {
             if (_otpCache.ContainsKey(email) && _otpCache[email].OTP == otp && _otpCache[email].Expiry > DateTime.UtcNow)
             {
-                _otpCache.Remove(email); 
-                return true; 
+                _otpCache.Remove(email);
+                return true;
             }
-            return false; 
+            return false;
         }
 
         public async Task<string> ResetPasswordAsync(ResetPasswordDto Model)
@@ -228,7 +225,7 @@ namespace Connect.Application.Services
                 // Set the new refresh token in the cookie
                 SetRefreshTokenInCookie(newRefreshToken.Token, newRefreshToken.ExpireOn);
 
-              
+
                 return new RefreshTokenResult
                 {
                     RefreshToken = newRefreshToken.Token,
@@ -393,7 +390,7 @@ namespace Connect.Application.Services
             }
 
 
-             var user=_mapper.Map<CustomerProfileResult>(currentUser);
+            var user = _mapper.Map<CustomerProfileResult>(currentUser);
             //var requests = await _unitOfWork.ServiceRequest.FindAsync(r => r.CustomerId == currentUser.Id);
             //var requestsResult = _mapper.Map< IEnumerable < CustomerServiceRequestResult >> (requests);
             //user.Requests = requestsResult.ToList();
@@ -562,7 +559,7 @@ namespace Connect.Application.Services
             _unitOfWork.Customer.Update(user);
             if (_unitOfWork.Save() > 0 && !oldPicture.IsNullOrEmpty())
             {
-                if(oldPicture != "/Images/default/avatar")
+                if (oldPicture != "/Images/default/avatar")
                     return await _userHelpers.DeleteImageAsync(oldPicture, Consts.Consts.Customer);
                 return true;
             }

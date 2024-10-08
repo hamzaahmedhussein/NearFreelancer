@@ -14,7 +14,6 @@ namespace Connect.Application.Extentions
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IFreelancerService, FreelancerService>();
             services.AddScoped<IUserHelpers, UserHelpers>();
@@ -23,6 +22,8 @@ namespace Connect.Application.Extentions
             services.Configure<Settings.MailSettings>(configuration.GetSection("Mailing"));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+            services.AddScoped<ICustomerService, CustomerService>();
+
         }
     }
 }

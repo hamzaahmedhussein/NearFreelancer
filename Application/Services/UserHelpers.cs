@@ -5,7 +5,6 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -28,7 +27,7 @@ namespace Connect.Application.Services
         private readonly ILogger<IUserHelpers> _logger;
 
         public UserHelpers(IConfiguration config, UserManager<Customer> userManager, IHttpContextAccessor contextAccessor,
-            IWebHostEnvironment webHostEnvironment, ApplicationDbContext context , ILogger<IUserHelpers> logger)
+            IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, ILogger<IUserHelpers> logger)
         {
             _config = config;
             _userManager = userManager;
@@ -171,7 +170,7 @@ namespace Connect.Application.Services
             {
                 throw new FileNotFoundException("File not found.", filePath);
             }
-        } 
+        }
 
         public async Task<string> UpdateImageAsync(IFormFile? file, string oldImagePath, string folderName)
         {
