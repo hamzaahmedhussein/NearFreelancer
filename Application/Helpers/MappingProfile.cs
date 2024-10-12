@@ -3,8 +3,6 @@ using Connect.Application.DTOs;
 using Connect.Core.Entities;
 using Connect.Core.Models;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect.Application.Helpers
 {
@@ -21,14 +19,14 @@ namespace Connect.Application.Helpers
 
             CreateMap<AddFreelancerBusinessDto, Freelancer>()
             .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
-          
+
 
             CreateMap<Freelancer, FreelancerProfileResult>();
 
-            CreateMap<Freelancer, FreelancerFilterResultDto>();
-            
-             CreateMap<AddReservationBusinessDto, ReservationProvider>()
-            .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
+            CreateMap<Freelancer, FreelancerResult>();
+
+            CreateMap<AddReservationBusinessDto, ReservationProvider>()
+           .ForMember(dest => dest.DOJ, opt => opt.MapFrom(src => DateTime.Now.ToLocalTime()));
 
 
             CreateMap<Customer, CustomerProfileResult>();
@@ -54,11 +52,11 @@ namespace Connect.Application.Helpers
 
 
 
-         
 
 
 
-             
+
+
         }
     }
 }

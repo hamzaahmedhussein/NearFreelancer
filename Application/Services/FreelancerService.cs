@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using Connect.Application.DTOs;
+using Connect.Application.Specifications;
 using Connect.Core.Entities;
 using Connect.Core.Interfaces;
 using Connect.Core.Models;
 using Connect.Core.Specification;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using Connect.Application.Specifications;
 
 namespace Connect.Application.Services
 {
@@ -195,16 +195,28 @@ namespace Connect.Application.Services
             return false;
         }
 
-        public async Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(string search, int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<FreelancerResult>> FilterFreelancers(string search, int pageIndex, int pageSize)
         {
-
-
             var spec = new PaginatedFilteredFreelancers(search, pageIndex, pageSize);
 
             var results = await _unitOfWork.FreelancerBusiness.GetAllWithSpecAsync(spec);
 
-            return _mapper.Map<IEnumerable<FreelancerFilterResultDto>>(results);
+            var totalCount = await _unitOfWork.FreelancerBusiness.CountAsync();
+
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var mappedResults = _mapper.Map<IEnumerable<FreelancerResult>>(results);
+
+            return new PaginatedResponse<FreelancerResult>
+            {
+                Data = mappedResults,
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
         }
+
 
         public async Task<bool> AcceptServiceRequest(string requestId)
         {
@@ -277,12 +289,12 @@ namespace Connect.Application.Services
 
                     _unitOfWork.FreelancerBusiness.Remove(freelancer);
 
-                     _unitOfWork.Save(); 
+                    _unitOfWork.Save();
 
                     return result.Succeeded;
                 }
 
-                return false; 
+                return false;
             }
             catch (Exception ex)
             {
@@ -402,7 +414,7 @@ namespace Connect.Application.Services
         }
 
         #endregion
-        
+
 
 
     }

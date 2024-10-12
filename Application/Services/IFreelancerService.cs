@@ -14,7 +14,7 @@ namespace Connect.Application.Services
         Task<bool> UpdateOfferedService(string id, AddOfferedServiceDto serviceDto);
 
 
-        Task<IEnumerable<FreelancerFilterResultDto>> FilterFreelancers(string search, int pageIndex, int pageSize);
+        Task<PaginatedResponse<FreelancerResult>> FilterFreelancers(string search, int pageIndex, int pageSize);
         Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(int pageIndex, int pageSize);
 
         Task<bool> AcceptServiceRequest(string requestId);

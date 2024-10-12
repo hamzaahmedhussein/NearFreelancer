@@ -144,7 +144,7 @@ namespace Connect.API.Controllers
             }
         }
 
-        [HttpPost("filter-freelancers")]
+        [HttpGet("filter-freelancers")]
         public async Task<IActionResult> FilterFreelancers(string? search, int pageIndex, int pageSize = 9)
         {
             try

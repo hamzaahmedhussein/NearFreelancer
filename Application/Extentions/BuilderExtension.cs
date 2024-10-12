@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect.Application.Extentions
 {
@@ -17,11 +12,12 @@ namespace Connect.Application.Extentions
 
         public static void UseCustomMiddlewares(this WebApplication app)
         {
+            app.UseRouting();
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors("CorsPolicy");
             app.MapControllers();
         }
     }
