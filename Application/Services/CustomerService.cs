@@ -460,7 +460,7 @@ namespace Connect.Application.Services
 
             var request = await _unitOfWork.ServiceRequest.GetAllWithSpecAsync(paginatedCustomerRequestsSpec);
 
-            var requestResults = _mapper.Map<List<CustomerServiceRequestResult>>(request);
+            var requestResults = _mapper.Map<IEnumerable<CustomerServiceRequestResult>>(request);
 
             return requestResults;
         }

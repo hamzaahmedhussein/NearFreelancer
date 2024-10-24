@@ -22,7 +22,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
 
     {
-        return  context.Set<T>().Where(expression);
+        return context.Set<T>().Where(expression);
     }
 
     public async Task<T> FindFirstAsync(Expression<Func<T, bool>> expression)
@@ -31,13 +31,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     }
 
-    public async Task<IEnumerable<T>>GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync()
     {
-        return  context.Set<T>().ToList();
+        return context.Set<T>().ToList();
     }
     public T GetById(string id)
     {
-        
+
         return context.Set<T>().Find(id);
     }
     public void Update(T entity)
@@ -78,7 +78,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         return await context.Set<T>().CountAsync(predicate);
     }
-
+    public async Task<int> CountAsync(ISpecification<T> spec)
+    {
+        return await ApplySpecification(spec).CountAsync();
+    }
     public async Task<decimal> SumAsync(Expression<Func<T, decimal>> selector)
     {
         return await context.Set<T>().SumAsync(selector);

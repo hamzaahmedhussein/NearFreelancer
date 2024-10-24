@@ -370,13 +370,25 @@ namespace Connect.API.Controllers
             try
             {
                 var requests = await _customerService.GetMyRequests(pageIndex, pageSize);
-                return Ok(requests);
+
+                return Ok(new ApiResponse<object>
+                {
+                    StatusCode = 200,
+                    Message = "Requests retrieved successfully",
+                    Data = requests
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ApiResponse<string>
+                {
+                    StatusCode = 400,
+                    Message = "Failed to retrieve requests",
+                    Errors = new List<string> { ex.Message }
+                });
             }
         }
+
 
         [HttpPut("update-customer-info")]
         public async Task<IActionResult> UpdateCustomerInfo([FromBody] UpdateCustomerInfoDto updateDto)

@@ -201,11 +201,11 @@ namespace Connect.Application.Services
 
             var results = await _unitOfWork.FreelancerBusiness.GetAllWithSpecAsync(spec);
 
-            var totalCount = await _unitOfWork.FreelancerBusiness.CountAsync();
+            var totalCount = await _unitOfWork.FreelancerBusiness.CountAsync(spec);
 
             var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-            var mappedResults = _mapper.Map<IEnumerable<FreelancerResult>>(results);
+            var mappedResults = _mapper.Map<IReadOnlyList<FreelancerResult>>(results);
 
             return new PaginatedResponse<FreelancerResult>
             {
