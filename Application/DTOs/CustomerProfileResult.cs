@@ -1,5 +1,4 @@
-﻿using Connect.Core.Models;
-namespace Connect.Application.DTOs
+﻿namespace Connect.Application.DTOs
 {
     public class CustomerProfileResult
     {
@@ -7,8 +6,9 @@ namespace Connect.Application.DTOs
         public string Image { get; set; }
         public string Name { get; set; }
 
-        public string Profession { get; set; }
-
+        public string? Street { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
 
     }
 }

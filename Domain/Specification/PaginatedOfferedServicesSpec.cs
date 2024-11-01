@@ -5,10 +5,10 @@ namespace Connect.Application.Specifications
 {
     public class PaginatedOfferedServicesSpec : Specification<OfferedService>
     {
-        public PaginatedOfferedServicesSpec(string freelancerId, int pageSize, int pageIndex)
+        public PaginatedOfferedServicesSpec(string freelancerId, int pageIndex, int pageSize)
             : base(os => os.FreelancerId == freelancerId)
         {
-            ApplyPaging(pageIndex, pageIndex * pageSize);
+            ApplyPaging(pageSize, (pageIndex - 1) * pageSize);
         }
     }
 }

@@ -1,12 +1,4 @@
-﻿using Connect.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Connect.Application.DTOs
+﻿namespace Connect.Application.DTOs
 {
     public class FreelancerProfileResult
     {
@@ -16,7 +8,9 @@ namespace Connect.Application.DTOs
         public string Image { get; set; }
 
         public string Description { get; set; }
-      
+        public string? Street { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
         public List<string> Skills { get; set; }
         public bool Availability { get; set; }
     }

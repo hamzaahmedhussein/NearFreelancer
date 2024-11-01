@@ -216,7 +216,7 @@ namespace Connect.API.Controllers
             }
 
             var offeredServiceResults = await _freelancerService.GetOfferedServicesAsync(freelancerId, pageIndex, pageSize);
-            return Ok(new ApiResponse<IEnumerable<OfferedServiceResult>> { StatusCode = 200, Message = "Offered services retrieved successfully.", Data = offeredServiceResults });
+            return Ok(new ApiResponse<object> { StatusCode = 200, Message = "Offered services retrieved successfully.", Data = offeredServiceResults });
         }
 
         #region File Handling

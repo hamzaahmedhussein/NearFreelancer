@@ -1,7 +1,5 @@
-﻿using Connect.Core.Entities;
-using Connect.Core.Models;
+﻿using Connect.Core.Models;
 using Connect.Core.Specification;
-using System;
 using System.Linq.Expressions;
 
 namespace Connect.Application.Specifications
@@ -18,7 +16,7 @@ namespace Connect.Application.Specifications
         {
             if (string.IsNullOrEmpty(search))
             {
-                return f => true; 
+                return f => true;
             }
             return f =>
                 f.Name.Contains(search) ||
