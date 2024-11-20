@@ -207,7 +207,7 @@ namespace Connect.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("get-offered-services/{freelancerId}")]
+        [HttpGet("get-offered-services")]
         public async Task<IActionResult> GetOfferedService(string freelancerId, int pageIndex, int pageSize = 4)
         {
             if (string.IsNullOrWhiteSpace(freelancerId))

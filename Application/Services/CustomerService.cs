@@ -429,18 +429,18 @@ namespace Connect.Application.Services
         #endregion
 
         #region SendServiceRequest
-        public async Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request)
+        public async Task<bool> SendServiceRequist(SendServiceRequestDto request)
         {
             var customer = await _userHelpers.GetCurrentUserAsync();
             if (customer == null)
                 return false;
 
-            var freelancer = _unitOfWork.FreelancerBusiness.GetById(Id);
+            var freelancer = _unitOfWork.FreelancerBusiness.GetById(request.freelancerId);
             if (freelancer == null)
                 return false;
 
             var serviceRequest = _mapper.Map<ServiceRequest>(request);
-            serviceRequest.FreelancerId = Id;
+            serviceRequest.FreelancerId = request.freelancerId;
             serviceRequest.Freelancer = freelancer;
             serviceRequest.Customer = customer;
             _unitOfWork.ServiceRequest.Add(serviceRequest);

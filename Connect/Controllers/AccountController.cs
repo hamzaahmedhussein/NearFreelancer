@@ -360,7 +360,7 @@ namespace Connect.API.Controllers
         [HttpPost("send-service-request")]
         public async Task<IActionResult> SendServiceRequest(string freelancerId, [FromBody] SendServiceRequestDto requestDto)
         {
-            var result = await _customerService.SendServiceRequist(freelancerId, requestDto);
+            var result = await _customerService.SendServiceRequist(requestDto);
             return result ? Ok() : BadRequest("Failed to send service request.");
         }
 

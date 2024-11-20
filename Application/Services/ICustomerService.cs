@@ -1,5 +1,4 @@
 ﻿using Connect.Application.DTOs;
-using Connect.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -7,8 +6,8 @@ namespace Connect.Application.Services
 {
     public interface ICustomerService
     {
-       // Task<bool> DeleteCustomerAsync();
-        Task<IdentityResult> Register(RegisterUserDto userDto); 
+        // Task<bool> DeleteCustomerAsync();
+        Task<IdentityResult> Register(RegisterUserDto userDto);
         Task<IdentityResult> CreateUserAsync(RegisterUserDto userDto);
         Task<LoginResult> Login(LoginUserDto userDto);
         Task<string> LogoutAsync();
@@ -22,9 +21,9 @@ namespace Connect.Application.Services
         public Task<string> ResetPasswordAsync(ResetPasswordDto Model); Task<CustomerProfileResult> GetCurrentProfileAsync();
         Task<CustomerProfileResult> GetCustomerById(string id);
         Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests(int pageIndex, int pageSize);
-        Task<bool> SendServiceRequist(string Id, SendServiceRequestDto request);
+        Task<bool> SendServiceRequist(SendServiceRequestDto request);
         Task<bool> DeletePendingRequestAsync(string id);
-        void  SetRefreshTokenInCookie(string token, DateTime expires);
+        void SetRefreshTokenInCookie(string token, DateTime expires);
         Task<RefreshTokenResult> RefreshTokenAsync();
         Task<bool> RevokeTokenAsync(string Token);
 
