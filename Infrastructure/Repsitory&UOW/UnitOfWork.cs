@@ -30,24 +30,24 @@ namespace Connect.Infrastructure.Repsitory_UOW
 
         public void CreateTransaction()
         {
-             transaction = _context.Database.BeginTransaction();
+            transaction = _context.Database.BeginTransaction();
         }
-   
+
         public void Commit()
         {
             transaction.Commit();
         }
-        
+
         public void Rollback()
         {
             transaction.Rollback();
-            
+
         }
 
 
         public int Save()
         {
-           return _context.SaveChanges();
+            return _context.SaveChanges();
         }
     }
 }

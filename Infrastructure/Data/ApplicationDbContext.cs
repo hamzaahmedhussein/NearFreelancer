@@ -3,9 +3,6 @@ using Connect.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Reflection.Emit;
 
 namespace Infrastructure.Data
 {
@@ -29,10 +26,12 @@ namespace Infrastructure.Data
                .HasDefaultValue("/Images/default/avatar")
                .IsRequired();
 
+
             builder.Entity<Freelancer>()
                .Property(s => s.Image)
                .HasDefaultValue("/Images/default/avatar")
                .IsRequired();
+
 
 
 
@@ -43,12 +42,12 @@ namespace Infrastructure.Data
         {
             builder.Entity<IdentityRole>().HasData(
                   new IdentityRole
-                 {
-                     Id = "0",
-                     Name = "Admin",
-                     ConcurrencyStamp = Guid.NewGuid().ToString(),
-                     NormalizedName = "Admin"
-                 }
+                  {
+                      Id = "0",
+                      Name = "Admin",
+                      ConcurrencyStamp = Guid.NewGuid().ToString(),
+                      NormalizedName = "Admin"
+                  }
                 ,
                 new IdentityRole
                 {
@@ -64,7 +63,7 @@ namespace Infrastructure.Data
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
                     NormalizedName = "Freelancer"
                 }
-               
+
             );
         }
     }

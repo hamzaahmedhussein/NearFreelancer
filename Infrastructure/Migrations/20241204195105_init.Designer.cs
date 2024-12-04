@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241011231722_test")]
-    partial class test
+    [Migration("20241204195105_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -275,21 +275,21 @@ namespace Connect.Infrastructure.Migrations
                         new
                         {
                             Id = "0",
-                            ConcurrencyStamp = "578ba886-3100-422f-969c-014cef9aa43c",
+                            ConcurrencyStamp = "8bf022b0-d16c-4234-acee-4acabac8ae89",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "d614d3a2-9c8d-46b8-892e-cbe47907ad9c",
+                            ConcurrencyStamp = "0f8a7891-44ee-47dc-bc06-edf340e0795e",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "ca5edf77-5f85-464b-9d00-d86292de4034",
+                            ConcurrencyStamp = "3634411e-59a3-4d04-9f1e-8f767abcf4cb",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         });
