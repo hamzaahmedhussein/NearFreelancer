@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Connect.Core.Models;
 
 namespace Connect.Core.Entities
 {
-    public class Message
+    public class ChatMessage
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; }
+        public string CustomerId { get; set; }
+        public Customer Customer { get; set; }
+        public string FreelancerId { get; set; }
+        public Freelancer Freelancer { get; set; }
         public string Content { get; set; }
-        public DateTime SentAt { get; set; }
-        public string SenderId { get; set; } 
-        public string RecipientId { get; set; }
+        public DateTime Timestamp { get; set; }
+        public Sender Sender { get; set; }
     }
-
-
+    public enum Sender
+    {
+        Customer,
+        Freelancer
+    }
 
 }

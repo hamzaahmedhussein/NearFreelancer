@@ -14,6 +14,8 @@ namespace Connect.Infrastructure.Repsitory_UOW
         public virtual IGenericRepository<Freelancer> FreelancerBusiness { get; set; }
         public virtual IGenericRepository<OfferedService> OfferedService { get; set; }
         public virtual IGenericRepository<ServiceRequest> ServiceRequest { get; set; }
+        public IChatRepository ChatRepository { get; set; }
+
 
 
         private IDbContextTransaction transaction;

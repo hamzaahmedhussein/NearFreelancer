@@ -1,6 +1,7 @@
 ﻿#region imports
 using Connect.Application.DTOs;
 using Connect.Core.Entities;
+using Connect.Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,18 +24,18 @@ namespace Connect.Application.Services
         private readonly IConfiguration _config;
         private readonly UserManager<Customer> _userManager;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ApplicationDbContext _context;
         private readonly ILogger<IUserHelpers> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         public UserHelpers(IConfiguration config, UserManager<Customer> userManager, IHttpContextAccessor contextAccessor,
-            IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, ILogger<IUserHelpers> logger)
+            IWebHostEnvironment webHostEnvironment, IUnitOfWork unitOfWork, ILogger<IUserHelpers> logger)
         {
             _config = config;
             _userManager = userManager;
             _contextAccessor = contextAccessor;
             _webHostEnvironment = webHostEnvironment;
-            _context = context;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
         #endregion
 
@@ -180,31 +181,6 @@ namespace Connect.Application.Services
         }
         #endregion
 
-        //#region Messaging
-        //public async Task<Message> SendMessage(string content, string recipientId)
-        //{
-        //    var user = await GetCurrentUserAsync();
-        //    var message = new Message
-        //    {
-        //        Content = content,
-        //        SentAt = DateTime.UtcNow,
-        //        SenderId = user.Id,
-        //        RecipientId = recipientId,
-        //    };
-
-        //    _context.Messages.Add(message);
-        //    await _context.SaveChangesAsync();
-
-        //    return message;
-        //}
-
-        //public async Task<List<Message>> GetConversation(string userId, string recipientId)
-        //{
-        //    return await _context.Messages
-        //      .Where(m => (m.SenderId == userId && m.RecipientId == recipientId) || (m.SenderId == recipientId && m.RecipientId == userId))
-        //      .OrderBy(m => m.SentAt)
-        //      .ToListAsync();
-        //}
-        //#endregion
+       
     }
 }

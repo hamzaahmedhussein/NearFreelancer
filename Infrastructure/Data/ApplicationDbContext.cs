@@ -16,6 +16,7 @@ namespace Infrastructure.Data
         public DbSet<OfferedService> OfferedServices { get; set; }
         public DbSet<Freelancer> Freelancers { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

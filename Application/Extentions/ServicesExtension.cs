@@ -23,6 +23,7 @@ namespace Connect.Application.Extentions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddSignalR();
 
         }
     }

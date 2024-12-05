@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -175,7 +174,7 @@ namespace Connect.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Profession = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "/Images/default/avatar"),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -191,7 +190,8 @@ namespace Connect.Infrastructure.Migrations
                         name: "FK_Freelancers_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -216,6 +216,34 @@ namespace Connect.Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChatMessages",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Sender = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatMessages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChatMessages_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_ChatMessages_Freelancers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "Freelancers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -274,9 +302,9 @@ namespace Connect.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0", "8bf022b0-d16c-4234-acee-4acabac8ae89", "Admin", "Admin" },
-                    { "1", "0f8a7891-44ee-47dc-bc06-edf340e0795e", "Customer", "Customer" },
-                    { "2", "3634411e-59a3-4d04-9f1e-8f767abcf4cb", "Freelancer", "Freelancer" }
+                    { "0", "e3ea0d26-0a12-4234-83e8-e176f45ad3a9", "Admin", "Admin" },
+                    { "1", "a021cb62-1ad1-45e4-84e9-f18002b23139", "Customer", "Customer" },
+                    { "2", "b9d91aee-06c8-47aa-acbe-aef6542ee4a2", "Freelancer", "Freelancer" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -319,11 +347,20 @@ namespace Connect.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChatMessages_CustomerId",
+                table: "ChatMessages",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChatMessages_FreelancerId",
+                table: "ChatMessages",
+                column: "FreelancerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Freelancers_OwnerId",
                 table: "Freelancers",
                 column: "OwnerId",
-                unique: true,
-                filter: "[OwnerId] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OfferedServices_FreelancerId",
@@ -358,6 +395,9 @@ namespace Connect.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ChatMessages");
 
             migrationBuilder.DropTable(
                 name: "OfferedServices");

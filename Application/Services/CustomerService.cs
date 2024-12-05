@@ -23,6 +23,7 @@ namespace Connect.Application.Services
         private readonly IMapper _mapper;
         private readonly IUserHelpers _userHelpers;
         private readonly IMailingService _mailingService;
+        private readonly IFreelancerService _freelancerService;
         private readonly SignInManager<Customer> _signInManager;
         private static readonly Dictionary<string, (string OTP, DateTime Expiry)> _otpCache
        = new Dictionary<string, (string OTP, DateTime Expiry)>();
@@ -35,6 +36,7 @@ namespace Connect.Application.Services
             ILogger<CustomerService> logger,
             IUserHelpers userHelpers,
             IMailingService mailingService,
+            IFreelancerService freelancerService,
             SignInManager<Customer> signInManager)
         {
             _unitOfWork = unitOfWork;
@@ -45,6 +47,8 @@ namespace Connect.Application.Services
             _userHelpers = userHelpers;
             _mailingService = mailingService;
             _signInManager = signInManager;
+            _freelancerService = freelancerService;
+
         }
         #endregion
 
@@ -469,12 +473,23 @@ namespace Connect.Application.Services
         #region DeleteAccount
         public async Task<bool> DeleteAccountAsync()
         {
+            var freelancer = await _freelancerService.GetFreelancerProfile();
+            var freelancerDeleteResult = false;
+            if (freelancer != null)
+            {
+                freelancerDeleteResult = await _freelancerService.DeleteFreelancerBusinessAsync();
+            }
             var user = await _userHelpers.GetCurrentUserAsync();
             if (user == null)
             {
                 return false;
             }
-            var result = await _userManager.DeleteAsync(user);
+            IdentityResult result = IdentityResult.Failed();
+            if (freelancerDeleteResult)
+            {
+                result = await _userManager.DeleteAsync(user);
+
+            }
             return result.Succeeded;
         }
         #endregion

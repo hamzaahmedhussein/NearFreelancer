@@ -22,5 +22,6 @@ namespace Connect.Application.Services
         //Task<List<Message>> GetConversation(string userId, string recipientId);
         Task<bool> DeleteImageAsync(string fileName, string folderName);
         Task<string> UpdateImageAsync(IFormFile? file, string fileName, string folderName);
+
     }
 }

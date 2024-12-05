@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Connect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241204195105_init")]
+    [Migration("20241205210858_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -24,6 +24,38 @@ namespace Connect.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Connect.Core.Entities.ChatMessage", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FreelancerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Sender")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("FreelancerId");
+
+                    b.ToTable("ChatMessages");
+                });
 
             modelBuilder.Entity("Connect.Core.Entities.Customer", b =>
                 {
@@ -183,6 +215,7 @@ namespace Connect.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OwnerId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PhoneNumber")
@@ -204,8 +237,7 @@ namespace Connect.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId")
-                        .IsUnique()
-                        .HasFilter("[OwnerId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Freelancers");
                 });
@@ -275,21 +307,21 @@ namespace Connect.Infrastructure.Migrations
                         new
                         {
                             Id = "0",
-                            ConcurrencyStamp = "8bf022b0-d16c-4234-acee-4acabac8ae89",
+                            ConcurrencyStamp = "e3ea0d26-0a12-4234-83e8-e176f45ad3a9",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "0f8a7891-44ee-47dc-bc06-edf340e0795e",
+                            ConcurrencyStamp = "a021cb62-1ad1-45e4-84e9-f18002b23139",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "3634411e-59a3-4d04-9f1e-8f767abcf4cb",
+                            ConcurrencyStamp = "b9d91aee-06c8-47aa-acbe-aef6542ee4a2",
                             Name = "Freelancer",
                             NormalizedName = "Freelancer"
                         });
@@ -401,6 +433,25 @@ namespace Connect.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Connect.Core.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("Connect.Core.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Connect.Core.Models.Freelancer", "Freelancer")
+                        .WithMany()
+                        .HasForeignKey("FreelancerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Freelancer");
+                });
+
             modelBuilder.Entity("Connect.Core.Entities.Customer", b =>
                 {
                     b.OwnsMany("Connect.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
@@ -454,7 +505,9 @@ namespace Connect.Infrastructure.Migrations
                 {
                     b.HasOne("Connect.Core.Entities.Customer", "Owner")
                         .WithOne("Freelancer")
-                        .HasForeignKey("Connect.Core.Models.Freelancer", "OwnerId");
+                        .HasForeignKey("Connect.Core.Models.Freelancer", "OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Owner");
                 });
@@ -527,8 +580,7 @@ namespace Connect.Infrastructure.Migrations
 
             modelBuilder.Entity("Connect.Core.Entities.Customer", b =>
                 {
-                    b.Navigation("Freelancer")
-                        .IsRequired();
+                    b.Navigation("Freelancer");
 
                     b.Navigation("Requests");
                 });
