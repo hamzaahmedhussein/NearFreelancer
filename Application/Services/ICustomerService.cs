@@ -20,7 +20,7 @@ namespace Connect.Application.Services
         public Task<string> VerifyOTPAsync(VerifyOTPDto Model);
         public Task<string> ResetPasswordAsync(ResetPasswordDto Model); Task<CustomerProfileResult> GetCurrentProfileAsync();
         Task<CustomerProfileResult> GetCustomerById(string id);
-        Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests(int pageIndex, int pageSize);
+        Task<PaginatedResponse<CustomerServiceRequestResult>> GetMyRequests(int pageIndex, int pageSize);
         Task<bool> SendServiceRequist(SendServiceRequestDto request);
         Task<bool> DeletePendingRequestAsync(string id);
         void SetRefreshTokenInCookie(string token, DateTime expires);

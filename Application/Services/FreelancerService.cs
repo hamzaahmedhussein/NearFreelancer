@@ -307,7 +307,7 @@ namespace Connect.Application.Services
 
 
 
-        public async Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageIndex, int pageSize)
         {
             var spec = new PaginatedOfferedServicesSpec(freelancerId, pageIndex, pageSize);
 
@@ -315,9 +315,21 @@ namespace Connect.Application.Services
 
             var offeredServiceResults = _mapper.Map<List<OfferedServiceResult>>(offeredServices);
 
-            return offeredServiceResults;
+            var totalCount = await _unitOfWork.OfferedService.CountAsync();
+
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+
+            return new PaginatedResponse<OfferedServiceResult>
+            {
+                Data = offeredServiceResults,
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
         }
-        public async Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<FreelancerServiceRequistResult>> GetFreelancerRequests(int pageIndex, int pageSize)
         {
             var currentUser = await _userHelpers.GetCurrentUserAsync();
             if (currentUser == null)
@@ -331,7 +343,19 @@ namespace Connect.Application.Services
 
             var requestResults = _mapper.Map<List<FreelancerServiceRequistResult>>(request);
 
-            return requestResults;
+            var totalCount = await _unitOfWork.ServiceRequest.CountAsync();
+
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+
+            return new PaginatedResponse<FreelancerServiceRequistResult>
+            {
+                Data = requestResults,
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
         }
 
 

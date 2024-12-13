@@ -358,7 +358,7 @@ namespace Connect.API.Controllers
         }
 
         [HttpPost("send-service-request")]
-        public async Task<IActionResult> SendServiceRequest(string freelancerId, [FromBody] SendServiceRequestDto requestDto)
+        public async Task<IActionResult> SendServiceRequest([FromBody] SendServiceRequestDto requestDto)
         {
             var result = await _customerService.SendServiceRequist(requestDto);
             return result ? Ok() : BadRequest("Failed to send service request.");
@@ -401,7 +401,7 @@ namespace Connect.API.Controllers
         public async Task<IActionResult> DeleteAccountAsync()
         {
             var success = await _customerService.DeleteAccountAsync();
-            return success ? Ok() : NotFound();
+            return success ? Ok() : BadRequest();
         }
 
         [HttpPost("api/delete-request/{id}")]

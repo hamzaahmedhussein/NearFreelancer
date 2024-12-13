@@ -454,7 +454,7 @@ namespace Connect.Application.Services
         #endregion
 
         #region GetMyRequests
-        public async Task<IEnumerable<CustomerServiceRequestResult>> GetMyRequests(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<CustomerServiceRequestResult>> GetMyRequests(int pageIndex, int pageSize)
         {
             var customer = await _userHelpers.GetCurrentUserAsync();
             if (customer == null)
@@ -464,9 +464,20 @@ namespace Connect.Application.Services
 
             var request = await _unitOfWork.ServiceRequest.GetAllWithSpecAsync(paginatedCustomerRequestsSpec);
 
-            var requestResults = _mapper.Map<IEnumerable<CustomerServiceRequestResult>>(request);
+            var requestResults = _mapper.Map<List<CustomerServiceRequestResult>>(request);
+            var totalCount = await _unitOfWork.ServiceRequest.CountAsync();
 
-            return requestResults;
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+
+            return new PaginatedResponse<CustomerServiceRequestResult>
+            {
+                Data = requestResults,
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
         }
         #endregion
 

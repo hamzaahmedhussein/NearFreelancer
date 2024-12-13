@@ -112,7 +112,7 @@ namespace Connect.API.Controllers
 
         [Authorize]
         [HttpPost("add-offered-service")]
-        public async Task<IActionResult> AddOfferedService(AddOfferedServiceDto serviceDto)
+        public async Task<IActionResult> AddOfferedService([FromForm] AddOfferedServiceDto serviceDto)
         {
             try
             {

@@ -15,11 +15,11 @@ namespace Connect.Application.Services
 
 
         Task<PaginatedResponse<FreelancerResult>> FilterFreelancers(string search, int pageIndex, int pageSize);
-        Task<List<FreelancerServiceRequistResult>> GetFreelancerRequests(int pageIndex, int pageSize);
+        Task<PaginatedResponse<FreelancerServiceRequistResult>> GetFreelancerRequests(int pageIndex, int pageSize);
 
         Task<bool> AcceptServiceRequest(string requestId);
         Task<bool> RefuseServiceRequest(string requestId);
-        Task<List<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageSize, int pageIndex);
+        Task<PaginatedResponse<OfferedServiceResult>> GetOfferedServicesAsync(string freelancerId, int pageSize, int pageIndex);
         Task<bool> AddFreelancerPictureAsync(IFormFile file);
         Task<bool> UpdateFreelancerPictureAsync(IFormFile? file);
         Task<bool> DeleteFreelancerPictureAsync();
