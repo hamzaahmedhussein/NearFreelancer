@@ -74,7 +74,10 @@ namespace Connect.Application.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error sending confirmation email to user with email {Email}", userDto.Email);
+                await RollbackUserAsync(userDto.Email);
+
                 return IdentityResult.Failed(new IdentityError { Description = "Failed to send confirmation email. Please try again later." });
+
             }
 
             return IdentityResult.Success;
@@ -92,7 +95,15 @@ namespace Connect.Application.Services
             return await _userManager.CreateAsync(customer, userDto.Password);
         }
 
-
+        private async Task RollbackUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+                _logger.LogInformation("User with email {Email} has been rolled back due to email failure.", email);
+            }
+        }
         public async Task SendConfirmationEmailAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -120,6 +131,7 @@ namespace Connect.Application.Services
         }
 
         #endregion
+        
 
         #region ForgetPassword
         public async Task<string> ForgotPasswordAsync(string email)
